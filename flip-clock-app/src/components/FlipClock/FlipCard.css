@@ -1,0 +1,207 @@
+.flip-card,
+.flip-card * {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.flip-card {
+  display: inline-block;
+  margin: 0 6px;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 160px;
+  height: 180px;
+  background: #1a1a1a;
+  border-radius: 12px;
+  box-shadow: 
+    0 6px 12px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+/* Top half of the card - shows NEW value (gets revealed) */
+.flip-card-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: #2a2a2a;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Bottom half of the card - shows OLD value during flip, NEW value when static */
+.flip-card-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: #2a2a2a;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Central divider line for flip clock appearance */
+.flip-card-divider {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #000000;
+  z-index: 30;
+  transform: translateY(-50%);
+  pointer-events: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Digit positioning - shows top half of number */
+.flip-card-top .digit {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ffffff;
+  font-family: 'Impact', 'Arial Black', Arial, sans-serif;
+  font-size: 6.5rem;
+  font-weight: 900;
+  line-height: 0.8;
+  letter-spacing: 0.05em;
+  font-stretch: condensed;
+}
+
+/* Digit positioning - shows bottom half of number */
+.flip-card-bottom .digit {
+  position: absolute;
+  top: 0%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ffffff;
+  font-family: 'Impact', 'Arial Black', Arial, sans-serif;
+  font-size: 6.5rem;
+  font-weight: 900;
+  line-height: 0.8;
+  letter-spacing: 0.05em;
+  font-stretch: condensed;
+}
+
+/* Flip animation container */
+.flip-animation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  z-index: 20;
+  transform-origin: bottom;
+  transform-style: preserve-3d;
+}
+
+/* Front face - shows OLD number top half */
+.flip-animation-front {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #2a2a2a;
+  overflow: hidden;
+  backface-visibility: hidden;
+  z-index: 2;
+  transform: translateZ(0); /* Force GPU acceleration */
+}
+
+.flip-animation-front .digit {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ffffff;
+  font-family: 'Impact', 'Arial Black', Arial, sans-serif;
+  font-size: 6.5rem;
+  font-weight: 900;
+  line-height: 0.8;
+  letter-spacing: 0.05em;
+  font-stretch: condensed;
+}
+
+/* Back face - shows NEW number bottom half */
+.flip-animation-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #2a2a2a;
+  overflow: hidden;
+  backface-visibility: hidden;
+  transform: rotateX(180deg) translateZ(0); /* Force GPU acceleration */
+  z-index: 2;
+}
+
+.flip-animation-back .digit {
+  position: absolute;
+  /* Position digit to show bottom half */
+  top: 0%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ffffff;
+  font-family: 'Impact', 'Arial Black', Arial, sans-serif;
+  font-size: 6.5rem;
+  font-weight: 900;
+  line-height: 0.8;
+  letter-spacing: 0.05em;
+  font-stretch: condensed;
+}
+
+@keyframes flipDown {
+  0% {
+    transform: rotateX(0deg);
+  }
+  100% {
+    transform: rotateX(-180deg);
+  }
+}
+
+.flip-card.flipping .flip-card-inner {
+  perspective: 1000px;
+}
+
+.flip-card.flipping .flip-animation {
+  animation: flipDown 0.6s ease-in-out forwards;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
+}
+
+/* Keep the static top visible during animation to show new value */
+.flip-card.flipping .flip-card-top {
+  visibility: visible;
+  z-index: 1;
+}
+
+/* Mini size for seconds */
+.flip-card.mini .flip-card-inner {
+  width: 50px;
+  height: 40px;
+  border-radius: 6px;
+}
+
+.flip-card.mini .flip-card-top .digit,
+.flip-card.mini .flip-card-bottom .digit,
+.flip-card.mini .flip-animation-front .digit,
+.flip-card.mini .flip-animation-back .digit {
+  font-size: 1.8rem;
+  letter-spacing: 0.02em;
+  line-height: 0.8;
+}
+
+/* Mini divider line */
+.flip-card.mini .flip-card-divider {
+  height: 1px;
+  box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.3);
+}

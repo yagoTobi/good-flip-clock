@@ -1,0 +1,24 @@
+.flip-clock {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+}
+
+.time-display {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.minutes-group {
+  position: relative;
+}
+
+/* Seconds overlay - positioned on bottom right corner of minutes card */
+.seconds-overlay {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  z-index: 20;
+}
