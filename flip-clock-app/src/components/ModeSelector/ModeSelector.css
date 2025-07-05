@@ -1,0 +1,62 @@
+.mode-selector {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.selector-background {
+  position: relative;
+  background: #2a2a2a;
+  border-radius: 12px;
+  padding: 4px;
+  display: flex;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.selector-slider {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  height: calc(100% - 8px);
+  background: #ffffff;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.selector-slider.slider-right {
+  transform: translateX(100%);
+}
+
+.selector-option {
+  position: relative;
+  background: transparent;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  z-index: 1;
+  min-width: 80px;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.selector-option:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.selector-option.active {
+  color: #1a1a1a;
+}
+
+.selector-option:not(.active) {
+  color: #ffffff;
+}
+
+.selector-option:hover:not(.active) {
+  color: #cccccc;
+}

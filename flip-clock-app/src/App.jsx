@@ -1,5 +1,6 @@
-import "./App.css"; // Import the App.css file for styles
+import "./App.css";
 import FlipClock from "./components/FlipClock/FlipClock";
+import ModeSelector from "./components/ModeSelector/ModeSelector";
 
 function App() {
   return (
@@ -10,7 +11,7 @@ function App() {
 
       <main className="app-main">
         <FlipClock />
-        <p>Currently building our flip clock...</p>
+        <ModeSelector />
       </main>
     </div>
   );
