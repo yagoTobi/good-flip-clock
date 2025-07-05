@@ -33,6 +33,9 @@ function FlipCard({ value, prevValue, isFlipping, size = "normal" }) {
           <span className="digit">{displayedBottomValue}</span>
         </div>
 
+        {/* Central divider line */}
+        <div className="flip-card-divider"></div>
+
         {/* Animated flip card - only visible during animation */}
         {isFlipping && (
           <div className="flip-animation">

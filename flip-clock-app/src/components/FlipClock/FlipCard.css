@@ -13,8 +13,12 @@
 
 .flip-card-inner {
   position: relative;
-  width: 160px;
-  height: 180px;
+  width: 20vw;
+  height: 18vw;
+  max-width: 350px;
+  max-height: 315px;
+  min-width: 160px;
+  min-height: 135px;
   background: #1a1a1a;
   border-radius: 12px;
   box-shadow: 
@@ -53,12 +57,11 @@
   top: 50%;
   left: 0;
   right: 0;
-  height: 2px;
+  height: 3px;
   background: #000000;
   z-index: 30;
   transform: translateY(-50%);
   pointer-events: none;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 /* Digit positioning - shows top half of number */
@@ -69,7 +72,7 @@
   transform: translate(-50%, -50%);
   color: #ffffff;
   font-family: 'Impact', 'Arial Black', Arial, sans-serif;
-  font-size: 6.5rem;
+  font-size: 12vw;
   font-weight: 900;
   line-height: 0.8;
   letter-spacing: 0.05em;
@@ -84,7 +87,7 @@
   transform: translate(-50%, -50%);
   color: #ffffff;
   font-family: 'Impact', 'Arial Black', Arial, sans-serif;
-  font-size: 6.5rem;
+  font-size: 12vw;
   font-weight: 900;
   line-height: 0.8;
   letter-spacing: 0.05em;
@@ -101,6 +104,9 @@
   z-index: 20;
   transform-origin: bottom;
   transform-style: preserve-3d;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 /* Front face - shows OLD number top half */
@@ -114,7 +120,9 @@
   overflow: hidden;
   backface-visibility: hidden;
   z-index: 2;
-  transform: translateZ(0); /* Force GPU acceleration */
+  transform: translateZ(0);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .flip-animation-front .digit {
@@ -124,7 +132,7 @@
   transform: translate(-50%, -50%);
   color: #ffffff;
   font-family: 'Impact', 'Arial Black', Arial, sans-serif;
-  font-size: 6.5rem;
+  font-size: 12vw;
   font-weight: 900;
   line-height: 0.8;
   letter-spacing: 0.05em;
@@ -141,8 +149,10 @@
   background: #2a2a2a;
   overflow: hidden;
   backface-visibility: hidden;
-  transform: rotateX(180deg) translateZ(0); /* Force GPU acceleration */
+  transform: rotateX(180deg) translateZ(0);
   z-index: 2;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .flip-animation-back .digit {
@@ -153,7 +163,7 @@
   transform: translate(-50%, -50%);
   color: #ffffff;
   font-family: 'Impact', 'Arial Black', Arial, sans-serif;
-  font-size: 6.5rem;
+  font-size: 12vw;
   font-weight: 900;
   line-height: 0.8;
   letter-spacing: 0.05em;
@@ -175,7 +185,7 @@
 
 .flip-card.flipping .flip-animation {
   animation: flipDown 0.6s ease-in-out forwards;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 /* Keep the static top visible during animation to show new value */
@@ -186,22 +196,31 @@
 
 /* Mini size for seconds */
 .flip-card.mini .flip-card-inner {
-  width: 50px;
-  height: 40px;
+  width: 4vw;
+  height: 2.4vw;
+  max-width: 70px;
+  max-height: 42px;
+  min-width: 40px;
+  min-height: 24px;
   border-radius: 6px;
+  box-shadow: none;
 }
 
 .flip-card.mini .flip-card-top .digit,
 .flip-card.mini .flip-card-bottom .digit,
 .flip-card.mini .flip-animation-front .digit,
 .flip-card.mini .flip-animation-back .digit {
-  font-size: 1.8rem;
+  font-size: 2.4vw;
   letter-spacing: 0.02em;
   line-height: 0.8;
 }
 
-/* Mini divider line */
+/* Mini divider line - hidden for seconds */
 .flip-card.mini .flip-card-divider {
-  height: 1px;
-  box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.3);
+  display: none;
+}
+
+/* Remove flip animation shadow for mini cards */
+.flip-card.mini.flipping .flip-animation {
+  box-shadow: none;
 }

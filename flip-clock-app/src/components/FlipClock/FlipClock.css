@@ -19,6 +19,6 @@
 .seconds-overlay {
   position: absolute;
   bottom: 8px;
-  right: 8px;
+  right: 0px;
   z-index: 20;
 }
