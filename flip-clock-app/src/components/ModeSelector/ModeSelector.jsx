@@ -1,9 +1,6 @@
-import { useState } from "react";
 import "./ModeSelector.css";
 
-function ModeSelector() {
-  const [selectedMode, setSelectedMode] = useState("Clock");
-
+function ModeSelector({ selectedMode, onModeChange }) {
   return (
     <div className="mode-selector">
       <div className="selector-background">
@@ -12,13 +9,13 @@ function ModeSelector() {
         ></div>
         <button 
           className={`selector-option ${selectedMode === "Clock" ? "active" : ""}`}
-          onClick={() => setSelectedMode("Clock")}
+          onClick={() => onModeChange("Clock")}
         >
           Clock
         </button>
         <button 
           className={`selector-option ${selectedMode === "Timer" ? "active" : ""}`}
-          onClick={() => setSelectedMode("Timer")}
+          onClick={() => onModeChange("Timer")}
         >
           Timer
         </button>
