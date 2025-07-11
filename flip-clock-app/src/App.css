@@ -40,3 +40,10 @@
 .read-the-docs {
   color: #888;
 }
+
+.clock-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
