@@ -1,6 +1,6 @@
 import "./ModeSelector.css";
 
-function ModeSelector({ selectedMode, onModeChange }) {
+function ModeSelector({ selectedMode, onModeChange, isTimerRunning }) {
   return (
     <div className="mode-selector">
       <div className="selector-background">
@@ -18,6 +18,7 @@ function ModeSelector({ selectedMode, onModeChange }) {
           onClick={() => onModeChange("Timer")}
         >
           Timer
+          {isTimerRunning && <span className="timer-indicator"></span>}
         </button>
       </div>
     </div>

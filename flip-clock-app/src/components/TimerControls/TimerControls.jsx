@@ -2,14 +2,12 @@ import { useState } from "react";
 import { FaPlay, FaPause, FaCog } from "react-icons/fa";
 import "./TimerControls.css";
 
-function TimerControls({ mode }) {
-  const [timerState, setTimerState] = useState("stopped"); // stopped, running, paused
-
+function TimerControls({ mode, timerState, onTimerStateChange }) {
   const handlePlayPause = () => {
     if (timerState === "stopped" || timerState === "paused") {
-      setTimerState("running");
+      onTimerStateChange("running");
     } else {
-      setTimerState("paused");
+      onTimerStateChange("paused");
     }
   };
 
