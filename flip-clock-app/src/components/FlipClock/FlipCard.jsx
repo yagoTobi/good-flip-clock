@@ -1,21 +1,33 @@
 import { useState, useEffect } from "react";
+import { FLIP_ANIMATION_MIDPOINT } from "../../constants";
 import "./FlipCard.css";
 
 function FlipCard({ value, prevValue, isFlipping, size = "normal" }) {
-  // Track the displayed bottom value separately
-  const [displayedBottomValue, setDisplayedBottomValue] = useState(value);
+  // Track the displayed bottom value separately - initialize with prevValue to avoid immediate change
+  const [displayedBottomValue, setDisplayedBottomValue] = useState(
+    prevValue || value
+  );
 
   useEffect(() => {
     if (isFlipping) {
-      // When flipping starts, keep showing the old value
-      // Update bottom value at the midpoint of the animation (when card is at 90 degrees)
+      // When flip starts, ensure bottom shows the OLD value (prevValue)
+      setDisplayedBottomValue(prevValue);
+
+      // Then update to NEW value at the 90° point of the animation
       const timer = setTimeout(() => {
         setDisplayedBottomValue(value);
-      }, 300); // FLIP_ANIMATION_MIDPOINT from constants
+      }, FLIP_ANIMATION_MIDPOINT);
 
       return () => clearTimeout(timer);
     } else {
       // When not flipping, immediately show current value
+      setDisplayedBottomValue(value);
+    }
+  }, [isFlipping, prevValue, value]); // Remove 'value' from dependencies to prevent immediate updates
+
+  // Separate effect to handle value changes when NOT flipping
+  useEffect(() => {
+    if (!isFlipping) {
       setDisplayedBottomValue(value);
     }
   }, [value, isFlipping]);

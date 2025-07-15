@@ -22,29 +22,30 @@ export function useTimer() {
     if (timerState !== TIMER_STATES.RUNNING) return;
 
     const timer = setInterval(() => {
-      setTimerTime((currentTime) => {
-        // Store current time as previous BEFORE updating (like ClockDisplay)
-        setPrevTimerTime(currentTime);
+      // Store current time as previous FIRST (like ClockDisplay)
+      setPrevTimerTime(timerTime);
 
-        const { hours, minutes, seconds } = currentTime;
+      // Then calculate and set new time
+      const { hours, minutes, seconds } = timerTime;
 
-        // Calculate new time
-        if (seconds > 0) {
-          return { ...currentTime, seconds: seconds - 1 };
-        } else if (minutes > 0) {
-          return { hours, minutes: minutes - 1, seconds: 59 };
-        } else if (hours > 0) {
-          return { hours: hours - 1, minutes: 59, seconds: 59 };
-        } else {
-          // Timer completed - stop at 00:00
-          setTimerState(TIMER_STATES.STOPPED);
-          return currentTime;
-        }
-      });
+      let newTime;
+      if (seconds > 0) {
+        newTime = { ...timerTime, seconds: seconds - 1 };
+      } else if (minutes > 0) {
+        newTime = { hours, minutes: minutes - 1, seconds: 59 };
+      } else if (hours > 0) {
+        newTime = { hours: hours - 1, minutes: 59, seconds: 59 };
+      } else {
+        // Timer completed - stop at 00:00
+        setTimerState(TIMER_STATES.STOPPED);
+        newTime = timerTime;
+      }
+
+      setTimerTime(newTime);
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timerState]);
+  }, [timerTime, timerState]);
 
   // Control functions - memoized for performance
   const startTimer = useCallback(() => {
