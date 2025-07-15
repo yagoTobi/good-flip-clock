@@ -1,29 +1,33 @@
-import { useState } from "react";
 import { FaPlay, FaPause, FaCog } from "react-icons/fa";
+import { TIMER_STATES, MODES } from "../../constants";
 import "./TimerControls.css";
 
-function TimerControls({ mode, timerState, onTimerStateChange }) {
+function TimerControls({ mode, timer }) {
   const handlePlayPause = () => {
-    if (timerState === "stopped" || timerState === "paused") {
-      onTimerStateChange("running");
+    if (
+      timer.timerState === TIMER_STATES.STOPPED ||
+      timer.timerState === TIMER_STATES.PAUSED
+    ) {
+      timer.startTimer();
     } else {
-      onTimerStateChange("paused");
+      timer.pauseTimer();
     }
   };
 
   const handleSettings = () => {
     console.log("Settings clicked");
+    // TODO: Implement timer settings modal
   };
 
-  if (mode !== "Timer") return null;
+  if (mode !== MODES.TIMER) return null;
 
   return (
     <div className="timer-controls">
       <button
-        className={`control-button play-button ${timerState}`}
+        className={`control-button play-button ${timer.timerState}`}
         onClick={handlePlayPause}
       >
-        {timerState === "running" ? <FaPause /> : <FaPlay />}
+        {timer.isRunning ? <FaPause /> : <FaPlay />}
       </button>
 
       <button

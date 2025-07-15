@@ -1,56 +1,79 @@
 import { useState, useEffect } from "react";
 import FlipCardGrid from "./FlipCardGrid";
 import FlipCard from "../FlipCard";
+import { FLIP_STATE_CLEAR_DELAY } from "../../../constants";
 
-function TimerDisplay({ timerState, timerHours, timerMinutes, timerSeconds, onTimerComplete, onTimerUpdate }) {
-  const [prevHours, setPrevHours] = useState(timerHours);
-  const [prevMinutes, setPrevMinutes] = useState(timerMinutes);
-  const [prevSeconds, setPrevSeconds] = useState(timerSeconds);
+function TimerDisplay({ timer }) {
   const [flippingUnits, setFlippingUnits] = useState({});
 
-  // Update previous values and flip animations when timer values change
+  // Handle flip animations when timer values change
   useEffect(() => {
-    if (timerHours !== prevHours || timerMinutes !== prevMinutes || timerSeconds !== prevSeconds) {
-      setPrevHours(timerHours);
-      setPrevMinutes(timerMinutes);
-      setPrevSeconds(timerSeconds);
-      
-      // Determine which units are flipping
+    if (!timer) return;
+
+    const { hours, minutes, seconds, prevHours, prevMinutes, prevSeconds } =
+      timer;
+    if (
+      hours !== prevHours ||
+      minutes !== prevMinutes ||
+      seconds !== prevSeconds
+    ) {
       const flipping = {
-        left: timerHours !== prevHours || timerMinutes !== prevMinutes,
-        right: timerSeconds !== prevSeconds
+        left: hours !== prevHours || minutes !== prevMinutes,
+        right: seconds !== prevSeconds,
       };
-      
+
       setFlippingUnits(flipping);
-      
+
       setTimeout(() => {
         setFlippingUnits({});
-      }, 650);
+      }, FLIP_STATE_CLEAR_DELAY);
     }
-  }, [timerHours, timerMinutes, timerSeconds, prevHours, prevMinutes, prevSeconds]);
+  }, [timer]);
 
-  const hasHours = timerHours > 0;
-  
+  if (!timer) return null;
+
+  const {
+    hours,
+    minutes,
+    seconds,
+    prevHours,
+    prevMinutes,
+    prevSeconds,
+    hasHours,
+  } = timer;
+
   if (hasHours) {
     // HH:MM:SS format
-    const displayHours = timerHours.toString().padStart(2, "0");
-    const displayMinutes = timerMinutes.toString().padStart(2, "0");
-    const displaySeconds = timerSeconds.toString().padStart(2, "0");
+    const displayHours = hours.toString().padStart(2, "0");
+    const displayMinutes = minutes.toString().padStart(2, "0");
+    const displaySeconds = seconds.toString().padStart(2, "0");
     const prevDisplayHours = prevHours.toString().padStart(2, "0");
     const prevDisplayMinutes = prevMinutes.toString().padStart(2, "0");
     const prevDisplaySeconds = prevSeconds.toString().padStart(2, "0");
 
     return (
       <div className="time-display">
-        <FlipCard value={displayHours} prevValue={prevDisplayHours} isFlipping={flippingUnits.left} />
-        <FlipCard value={displayMinutes} prevValue={prevDisplayMinutes} isFlipping={flippingUnits.left || flippingUnits.right} />
-        <FlipCard value={displaySeconds} prevValue={prevDisplaySeconds} isFlipping={flippingUnits.right} />
+        <FlipCard
+          value={displayHours}
+          prevValue={prevDisplayHours}
+          isFlipping={flippingUnits.left}
+        />
+        <FlipCard
+          value={displayMinutes}
+          prevValue={prevDisplayMinutes}
+          isFlipping={flippingUnits.left || flippingUnits.right}
+        />
+        <FlipCard
+          value={displaySeconds}
+          prevValue={prevDisplaySeconds}
+          isFlipping={flippingUnits.right}
+        />
       </div>
     );
   } else {
     // MM:SS format
-    const displayMinutes = timerMinutes.toString().padStart(2, "0");
-    const displaySeconds = timerSeconds.toString().padStart(2, "0");
+    const displayMinutes = minutes.toString().padStart(2, "0");
+    const displaySeconds = seconds.toString().padStart(2, "0");
     const prevDisplayMinutes = prevMinutes.toString().padStart(2, "0");
     const prevDisplaySeconds = prevSeconds.toString().padStart(2, "0");
 

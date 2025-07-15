@@ -8,10 +8,10 @@ function FlipCard({ value, prevValue, isFlipping, size = "normal" }) {
   useEffect(() => {
     if (isFlipping) {
       // When flipping starts, keep showing the old value
-      // Wait for animation to complete before updating
+      // Update bottom value at the midpoint of the animation (when card is at 90 degrees)
       const timer = setTimeout(() => {
         setDisplayedBottomValue(value);
-      }, 600); // Match the animation duration
+      }, 300); // FLIP_ANIMATION_MIDPOINT from constants
 
       return () => clearTimeout(timer);
     } else {
