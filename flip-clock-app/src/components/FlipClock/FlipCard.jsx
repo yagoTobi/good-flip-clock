@@ -23,14 +23,7 @@ function FlipCard({ value, prevValue, isFlipping, size = "normal" }) {
       // When not flipping, immediately show current value
       setDisplayedBottomValue(value);
     }
-  }, [isFlipping, prevValue, value]); // Remove 'value' from dependencies to prevent immediate updates
-
-  // Separate effect to handle value changes when NOT flipping
-  useEffect(() => {
-    if (!isFlipping) {
-      setDisplayedBottomValue(value);
-    }
-  }, [value, isFlipping]);
+  }, [isFlipping, prevValue, value]); // Only depend on isFlipping to prevent race conditions
 
   return (
     <div className={`flip-card ${size} ${isFlipping ? "flipping" : ""}`}>

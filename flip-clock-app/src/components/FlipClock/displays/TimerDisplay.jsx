@@ -10,8 +10,20 @@ function TimerDisplay({ timer }) {
   useEffect(() => {
     if (!timer) return;
 
-    const { hours, minutes, seconds, prevHours, prevMinutes, prevSeconds } =
-      timer;
+    const {
+      hours,
+      minutes,
+      seconds,
+      prevHours,
+      prevMinutes,
+      prevSeconds,
+      isRunning,
+    } = timer;
+
+    // Only trigger flip animations when timer is actually running
+    // This prevents unwanted animations when switching modes or on first mount
+    if (!isRunning) return;
+
     if (
       hours !== prevHours ||
       minutes !== prevMinutes ||
