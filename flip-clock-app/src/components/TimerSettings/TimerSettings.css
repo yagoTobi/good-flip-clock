@@ -1,0 +1,121 @@
+.timer-settings-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.timer-settings-modal {
+  background: #2a2a2a;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  border: 1px solid #3a3a3a;
+  min-width: 400px;
+  max-width: 90vw;
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.timer-settings-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.timer-settings-header h2 {
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.timer-settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+}
+
+.time-inputs {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.time-separator {
+  color: #ffffff;
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: 'Impact', 'Arial Black', Arial, sans-serif;
+  margin: 0 0.5rem;
+}
+
+.timer-preview {
+  color: #ffffff;
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: 'Impact', 'Arial Black', Arial, sans-serif;
+  background: #1a1a1a;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  border: 2px solid #3a3a3a;
+  letter-spacing: 0.1em;
+}
+
+.timer-settings-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.settings-button {
+  padding: 0.75rem 2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 100px;
+}
+
+.cancel-button {
+  background: #3a3a3a;
+  color: #ffffff;
+}
+
+.cancel-button:hover {
+  background: #4a4a4a;
+}
+
+.save-button {
+  background: #646cff;
+  color: #ffffff;
+}
+
+.save-button:hover {
+  background: #535bf2;
+  transform: translateY(-1px);
+}
+
+.settings-button:active {
+  transform: translateY(0);
+}

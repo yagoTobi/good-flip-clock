@@ -16,6 +16,7 @@ export function useTimer() {
   const [timerState, setTimerState] = useState(TIMER_STATES.STOPPED);
   const [timerTime, setTimerTime] = useState(DEFAULT_TIME);
   const [prevTimerTime, setPrevTimerTime] = useState(DEFAULT_TIME);
+  const [originalTimerTime, setOriginalTimerTime] = useState(DEFAULT_TIME); // Remember original time
 
   // Timer countdown logic - runs continuously when active
   useEffect(() => {
@@ -71,6 +72,11 @@ export function useTimer() {
     setPrevTimerTime(DEFAULT_TIME);
   }, []);
 
+  const stopTimer = useCallback(() => {
+    setTimerState(TIMER_STATES.STOPPED);
+    // Keep current time values, just stop the countdown
+  }, []);
+
   const setTimerTimeValues = useCallback((newHours, newMinutes, newSeconds) => {
     const newTime = {
       hours: newHours,
@@ -79,7 +85,14 @@ export function useTimer() {
     };
     setTimerTime(newTime);
     setPrevTimerTime(newTime);
+    setOriginalTimerTime(newTime); // Remember this as the original time
   }, []);
+
+  const revertToOriginalTime = useCallback(() => {
+    setTimerState(TIMER_STATES.STOPPED);
+    setTimerTime(originalTimerTime);
+    setPrevTimerTime(originalTimerTime);
+  }, [originalTimerTime]);
 
   return {
     // State
@@ -95,12 +108,14 @@ export function useTimer() {
     isRunning: timerState === TIMER_STATES.RUNNING,
     isPaused: timerState === TIMER_STATES.PAUSED,
     isStopped: timerState === TIMER_STATES.STOPPED,
-    hasHours: timerTime.hours > 0,
+    hasHours: originalTimerTime.hours > 0, // Base format on original time, not current
 
     // Controls
     startTimer,
     pauseTimer,
+    stopTimer,
     resetTimer,
+    revertToOriginalTime,
     setTimerTime: setTimerTimeValues,
   };
 }
