@@ -10,6 +10,18 @@
   padding: 4px 0; /* Add padding to prevent clipping on hover */
 }
 
+/* More specific selector for settings button */
+.timer-controls .settings-button {
+  width: 60px !important;
+  height: 60px !important;
+  padding: 0 !important;
+  min-width: 60px !important;
+  max-width: 60px !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
+  background: #2a2a2a !important; /* Match play button color */
+}
+
 .play-stop-container {
   display: flex;
   flex-direction: row;
@@ -17,7 +29,7 @@
   position: relative;
   width: 130px; /* Fixed width to prevent layout shifts */
   height: 60px;
-  justify-content: center; /* Center the play button when stop button is hidden */
+  justify-content: center; /* Center the play button to align with settings button */
 }
 
 .control-button {
@@ -32,6 +44,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0; /* Override global button padding */
+  box-sizing: border-box; /* Ensure padding doesn't affect dimensions */
 }
 
 .control-button:hover {
@@ -53,7 +67,7 @@
   background: #dc2626;
   animation: slideInRight 0.3s ease-out;
   position: absolute;
-  right: 0;
+  right: -35px; /* Move much further right for bigger gap */
   z-index: 1; /* Behind play button */
 }
 
@@ -70,7 +84,7 @@
 @keyframes slideInRight {
   from {
     opacity: 0;
-    transform: translateX(-65px);
+    transform: translateX(-35px); /* Start from centered play button position */
   }
   to {
     opacity: 1;
@@ -85,7 +99,9 @@
   }
   to {
     opacity: 0;
-    transform: translateX(-65px);
+    transform: translateX(
+      -35px
+    ); /* Exit back to centered play button position */
   }
 }
 
@@ -93,21 +109,11 @@
   animation: slideOutLeft 0.3s ease-in forwards;
 }
 
-.timer-controls .control-button.settings-button {
-  width: 60px !important; /* Maximum specificity to override any other rules */
-  height: 60px !important;
-  min-width: 60px !important;
-  max-width: 60px !important;
-  min-height: 60px !important;
-  max-height: 60px !important;
-  flex: none !important; /* Prevent flex from changing dimensions */
-  display: flex !important; /* Ensure flex display for icon centering */
-  align-items: center !important;
-  justify-content: center !important;
+.timer-controls .settings-button:hover {
+  background: #5a5a5a;
 }
 
-.timer-controls .control-button.settings-button svg {
-  width: 22px !important;
-  height: 22px !important;
-  display: block !important; /* Ensure icon is visible */
+.timer-controls .settings-button svg {
+  width: 22px;
+  height: 22px;
 }
