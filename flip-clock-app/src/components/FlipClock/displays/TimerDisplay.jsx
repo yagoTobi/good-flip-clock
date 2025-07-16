@@ -18,11 +18,11 @@ function TimerDisplay({ timer }) {
       prevMinutes,
       prevSeconds,
       isRunning,
+      isReverting,
     } = timer;
 
-    // Only trigger flip animations when timer is actually running
-    // This prevents unwanted animations when switching modes or on first mount
-    if (!isRunning) return;
+    // Trigger flip animations when timer is running OR when reverting to original time
+    if (!isRunning && !isReverting) return;
 
     if (
       hours !== prevHours ||
@@ -73,7 +73,7 @@ function TimerDisplay({ timer }) {
         <FlipCard
           value={displayMinutes}
           prevValue={prevDisplayMinutes}
-          isFlipping={flippingUnits.left || flippingUnits.right}
+          isFlipping={flippingUnits.left}
         />
         <FlipCard
           value={displaySeconds}
