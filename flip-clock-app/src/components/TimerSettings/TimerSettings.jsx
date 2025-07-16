@@ -87,7 +87,7 @@ function TimerSettings({ isOpen, onClose, onSave, currentTimer }) {
             Cancel
           </button>
           <button className="settings-button save-button" onClick={handleSave}>
-            Save
+            Set Timer
           </button>
         </div>
       </div>
