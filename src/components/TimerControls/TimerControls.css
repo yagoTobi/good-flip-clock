@@ -61,6 +61,49 @@
 .play-button svg {
   width: 24px;
   height: 24px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+/* Play to Pause transition */
+.play-button.running svg {
+  animation: playToPause 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Pause to Play transition */
+.play-button.paused svg,
+.play-button.stopped svg {
+  animation: pauseToPlay 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes playToPause {
+  0% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.8) rotate(90deg);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes pauseToPlay {
+  0% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.8) rotate(-90deg);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
 }
 
 .stop-button {

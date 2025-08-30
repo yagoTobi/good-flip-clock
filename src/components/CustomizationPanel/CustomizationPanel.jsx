@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import BackgroundSelector from "../BackgroundSelector/BackgroundSelector";
+import FontSelector from "../FontSelector/FontSelector";
+import ClockPreview from "../ClockPreview/ClockPreview";
 import "./CustomizationPanel.css";
 
 const CustomizationPanel = ({ isOpen, onClose }) => {
@@ -34,9 +36,8 @@ const CustomizationPanel = ({ isOpen, onClose }) => {
           <button
             className={`tab-button ${activeTab === "fonts" ? "active" : ""}`}
             onClick={() => setActiveTab("fonts")}
-            disabled
           >
-            Fonts (Coming Soon)
+            Fonts
           </button>
           <button
             className={`tab-button ${activeTab === "colors" ? "active" : ""}`}
@@ -48,21 +49,28 @@ const CustomizationPanel = ({ isOpen, onClose }) => {
         </div>
 
         <div className="panel-content">
-          {activeTab === "background" && (
-            <div className="tab-content">
-              <BackgroundSelector />
+          <div className="content-layout">
+            <div className="options-section">
+              {activeTab === "background" && (
+                <div className="tab-content">
+                  <BackgroundSelector />
+                </div>
+              )}
+              {activeTab === "fonts" && (
+                <div className="tab-content">
+                  <FontSelector />
+                </div>
+              )}
+              {activeTab === "colors" && (
+                <div className="tab-content">
+                  <p>Color customization coming soon!</p>
+                </div>
+              )}
             </div>
-          )}
-          {activeTab === "fonts" && (
-            <div className="tab-content">
-              <p>Font customization coming soon!</p>
+            <div className="preview-section">
+              <ClockPreview />
             </div>
-          )}
-          {activeTab === "colors" && (
-            <div className="tab-content">
-              <p>Color customization coming soon!</p>
-            </div>
-          )}
+          </div>
         </div>
 
         <div className="panel-actions">

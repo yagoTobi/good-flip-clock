@@ -18,7 +18,7 @@
   border-radius: 16px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   width: 100%;
-  max-width: 600px;
+  max-width: 900px;
   max-height: 80vh;
   overflow: hidden;
   display: flex;
@@ -100,6 +100,23 @@
   padding: 2rem;
 }
 
+.content-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 2rem;
+  height: 100%;
+}
+
+.options-section {
+  min-width: 0; /* Prevents grid overflow */
+}
+
+.preview-section {
+  position: sticky;
+  top: 0;
+  height: fit-content;
+}
+
 .tab-content {
   animation: fadeIn 0.2s ease;
 }
@@ -173,6 +190,7 @@
 
   .customization-panel {
     max-height: 90vh;
+    max-width: 600px;
   }
 
   .panel-header {
@@ -194,5 +212,14 @@
 
   .panel-actions {
     padding: 1rem 1.5rem;
+  }
+
+  .content-layout {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .preview-section {
+    order: -1; /* Show preview at top on mobile */
   }
 }

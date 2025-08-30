@@ -21,8 +21,7 @@
   min-height: 135px;
   background: #1a1a1a;
   border-radius: 12px;
-  box-shadow: 
-    0 6px 12px rgba(0, 0, 0, 0.4),
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   overflow: hidden;
 }
@@ -71,7 +70,13 @@
   left: 50%;
   transform: translate(-50%, -50%) translateZ(0);
   color: #ffffff;
-  font-family: 'Impact', 'Arial Black', Arial, sans-serif;
+  font-family: var(
+    --clock-font-family,
+    "Impact",
+    "Arial Black",
+    Arial,
+    sans-serif
+  );
   font-size: 12vw;
   font-weight: 900;
   line-height: 0.8;
@@ -89,7 +94,13 @@
   left: 50%;
   transform: translate(-50%, -50%) translateZ(0);
   color: #ffffff;
-  font-family: 'Impact', 'Arial Black', Arial, sans-serif;
+  font-family: var(
+    --clock-font-family,
+    "Impact",
+    "Arial Black",
+    Arial,
+    sans-serif
+  );
   font-size: 12vw;
   font-weight: 900;
   line-height: 0.8;
@@ -137,7 +148,13 @@
   left: 50%;
   transform: translate(-50%, -50%) translateZ(0);
   color: #ffffff;
-  font-family: 'Impact', 'Arial Black', Arial, sans-serif;
+  font-family: var(
+    --clock-font-family,
+    "Impact",
+    "Arial Black",
+    Arial,
+    sans-serif
+  );
   font-size: 12vw;
   font-weight: 900;
   line-height: 0.8;
@@ -171,7 +188,13 @@
   left: 50%;
   transform: translate(-50%, -50%) translateZ(0);
   color: #ffffff;
-  font-family: 'Impact', 'Arial Black', Arial, sans-serif;
+  font-family: var(
+    --clock-font-family,
+    "Impact",
+    "Arial Black",
+    Arial,
+    sans-serif
+  );
   font-size: 12vw;
   font-weight: 900;
   line-height: 0.8;

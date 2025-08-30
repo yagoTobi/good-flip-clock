@@ -23,7 +23,7 @@
     - Add save and cancel buttons
     - _Requirements: 4.2, 4.3, 4.5, 4.6_
 
-- [ ] 3. Implement background customization
+- [x] 3. Implement background customization
 
   - [x] 3.1 Create BackgroundSelector component
 
@@ -38,7 +38,7 @@
     - Test with different background options
     - _Requirements: 1.3_
 
-- [-] 4. Implement font customization
+- [ ] 4. Implement font customization
 
   - [x] 4.1 Create FontSelector component
 
@@ -47,7 +47,7 @@
     - Connect to ThemeContext
     - _Requirements: 2.1, 2.2, 2.4_
 
-  - [ ] 4.2 Apply font styling to application
+  - [x] 4.2 Apply font styling to application
     - Create mechanism to apply selected font
     - Ensure text remains readable with all fonts
     - Test with different font options

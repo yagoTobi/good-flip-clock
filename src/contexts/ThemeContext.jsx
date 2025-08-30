@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect, useContext } from "react";
+import { useFont } from "../hooks/useFont";
 
 export const ThemeContext = createContext();
 
@@ -14,6 +15,9 @@ export const ThemeProvider = ({ children }) => {
   const [font, setFont] = useState(DEFAULT_THEME.font);
   const [clockColor, setClockColor] = useState(DEFAULT_THEME.clockColor);
   const [panelColor, setPanelColor] = useState(DEFAULT_THEME.panelColor);
+
+  // Apply font styling when font changes
+  useFont(font);
 
   // Load saved settings on mount
   useEffect(() => {

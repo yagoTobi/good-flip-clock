@@ -1,0 +1,74 @@
+.font-selector {
+  margin-bottom: 2rem;
+}
+
+.font-selector h3 {
+  margin: 0 0 1rem 0;
+  color: var(--text-color, #333);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.font-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.font-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-color, #333);
+  min-height: 80px;
+  justify-content: center;
+}
+
+.font-option:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.font-option.selected {
+  border-color: #646cff;
+  background: rgba(100, 108, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(100, 108, 255, 0.3);
+}
+
+.font-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  opacity: 0.9;
+}
+
+.font-sample {
+  font-size: 1.5rem;
+  font-weight: 600;
+  opacity: 1;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .font-options {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.5rem;
+  }
+
+  .font-option {
+    padding: 0.75rem;
+    min-height: 70px;
+  }
+
+  .font-sample {
+    font-size: 1.2rem;
+  }
+}

@@ -1,12 +1,14 @@
 body {
   transition: background 0.3s ease;
+  overflow: hidden;
 }
 
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0;
   text-align: center;
+  height: 100vh;
 }
 
 .logo {
@@ -46,7 +48,9 @@ body {
 }
 
 .app {
-  min-height: 100vh;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .app.dark-bg {
@@ -60,14 +64,15 @@ body {
 }
 
 .app-header {
-  padding: 1rem 0;
+  padding: 0.5rem 0;
+  flex-shrink: 0;
 }
 
 .app-header h1 {
   color: var(--text-color, #ffffff);
   text-shadow: var(--text-shadow, 0 2px 4px rgba(0, 0, 0, 0.3));
   margin: 0;
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 700;
 }
 
@@ -75,8 +80,11 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2rem;
-  padding: 2rem 0;
+  justify-content: center;
+  gap: 1rem;
+  flex: 1;
+  padding: 0 1rem;
+  min-height: 0;
 }
 
 .clock-container {
@@ -86,7 +94,8 @@ body {
   justify-content: center;
   background: rgba(0, 0, 0, 0.1);
   border-radius: 20px;
-  padding: 2rem;
+  padding: 1.5rem;
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
 }

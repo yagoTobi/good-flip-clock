@@ -2,13 +2,21 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 3rem;
+  padding: 2rem;
+  /* Fixed height to prevent layout shifts between modes */
+  min-height: calc(20vw + 4rem);
+  max-height: calc(350px + 4rem);
 }
 
 .time-display {
   display: flex;
   align-items: center;
   gap: 1.5rem;
+  /* Ensure consistent height for both 2-card and 3-card layouts */
+  min-height: 20vw;
+  max-height: 350px;
+  /* Smooth width transition when switching between 2 and 3 cards */
+  transition: width 0.4s ease-in-out;
 }
 
 .minutes-group {
