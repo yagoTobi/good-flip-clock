@@ -28,22 +28,46 @@
 
 .background-options {
   display: grid;
+  gap: 0.5rem;
+}
+
+/* Special grid for colors - more compact */
+.background-category:has(.background-option:first-child[title*="Default"])
+  .background-options,
+.background-category:has(.background-option:first-child[title*="White"])
+  .background-options {
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+}
+
+/* Regular grid for gradients and images */
+.background-category:not(
+    :has(.background-option:first-child[title*="Default"])
+  ):not(:has(.background-option:first-child[title*="White"]))
+  .background-options {
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 0.75rem;
 }
 
 .background-option {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem;
+  gap: 0.25rem;
+  padding: 0.5rem;
   border: 2px solid transparent;
   border-radius: 8px;
   background: var(--panel-bg, #fff);
   cursor: pointer;
   transition: all 0.2s ease;
-  min-height: 80px;
+  min-height: 70px;
+}
+
+/* Compact style for color swatches */
+.background-category:has(.background-option:first-child[title*="Default"])
+  .background-option,
+.background-category:has(.background-option:first-child[title*="White"])
+  .background-option {
+  min-height: 60px;
+  padding: 0.4rem;
 }
 
 .background-option:hover {
@@ -63,6 +87,15 @@
   border-radius: 6px;
   border: 1px solid rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
+}
+
+/* Smaller thumbnails for color swatches */
+.background-category:has(.background-option:first-child[title*="Default"])
+  .background-thumbnail,
+.background-category:has(.background-option:first-child[title*="White"])
+  .background-thumbnail {
+  width: 32px;
+  height: 32px;
 }
 
 .background-name {

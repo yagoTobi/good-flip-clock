@@ -1,0 +1,17 @@
+.color-selector {
+  margin-bottom: 1.5rem;
+}
+
+.color-selector h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-color, #333);
+}
+
+.color-description {
+  margin: 0 0 2rem 0;
+  font-size: 0.9rem;
+  color: var(--text-muted, #666);
+  line-height: 1.4;
+}

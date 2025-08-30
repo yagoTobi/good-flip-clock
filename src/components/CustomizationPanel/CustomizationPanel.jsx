@@ -2,6 +2,7 @@ import { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import BackgroundSelector from "../BackgroundSelector/BackgroundSelector";
 import FontSelector from "../FontSelector/FontSelector";
+import ColorSelector from "../ColorSelector/ColorSelector";
 import ClockPreview from "../ClockPreview/ClockPreview";
 import "./CustomizationPanel.css";
 
@@ -42,9 +43,8 @@ const CustomizationPanel = ({ isOpen, onClose }) => {
           <button
             className={`tab-button ${activeTab === "colors" ? "active" : ""}`}
             onClick={() => setActiveTab("colors")}
-            disabled
           >
-            Colors (Coming Soon)
+            Colors
           </button>
         </div>
 
@@ -63,7 +63,7 @@ const CustomizationPanel = ({ isOpen, onClose }) => {
               )}
               {activeTab === "colors" && (
                 <div className="tab-content">
-                  <p>Color customization coming soon!</p>
+                  <ColorSelector />
                 </div>
               )}
             </div>

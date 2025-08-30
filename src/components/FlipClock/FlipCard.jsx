@@ -1,12 +1,21 @@
 import { useState, useEffect } from "react";
+import { useTheme } from "../../contexts/ThemeContext";
 import { FLIP_ANIMATION_MIDPOINT } from "../../constants";
 import "./FlipCard.css";
 
 function FlipCard({ value, prevValue, isFlipping, size = "normal" }) {
+  const { clockColor, panelColor } = useTheme();
+
   // Track the displayed bottom value separately - initialize with prevValue to avoid immediate change
   const [displayedBottomValue, setDisplayedBottomValue] = useState(
     prevValue || value
   );
+
+  // Create style object for theme colors
+  const cardStyle = {
+    color: clockColor,
+    backgroundColor: panelColor,
+  };
 
   useEffect(() => {
     if (isFlipping) {
@@ -27,15 +36,19 @@ function FlipCard({ value, prevValue, isFlipping, size = "normal" }) {
 
   return (
     <div className={`flip-card ${size} ${isFlipping ? "flipping" : ""}`}>
-      <div className="flip-card-inner">
+      <div className="flip-card-inner" style={cardStyle}>
         {/* Top half - always shows NEW value (gets revealed during flip) */}
         <div className="flip-card-top">
-          <span className="digit">{value}</span>
+          <span className="digit" style={{ color: clockColor }}>
+            {value}
+          </span>
         </div>
 
         {/* Bottom half - shows OLD value until animation completes */}
         <div className="flip-card-bottom">
-          <span className="digit">{displayedBottomValue}</span>
+          <span className="digit" style={{ color: clockColor }}>
+            {displayedBottomValue}
+          </span>
         </div>
 
         {/* Central divider line */}
@@ -45,13 +58,17 @@ function FlipCard({ value, prevValue, isFlipping, size = "normal" }) {
         {isFlipping && (
           <div className="flip-animation">
             {/* Front face - shows OLD number's top half */}
-            <div className="flip-animation-front">
-              <span className="digit">{prevValue}</span>
+            <div className="flip-animation-front" style={cardStyle}>
+              <span className="digit" style={{ color: clockColor }}>
+                {prevValue}
+              </span>
             </div>
 
             {/* Back face - shows NEW number's bottom half */}
-            <div className="flip-animation-back">
-              <span className="digit">{value}</span>
+            <div className="flip-animation-back" style={cardStyle}>
+              <span className="digit" style={{ color: clockColor }}>
+                {value}
+              </span>
             </div>
           </div>
         )}

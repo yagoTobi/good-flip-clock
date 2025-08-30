@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useTheme } from "../../contexts/ThemeContext";
 import { getFontValue } from "../../utils/fontUtils";
+import { getContrastingPanelColor } from "../../utils/colorUtils";
 import "./ClockPreview.css";
 
 const ClockPreview = () => {
-  const { background, font, clockColor } = useTheme();
+  const { background, font, clockColor, panelColor } = useTheme();
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -42,12 +43,12 @@ const ClockPreview = () => {
     return "#1a1a1a";
   };
 
-  // Get proper flip clock colors (flip cards are always dark with white text by default)
+  // Get card style using theme colors - use actual user-selected panelColor
   const getCardStyle = () => {
     return {
       fontFamily,
-      color: "#ffffff", // Flip cards always have white text
-      backgroundColor: "#2a2a2a", // Flip cards always have dark background
+      color: clockColor,
+      backgroundColor: panelColor,
     };
   };
 

@@ -2,16 +2,14 @@ import { useTheme } from "../../contexts/ThemeContext";
 import "./BackgroundSelector.css";
 
 const BACKGROUND_OPTIONS = [
-  // Default
+  // Solid Colors
   {
     id: "default",
     name: "Default",
     value: "default",
     thumbnail: "#1a1a1a",
-    category: "basic",
+    category: "colors",
   },
-
-  // Solid Colors
   {
     id: "dark",
     name: "Dark",
@@ -27,6 +25,83 @@ const BACKGROUND_OPTIONS = [
     category: "colors",
   },
   {
+    id: "white",
+    name: "White",
+    value: "#ffffff",
+    thumbnail: "#ffffff",
+    category: "colors",
+  },
+  {
+    id: "red",
+    name: "Red",
+    value: "#dc2626",
+    thumbnail: "#dc2626",
+    category: "colors",
+  },
+  {
+    id: "orange",
+    name: "Orange",
+    value: "#ea580c",
+    thumbnail: "#ea580c",
+    category: "colors",
+  },
+  {
+    id: "yellow",
+    name: "Yellow",
+    value: "#ca8a04",
+    thumbnail: "#ca8a04",
+    category: "colors",
+  },
+  {
+    id: "green",
+    name: "Green",
+    value: "#16a34a",
+    thumbnail: "#16a34a",
+    category: "colors",
+  },
+  {
+    id: "blue",
+    name: "Blue",
+    value: "#2563eb",
+    thumbnail: "#2563eb",
+    category: "colors",
+  },
+  {
+    id: "indigo",
+    name: "Indigo",
+    value: "#4f46e5",
+    thumbnail: "#4f46e5",
+    category: "colors",
+  },
+  {
+    id: "purple",
+    name: "Purple",
+    value: "#9333ea",
+    thumbnail: "#9333ea",
+    category: "colors",
+  },
+  {
+    id: "pink",
+    name: "Pink",
+    value: "#ec4899",
+    thumbnail: "#ec4899",
+    category: "colors",
+  },
+  {
+    id: "teal",
+    name: "Teal",
+    value: "#0d9488",
+    thumbnail: "#0d9488",
+    category: "colors",
+  },
+  {
+    id: "cyan",
+    name: "Cyan",
+    value: "#0891b2",
+    thumbnail: "#0891b2",
+    category: "colors",
+  },
+  {
     id: "navy",
     name: "Navy",
     value: "#1e3a8a",
@@ -38,20 +113,6 @@ const BACKGROUND_OPTIONS = [
     name: "Forest",
     value: "#166534",
     thumbnail: "#166534",
-    category: "colors",
-  },
-  {
-    id: "burgundy",
-    name: "Burgundy",
-    value: "#7c2d12",
-    thumbnail: "#7c2d12",
-    category: "colors",
-  },
-  {
-    id: "purple",
-    name: "Purple",
-    value: "#6b21a8",
-    thumbnail: "#6b21a8",
     category: "colors",
   },
 
@@ -175,7 +236,6 @@ const BackgroundSelector = () => {
   }, {});
 
   const categoryTitles = {
-    basic: "Basic",
     colors: "Solid Colors",
     gradients: "Gradients",
     images: "Images",
