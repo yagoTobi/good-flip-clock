@@ -71,12 +71,6 @@ function TimerSettings({ isOpen, onClose, onSave, currentTimer }) {
               onChange={setSeconds}
             />
           </div>
-
-          <div className="timer-preview">
-            {hours.toString().padStart(2, "0")}:
-            {minutes.toString().padStart(2, "0")}:
-            {seconds.toString().padStart(2, "0")}
-          </div>
         </div>
 
         <div className="timer-settings-actions">

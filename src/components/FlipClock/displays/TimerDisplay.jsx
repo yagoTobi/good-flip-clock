@@ -54,14 +54,17 @@ function TimerDisplay({ timer }) {
     hasHours,
   } = timer;
 
+  // Helper function to format time values
+  const formatTime = (value) => value.toString().padStart(2, "0");
+
   if (hasHours) {
     // HH:MM:SS format
-    const displayHours = hours.toString().padStart(2, "0");
-    const displayMinutes = minutes.toString().padStart(2, "0");
-    const displaySeconds = seconds.toString().padStart(2, "0");
-    const prevDisplayHours = prevHours.toString().padStart(2, "0");
-    const prevDisplayMinutes = prevMinutes.toString().padStart(2, "0");
-    const prevDisplaySeconds = prevSeconds.toString().padStart(2, "0");
+    const displayHours = formatTime(hours);
+    const displayMinutes = formatTime(minutes);
+    const displaySeconds = formatTime(seconds);
+    const prevDisplayHours = formatTime(prevHours);
+    const prevDisplayMinutes = formatTime(prevMinutes);
+    const prevDisplaySeconds = formatTime(prevSeconds);
 
     return (
       <div className="time-display">

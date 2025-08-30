@@ -5,11 +5,12 @@
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  backdrop-filter: blur(4px);
+  padding: 1rem;
 }
 
 .timer-settings-modal {
@@ -36,7 +37,7 @@
 
 .timer-settings-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .timer-settings-header h2 {
@@ -49,8 +50,8 @@
 .timer-settings-content {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
   align-items: center;
+  margin-bottom: 1rem;
 }
 
 .time-inputs {
@@ -63,20 +64,8 @@
   color: #ffffff;
   font-size: 2rem;
   font-weight: 700;
-  font-family: 'Impact', 'Arial Black', Arial, sans-serif;
+  font-family: "Impact", "Arial Black", Arial, sans-serif;
   margin: 0 0.5rem;
-}
-
-.timer-preview {
-  color: #ffffff;
-  font-size: 2rem;
-  font-weight: 700;
-  font-family: 'Impact', 'Arial Black', Arial, sans-serif;
-  background: #1a1a1a;
-  padding: 1rem 2rem;
-  border-radius: 12px;
-  border: 2px solid #3a3a3a;
-  letter-spacing: 0.1em;
 }
 
 .timer-settings-actions {
@@ -107,12 +96,12 @@
 }
 
 .save-button {
-  background: #646cff;
+  background: #22c55e;
   color: #ffffff;
 }
 
 .save-button:hover {
-  background: #535bf2;
+  background: #16a34a;
   transform: translateY(-1px);
 }
 

@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
 import { FaPlay, FaPause, FaStop, FaCog } from "react-icons/fa";
 import { TIMER_STATES, MODES } from "../../constants";
-import TimerSettings from "../TimerSettings/TimerSettings";
 import "./TimerControls.css";
 
-function TimerControls({ mode, timer }) {
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+function TimerControls({ mode, timer, onSettingsClick }) {
   const [showStopButton, setShowStopButton] = useState(false);
   const [isStopButtonExiting, setIsStopButtonExiting] = useState(false);
 
@@ -50,15 +48,7 @@ function TimerControls({ mode, timer }) {
   };
 
   const handleSettings = () => {
-    setIsSettingsOpen(true);
-  };
-
-  const handleSettingsClose = () => {
-    setIsSettingsOpen(false);
-  };
-
-  const handleSettingsSave = (hours, minutes, seconds) => {
-    timer.setTimerTime(hours, minutes, seconds);
+    onSettingsClick();
   };
 
   if (mode !== MODES.TIMER) return null;
@@ -96,14 +86,6 @@ function TimerControls({ mode, timer }) {
           <FaCog />
         </button>
       </div>
-
-      {/* Timer Settings Modal */}
-      <TimerSettings
-        isOpen={isSettingsOpen}
-        onClose={handleSettingsClose}
-        onSave={handleSettingsSave}
-        currentTimer={timer}
-      />
     </>
   );
 }

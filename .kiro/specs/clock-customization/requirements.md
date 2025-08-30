@@ -12,10 +12,9 @@ The Clock Customization feature will enhance the existing flip clock application
 
 #### Acceptance Criteria
 
-1. WHEN the user opens the customization menu THEN the system SHALL display a selection of preset background options.
-2. WHEN the user selects a background option THEN the system SHALL immediately apply the selected background to the clock interface.
+1. WHEN the customization menu is open THEN the system SHALL display a selection of preset background options.
+2. WHEN the user selects a background option THEN the system SHALL immediately apply it to the clock interface.
 3. WHEN a background is applied THEN the system SHALL ensure that clock elements remain clearly visible and functional.
-4. WHEN the user navigates away from the customization menu THEN the system SHALL persist the selected background choice.
 
 ### Requirement 2: Font Customization
 
@@ -23,10 +22,9 @@ The Clock Customization feature will enhance the existing flip clock application
 
 #### Acceptance Criteria
 
-1. WHEN the user opens the customization menu THEN the system SHALL display a selection of font options.
-2. WHEN the user selects a font option THEN the system SHALL immediately apply the selected font to all clock text elements.
+1. WHEN the customization menu is open THEN the system SHALL display a selection of font options.
+2. WHEN the user selects a font option THEN the system SHALL immediately apply it to all clock text elements.
 3. WHEN a font is applied THEN the system SHALL ensure that all text remains readable and properly formatted.
-4. WHEN the user navigates away from the customization menu THEN the system SHALL persist the selected font choice.
 
 ### Requirement 3: Color Customization
 
@@ -34,12 +32,11 @@ The Clock Customization feature will enhance the existing flip clock application
 
 #### Acceptance Criteria
 
-1. WHEN the user opens the customization menu THEN the system SHALL display predefined color scheme options for the clock and panels.
+1. WHEN the customization menu is open THEN the system SHALL display predefined color scheme options for the clock and panels.
 2. WHEN the user selects a predefined color scheme THEN the system SHALL immediately apply those colors to the clock interface.
 3. WHEN the user chooses to use a custom color THEN the system SHALL provide a color picker interface.
 4. WHEN the user selects a color using the color picker THEN the system SHALL apply that color to the selected element (clock or panels).
 5. WHEN colors are applied THEN the system SHALL ensure sufficient contrast for readability.
-6. WHEN the user navigates away from the customization menu THEN the system SHALL persist the selected color choices.
 
 ### Requirement 4: Customization UI
 
