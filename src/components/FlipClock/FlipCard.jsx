@@ -4,7 +4,7 @@ import { FLIP_ANIMATION_MIDPOINT } from "../../constants";
 import "./FlipCard.css";
 
 function FlipCard({ value, prevValue, isFlipping, size = "normal" }) {
-  const { clockColor, panelColor } = useTheme();
+  const { clockColor, panelColor, background } = useTheme();
 
   // Track the displayed bottom value separately - initialize with prevValue to avoid immediate change
   const [displayedBottomValue, setDisplayedBottomValue] = useState(
@@ -15,6 +15,25 @@ function FlipCard({ value, prevValue, isFlipping, size = "normal" }) {
   const cardStyle = {
     color: clockColor,
     backgroundColor: panelColor,
+  };
+
+  // Get background style for divider
+  const getBackgroundStyle = () => {
+    if (background === "default") {
+      return "#1a1a1a";
+    }
+
+    // If it's already a CSS value (color, gradient, or image), use it directly
+    if (
+      background.startsWith("#") ||
+      background.startsWith("linear-gradient") ||
+      background.startsWith("url(")
+    ) {
+      return background;
+    }
+
+    // Fallback for any unrecognized values
+    return "#1a1a1a";
   };
 
   useEffect(() => {
@@ -52,7 +71,10 @@ function FlipCard({ value, prevValue, isFlipping, size = "normal" }) {
         </div>
 
         {/* Central divider line */}
-        <div className="flip-card-divider"></div>
+        <div
+          className="flip-card-divider"
+          style={{ background: getBackgroundStyle() }}
+        ></div>
 
         {/* Animated flip card - only visible during animation */}
         {isFlipping && (

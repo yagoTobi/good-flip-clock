@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTheme } from "../../contexts/ThemeContext";
 import { getFontValue } from "../../utils/fontUtils";
-import { getContrastingPanelColor } from "../../utils/colorUtils";
 import "./ClockPreview.css";
 
 const ClockPreview = () => {
