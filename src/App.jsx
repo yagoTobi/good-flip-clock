@@ -6,6 +6,7 @@ import TimerControls from "./components/TimerControls/TimerControls";
 import CustomizationPanel from "./components/CustomizationPanel/CustomizationPanel";
 import TimerSettings from "./components/TimerSettings/TimerSettings";
 import { useTimer } from "./hooks/useTimer";
+import { usePomodoroTimer } from "./hooks/usePomodoroTimer";
 import { MODES } from "./constants";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 
@@ -14,6 +15,7 @@ function AppContent() {
   const [isCustomizationOpen, setIsCustomizationOpen] = useState(false);
   const [isTimerSettingsOpen, setIsTimerSettingsOpen] = useState(false);
   const timer = useTimer();
+  const pomodoroTimer = usePomodoroTimer();
   const { background } = useTheme();
 
   // Apply background to document body for full screen coverage
@@ -63,10 +65,15 @@ function AppContent() {
 
       <main className="app-main">
         <div className="clock-container">
-          <FlipClock mode={selectedMode} timer={timer} />
+          <FlipClock
+            mode={selectedMode}
+            timer={timer}
+            pomodoroTimer={pomodoroTimer}
+          />
           <TimerControls
             mode={selectedMode}
             timer={timer}
+            pomodoroTimer={pomodoroTimer}
             onSettingsClick={() => setIsTimerSettingsOpen(true)}
           />
         </div>
@@ -74,7 +81,7 @@ function AppContent() {
         <ModeSelector
           selectedMode={selectedMode}
           onModeChange={setSelectedMode}
-          isTimerRunning={timer.isRunning}
+          isTimerRunning={timer.isRunning || pomodoroTimer.isRunning}
           onCustomizationClick={() => setIsCustomizationOpen(true)}
         />
 

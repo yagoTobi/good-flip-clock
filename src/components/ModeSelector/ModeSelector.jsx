@@ -1,4 +1,6 @@
 import { MODES } from "../../constants";
+import { FaClock, FaStopwatch } from "react-icons/fa";
+import { GiTomato } from "react-icons/gi";
 import "./ModeSelector.css";
 
 function ModeSelector({
@@ -7,6 +9,23 @@ function ModeSelector({
   isTimerRunning,
   onCustomizationClick,
 }) {
+  const modes = [
+    { key: MODES.CLOCK, label: "Clock", icon: FaClock },
+    { key: MODES.TIMER, label: "Timer", icon: FaStopwatch },
+    { key: MODES.POMODORO, label: "Pomodoro", icon: GiTomato },
+  ];
+
+  const getSliderPosition = () => {
+    switch (selectedMode) {
+      case MODES.TIMER:
+        return "slider-center";
+      case MODES.POMODORO:
+        return "slider-right";
+      default:
+        return "slider-left";
+    }
+  };
+
   return (
     <div className="mode-selector-container">
       <button
@@ -22,28 +41,26 @@ function ModeSelector({
 
       <div className="mode-selector">
         <div className="selector-background">
-          <div
-            className={`selector-slider ${
-              selectedMode === MODES.TIMER ? "slider-right" : ""
-            }`}
-          ></div>
-          <button
-            className={`selector-option ${
-              selectedMode === MODES.CLOCK ? "active" : ""
-            }`}
-            onClick={() => onModeChange(MODES.CLOCK)}
-          >
-            Clock
-          </button>
-          <button
-            className={`selector-option ${
-              selectedMode === MODES.TIMER ? "active" : ""
-            }`}
-            onClick={() => onModeChange(MODES.TIMER)}
-          >
-            Timer
-            {isTimerRunning && <span className="timer-indicator"></span>}
-          </button>
+          <div className={`selector-slider ${getSliderPosition()}`}></div>
+          {modes.map((mode) => {
+            const IconComponent = mode.icon;
+            return (
+              <button
+                key={mode.key}
+                className={`selector-option ${
+                  selectedMode === mode.key ? "active" : ""
+                }`}
+                onClick={() => onModeChange(mode.key)}
+                aria-label={`Switch to ${mode.label} mode`}
+              >
+                <IconComponent className="mode-icon" />
+                <span className="mode-label">{mode.label}</span>
+                {mode.key === MODES.TIMER && isTimerRunning && (
+                  <span className="timer-indicator"></span>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>

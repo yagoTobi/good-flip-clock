@@ -1,35 +1,69 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import ClockDisplay from "./displays/ClockDisplay";
 import TimerDisplay from "./displays/TimerDisplay";
+import PomodoroDisplay from "./displays/PomodoroDisplay";
 import { MODES } from "../../constants";
 import "./FlipClock.css";
 
-function FlipClock({ mode, timer }) {
+function FlipClock({ mode, timer, pomodoroTimer }) {
   const [isFlippingMode, setIsFlippingMode] = useState(false);
   const [flipDirection, setFlipDirection] = useState("");
   const [displayMode, setDisplayMode] = useState(mode);
+  const timersRef = useRef({ reset: null, flip: null });
 
   // Handle mode changes with flip animation
   useEffect(() => {
     if (mode === displayMode) return;
 
-    if (mode === MODES.CLOCK) {
-      setFlipDirection("left");
-      setIsFlippingMode(true);
-      setTimeout(() => setDisplayMode(MODES.CLOCK), 150);
-    } else {
-      setFlipDirection("right");
-      setIsFlippingMode(true);
-      setTimeout(() => setDisplayMode(MODES.TIMER), 150);
-    }
+    // Clear any existing timers
+    if (timersRef.current.reset) clearTimeout(timersRef.current.reset);
+    if (timersRef.current.flip) clearTimeout(timersRef.current.flip);
 
-    const timer = setTimeout(() => {
-      setIsFlippingMode(false);
-      setFlipDirection("");
-    }, 300);
+    // Determine flip direction based on mode transition
+    const getFlipDirection = (fromMode, toMode) => {
+      const modeOrder = [MODES.CLOCK, MODES.TIMER, MODES.POMODORO];
+      const fromIndex = modeOrder.indexOf(fromMode);
+      const toIndex = modeOrder.indexOf(toMode);
+      return toIndex > fromIndex ? "right" : "left";
+    };
 
-    return () => clearTimeout(timer);
+    const newDirection = getFlipDirection(displayMode, mode);
+
+    // Force animation retrigger by clearing state first
+    setIsFlippingMode(false);
+    setFlipDirection("");
+
+    // Use a small timeout to ensure the state change is applied before starting animation
+    timersRef.current.reset = setTimeout(() => {
+      setFlipDirection(newDirection);
+      setIsFlippingMode(true);
+
+      setTimeout(() => setDisplayMode(mode), 150);
+
+      timersRef.current.flip = setTimeout(() => {
+        setIsFlippingMode(false);
+        setFlipDirection("");
+      }, 300);
+    }, 10);
+
+    return () => {
+      if (timersRef.current.reset) clearTimeout(timersRef.current.reset);
+      if (timersRef.current.flip) clearTimeout(timersRef.current.flip);
+    };
   }, [mode, displayMode]);
+
+  const renderDisplay = () => {
+    switch (displayMode) {
+      case MODES.CLOCK:
+        return <ClockDisplay />;
+      case MODES.TIMER:
+        return <TimerDisplay timer={timer} />;
+      case MODES.POMODORO:
+        return <PomodoroDisplay pomodoroTimer={pomodoroTimer} />;
+      default:
+        return <ClockDisplay />;
+    }
+  };
 
   return (
     <div
@@ -37,11 +71,7 @@ function FlipClock({ mode, timer }) {
         isFlippingMode ? `flipping-${flipDirection}` : ""
       }`}
     >
-      {displayMode === MODES.CLOCK ? (
-        <ClockDisplay />
-      ) : (
-        <TimerDisplay timer={timer} />
-      )}
+      {renderDisplay()}
     </div>
   );
 }
