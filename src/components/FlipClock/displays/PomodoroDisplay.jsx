@@ -1,9 +1,9 @@
 import TimerDisplay from "./TimerDisplay";
 
 function PomodoroDisplay({ pomodoroTimer }) {
-  // For now, use the TimerDisplay as a placeholder
-  // This will be properly implemented in a future task
-  return <TimerDisplay timer={pomodoroTimer || { minutes: 25, seconds: 0 }} />;
+  // Use the existing TimerDisplay with pomodoro timer data
+  // This maintains the flip clock functionality while showing pomodoro time
+  return <TimerDisplay timer={pomodoroTimer} />;
 }
 
 export default PomodoroDisplay;

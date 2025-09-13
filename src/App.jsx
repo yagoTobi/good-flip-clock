@@ -5,6 +5,7 @@ import ModeSelector from "./components/ModeSelector/ModeSelector";
 import TimerControls from "./components/TimerControls/TimerControls";
 import CustomizationPanel from "./components/CustomizationPanel/CustomizationPanel";
 import TimerSettings from "./components/TimerSettings/TimerSettings";
+import PomodoroSettings from "./components/PomodoroSettings/PomodoroSettings";
 import { useTimer } from "./hooks/useTimer";
 import { usePomodoroTimer } from "./hooks/usePomodoroTimer";
 import { MODES } from "./constants";
@@ -14,6 +15,7 @@ function AppContent() {
   const [selectedMode, setSelectedMode] = useState(MODES.CLOCK);
   const [isCustomizationOpen, setIsCustomizationOpen] = useState(false);
   const [isTimerSettingsOpen, setIsTimerSettingsOpen] = useState(false);
+  const [isPomodoroSettingsOpen, setIsPomodoroSettingsOpen] = useState(false);
   const timer = useTimer();
   const pomodoroTimer = usePomodoroTimer();
   const { background } = useTheme();
@@ -74,14 +76,23 @@ function AppContent() {
             mode={selectedMode}
             timer={timer}
             pomodoroTimer={pomodoroTimer}
-            onSettingsClick={() => setIsTimerSettingsOpen(true)}
+            onSettingsClick={() => {
+              if (selectedMode === MODES.POMODORO) {
+                setIsPomodoroSettingsOpen(true);
+              } else {
+                setIsTimerSettingsOpen(true);
+              }
+            }}
           />
         </div>
 
         <ModeSelector
           selectedMode={selectedMode}
           onModeChange={setSelectedMode}
-          isTimerRunning={timer.isRunning || pomodoroTimer.isRunning}
+          isTimerRunning={
+            (selectedMode === MODES.TIMER && timer.isRunning) ||
+            (selectedMode === MODES.POMODORO && pomodoroTimer.isRunning)
+          }
           onCustomizationClick={() => setIsCustomizationOpen(true)}
         />
 
@@ -98,6 +109,16 @@ function AppContent() {
             setIsTimerSettingsOpen(false);
           }}
           currentTimer={timer}
+        />
+
+        <PomodoroSettings
+          isOpen={isPomodoroSettingsOpen}
+          onClose={() => setIsPomodoroSettingsOpen(false)}
+          onSave={(settings) => {
+            pomodoroTimer.updatePomodoroSettings(settings);
+            setIsPomodoroSettingsOpen(false);
+          }}
+          currentSettings={pomodoroTimer.pomodoroSettings}
         />
       </main>
     </div>

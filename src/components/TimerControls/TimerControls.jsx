@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { FaPlay, FaPause, FaStop, FaCog } from "react-icons/fa";
 import { TIMER_STATES, MODES } from "../../constants";
+import PomodoroControls from "../PomodoroControls/PomodoroControls";
 import "./TimerControls.css";
 
-function TimerControls({ mode, timer, onSettingsClick }) {
+function TimerControls({ mode, timer, pomodoroTimer, onSettingsClick }) {
   const [showStopButton, setShowStopButton] = useState(false);
   const [isStopButtonExiting, setIsStopButtonExiting] = useState(false);
 
@@ -50,6 +51,17 @@ function TimerControls({ mode, timer, onSettingsClick }) {
   const handleSettings = () => {
     onSettingsClick();
   };
+
+  // Render Pomodoro controls if in Pomodoro mode
+  if (mode === MODES.POMODORO) {
+    return (
+      <PomodoroControls
+        mode={mode}
+        pomodoroTimer={pomodoroTimer}
+        onSettingsClick={onSettingsClick}
+      />
+    );
+  }
 
   if (mode !== MODES.TIMER) return null;
 

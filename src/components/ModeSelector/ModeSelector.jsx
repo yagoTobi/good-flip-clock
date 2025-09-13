@@ -55,7 +55,8 @@ function ModeSelector({
               >
                 <IconComponent className="mode-icon" />
                 <span className="mode-label">{mode.label}</span>
-                {mode.key === MODES.TIMER && isTimerRunning && (
+                {((mode.key === MODES.TIMER && isTimerRunning) ||
+                  (mode.key === MODES.POMODORO && isTimerRunning)) && (
                   <span className="timer-indicator"></span>
                 )}
               </button>

@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import ClockDisplay from "./displays/ClockDisplay";
 import TimerDisplay from "./displays/TimerDisplay";
 import PomodoroDisplay from "./displays/PomodoroDisplay";
+import PomodoroSessionHeader from "../PomodoroSessionHeader/PomodoroSessionHeader";
+import PomodoroSessionIndicator from "../PomodoroSessionIndicator/PomodoroSessionIndicator";
 import { MODES } from "../../constants";
 import "./FlipClock.css";
 
@@ -71,7 +73,9 @@ function FlipClock({ mode, timer, pomodoroTimer }) {
         isFlippingMode ? `flipping-${flipDirection}` : ""
       }`}
     >
+      <PomodoroSessionHeader mode={mode} pomodoroTimer={pomodoroTimer} />
       {renderDisplay()}
+      <PomodoroSessionIndicator mode={mode} pomodoroTimer={pomodoroTimer} />
     </div>
   );
 }

@@ -1,0 +1,148 @@
+.session-progress {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.session-indicators {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.session-indicator {
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Default dot state */
+.session-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.4);
+  border: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Completed session dot */
+.session-indicator.completed .session-dot {
+  background: rgba(34, 197, 94, 1);
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
+}
+
+/* Current session dot (when not active) */
+.session-indicator.current:not(.active) .session-dot {
+  background: rgba(59, 130, 246, 1);
+  transform: scale(1.1);
+}
+
+/* Active session - progress bar */
+.progress-bar {
+  width: 60px;
+  height: 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border: none;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  animation: expandToBar 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(34, 197, 94, 0.8) 0%,
+    rgba(34, 197, 94, 1) 100%
+  );
+  border-radius: 6px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.3);
+  position: relative;
+}
+
+.progress-fill::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
+  animation: shimmer 2s infinite;
+  border-radius: 6px;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Animation for dot expanding to progress bar */
+@keyframes expandToBar {
+  0% {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+  30% {
+    width: 20px;
+    height: 12px;
+    border-radius: 6px;
+  }
+  70% {
+    width: 45px;
+    height: 12px;
+    border-radius: 6px;
+  }
+  100% {
+    width: 60px;
+    height: 12px;
+    border-radius: 6px;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .session-indicators {
+    gap: 0.5rem;
+  }
+
+  .progress-bar {
+    width: 50px;
+    height: 10px;
+  }
+
+  .session-dot {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .session-indicators {
+    gap: 0.4rem;
+  }
+
+  .progress-bar {
+    width: 40px;
+    height: 8px;
+  }
+
+  .session-dot {
+    width: 8px;
+    height: 8px;
+  }
+}
