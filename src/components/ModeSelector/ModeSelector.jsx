@@ -6,8 +6,9 @@ import "./ModeSelector.css";
 function ModeSelector({
   selectedMode,
   onModeChange,
-  isTimerRunning,
   onCustomizationClick,
+  timer,
+  pomodoroTimer,
 }) {
   const modes = [
     { key: MODES.CLOCK, label: "Clock", icon: FaClock },
@@ -55,8 +56,9 @@ function ModeSelector({
               >
                 <IconComponent className="mode-icon" />
                 <span className="mode-label">{mode.label}</span>
-                {((mode.key === MODES.TIMER && isTimerRunning) ||
-                  (mode.key === MODES.POMODORO && isTimerRunning)) && (
+                {((mode.key === MODES.TIMER && timer?.isRunning) ||
+                  (mode.key === MODES.POMODORO &&
+                    pomodoroTimer?.isRunning)) && (
                   <span className="timer-indicator"></span>
                 )}
               </button>

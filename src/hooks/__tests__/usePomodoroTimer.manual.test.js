@@ -1,7 +1,7 @@
 // Manual test for usePomodoroTimer hook
 // This can be used to verify the hook functionality
 
-import { usePomodoroTimer } from "../usePomodoroTimer.js";
+// import { usePomodoroTimer } from "../usePomodoroTimer.js";
 import {
   TIMER_STATES,
   POMODORO_SESSION_TYPES,
@@ -68,12 +68,12 @@ export function testUsePomodoroTimer() {
 
 // Test the session duration calculation logic
 export function testSessionDurationLogic() {
-  const defaultSettings = {
-    focusDuration: 25,
-    shortBreakDuration: 5,
-    longBreakDuration: 15,
-    longBreakInterval: 4,
-  };
+  // const defaultSettings = {
+  //   focusDuration: 25,
+  //   shortBreakDuration: 5,
+  //   longBreakDuration: 15,
+  //   longBreakInterval: 4,
+  // };
 
   // Test session type transitions
   const testCases = [

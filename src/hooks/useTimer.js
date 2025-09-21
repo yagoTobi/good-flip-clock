@@ -13,6 +13,49 @@ const DEFAULT_TIME = {
   seconds: DEFAULT_TIMER_SECONDS,
 };
 
+/**
+ * Custom hook for countdown timer functionality with flip animation support
+ *
+ * Provides comprehensive timer state management including start, pause, stop, and reset controls.
+ * Includes support for flip card animations by tracking previous time values and revert operations.
+ * The timer automatically stops when reaching 00:00:00 and can be configured with custom durations.
+ *
+ * @returns {Object} Timer state and control functions
+ * @returns {string} returns.timerState - Current timer state (TIMER_STATES.RUNNING, PAUSED, or STOPPED)
+ * @returns {number} returns.hours - Current hours (0-23)
+ * @returns {number} returns.minutes - Current minutes (0-59)
+ * @returns {number} returns.seconds - Current seconds (0-59)
+ * @returns {number} returns.prevHours - Previous hours value for flip animations
+ * @returns {number} returns.prevMinutes - Previous minutes value for flip animations
+ * @returns {number} returns.prevSeconds - Previous seconds value for flip animations
+ * @returns {boolean} returns.isRunning - True when timer is actively counting down
+ * @returns {boolean} returns.isPaused - True when timer is paused
+ * @returns {boolean} returns.isStopped - True when timer is stopped
+ * @returns {boolean} returns.hasHours - True if original timer duration includes hours
+ * @returns {boolean} returns.isReverting - True during revert animation to original time
+ * @returns {Function} returns.startTimer - Start or resume the countdown timer
+ * @returns {Function} returns.pauseTimer - Pause the running timer
+ * @returns {Function} returns.stopTimer - Stop the timer (keeps current time)
+ * @returns {Function} returns.resetTimer - Reset timer to default time and stop
+ * @returns {Function} returns.revertToOriginalTime - Animate back to original timer duration
+ * @returns {Function} returns.setTimerTime - Set custom timer duration (hours, minutes, seconds)
+ *
+ * @example
+ * const {
+ *   hours, minutes, seconds,
+ *   isRunning, isPaused,
+ *   startTimer, pauseTimer, resetTimer,
+ *   setTimerTime
+ * } = useTimer();
+ *
+ * Set custom timer duration
+ * setTimerTime(0, 25, 0); // 25 minutes
+ *
+ * Control timer
+ * startTimer(); // Begin countdown
+ * pauseTimer(); // Pause countdown
+ * resetTimer(); // Reset to default time
+ */
 export function useTimer() {
   const [timerState, setTimerState] = useState(TIMER_STATES.STOPPED);
   const [timerTime, setTimerTime] = useState(DEFAULT_TIME);
@@ -21,6 +64,7 @@ export function useTimer() {
   const [isReverting, setIsReverting] = useState(false); // Track revert animation
 
   // Timer countdown logic - runs continuously when active
+  // Uses setInterval to decrement time every second when RUNNING
   useEffect(() => {
     if (timerState !== TIMER_STATES.RUNNING) return;
 
@@ -29,39 +73,48 @@ export function useTimer() {
     const timer = setInterval(() => {
       console.log("⏰ COUNTDOWN TICK");
 
-      // First, capture current time for previous
+      // Use functional state update to ensure we have the latest time value
+      // This prevents stale closure issues with the interval callback
       setTimerTime((currentTime) => {
         console.log("⏰ Current time:", currentTime);
 
-        // Set this as previous time
+        // Capture current time as previous for flip animation support
+        // This must happen before calculating the new time to ensure proper animation sequence
         setPrevTimerTime(currentTime);
 
-        // Calculate new time
+        // Calculate new time by decrementing seconds, handling time unit rollovers
+        // This logic handles the cascade effect: seconds -> minutes -> hours
         const { hours, minutes, seconds } = currentTime;
         let newTime;
 
         if (seconds > 0) {
+          // Simple case: just decrement seconds (most common path)
           newTime = { ...currentTime, seconds: seconds - 1 };
         } else if (minutes > 0) {
+          // Seconds rollover: decrement minutes, reset seconds to 59
+          // This happens every minute when seconds reach 0
           newTime = { hours, minutes: minutes - 1, seconds: 59 };
         } else if (hours > 0) {
+          // Minutes rollover: decrement hours, reset minutes and seconds
+          // This happens every hour when both minutes and seconds are 0
           newTime = { hours: hours - 1, minutes: 59, seconds: 59 };
         } else {
-          // Timer completed - stop at 00:00
+          // Timer completed (00:00:00 reached) - stop the countdown
+          // This is the terminal condition that ends the timer
           setTimerState(TIMER_STATES.STOPPED);
-          newTime = currentTime;
+          newTime = currentTime; // Keep at 00:00:00 to show completion
         }
 
         console.log("⏰ New time:", newTime);
         return newTime;
       });
-    }, 1000);
+    }, 1000); // 1000ms = 1 second interval for real-time countdown
 
     return () => {
       console.log("⏰ COUNTDOWN EFFECT CLEANUP");
       clearInterval(timer);
     };
-  }, [timerState]); // Only depend on timerState, not timerTime!
+  }, [timerState]); // Only depend on timerState to avoid recreating interval unnecessarily
 
   // Control functions - memoized for performance
   const startTimer = useCallback(() => {
@@ -125,21 +178,24 @@ export function useTimer() {
     });
 
     // Use flushSync to ensure all state updates happen synchronously
+    // This prevents React from batching updates and ensures proper animation sequence
+    // Without flushSync, the animation might not trigger correctly due to batched updates
     flushSync(() => {
-      setPrevTimerTime(timerTime);
-      setIsReverting(true);
-      setTimerState(TIMER_STATES.STOPPED);
-      setTimerTime(originalTimerTime);
+      setPrevTimerTime(timerTime); // Set current time as "previous" for flip animation
+      setIsReverting(true); // Flag to indicate revert animation is active
+      setTimerState(TIMER_STATES.STOPPED); // Stop any running timer
+      setTimerTime(originalTimerTime); // Jump to original time (triggers flip animation)
     });
 
     console.log("🔄 REVERT COMPLETE");
 
-    // Clear revert flag and reset prevTimerTime after animation
+    // Clear revert flag and reset prevTimerTime after animation completes
+    // This cleanup prevents visual glitches and ensures proper state for next operation
     setTimeout(() => {
       setIsReverting(false);
-      setPrevTimerTime(originalTimerTime); // Reset prev to match current to prevent flash
+      setPrevTimerTime(originalTimerTime); // Sync prev with current to prevent flash
       console.log("🔄 REVERT FLAG CLEARED");
-    }, 600); // Match flip animation duration
+    }, 600); // Duration matches FLIP_ANIMATION_DURATION constant (600ms)
   }, [originalTimerTime, timerTime, prevTimerTime]);
 
   return {

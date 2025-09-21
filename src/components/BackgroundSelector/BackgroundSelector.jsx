@@ -1,6 +1,21 @@
 import { useTheme } from "../../contexts/ThemeContext";
 import "./BackgroundSelector.css";
 
+/**
+ * Background options configuration for the theme system
+ *
+ * This array defines all available background options organized by category:
+ * - colors: Solid color backgrounds
+ * - gradients: CSS gradient backgrounds
+ * - images: Curated image backgrounds from Unsplash
+ *
+ * Each option includes:
+ * - id: Unique identifier
+ * - name: Display name for UI
+ * - value: CSS background value to apply
+ * - thumbnail: Smaller version for preview
+ * - category: Grouping for organization
+ */
 const BACKGROUND_OPTIONS = [
   // Solid Colors
   {
@@ -219,14 +234,47 @@ const BACKGROUND_OPTIONS = [
   },
 ];
 
+/**
+ * BackgroundSelector - Interface for selecting clock background themes
+ *
+ * This component provides a comprehensive background selection interface with
+ * options organized by category (colors, gradients, images). It integrates
+ * with the theme system to apply backgrounds to the entire application and
+ * provides visual thumbnails for easy selection.
+ *
+ * Features:
+ * - Categorized background options (solid colors, gradients, images)
+ * - Visual thumbnails for preview before selection
+ * - Integration with ThemeContext for immediate application
+ * - Curated high-quality image backgrounds from Unsplash
+ * - Accessible button labels and keyboard navigation
+ *
+ * Background Types:
+ * - Solid Colors: Basic color backgrounds including light/dark themes
+ * - Gradients: CSS linear gradients with artistic color combinations
+ * - Images: Curated landscape and abstract images optimized for backgrounds
+ *
+ * Theme Integration:
+ * - Uses theme context to get/set current background
+ * - Backgrounds are applied to document body for full-screen coverage
+ * - Changes persist across sessions via localStorage
+ *
+ * @returns {JSX.Element} Background selection interface with categorized options
+ */
 const BackgroundSelector = () => {
   const { background, setBackground } = useTheme();
 
+  /**
+   * Handle background selection and update theme context
+   * @param {string} backgroundValue - CSS background value to apply
+   */
   const handleBackgroundSelect = (backgroundValue) => {
     setBackground(backgroundValue);
   };
 
-  // Group options by category
+  /**
+   * Group background options by category for organized display
+   */
   const groupedOptions = BACKGROUND_OPTIONS.reduce((acc, option) => {
     if (!acc[option.category]) {
       acc[option.category] = [];
@@ -235,6 +283,9 @@ const BackgroundSelector = () => {
     return acc;
   }, {});
 
+  /**
+   * Human-readable category titles for UI display
+   */
   const categoryTitles = {
     colors: "Solid Colors",
     gradients: "Gradients",

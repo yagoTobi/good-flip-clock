@@ -1,16 +1,32 @@
 import { useState, useEffect } from "react";
 import "./App.css";
-import FlipClock from "./components/FlipClock/FlipClock";
-import ModeSelector from "./components/ModeSelector/ModeSelector";
-import TimerControls from "./components/TimerControls/TimerControls";
-import CustomizationPanel from "./components/CustomizationPanel/CustomizationPanel";
-import TimerSettings from "./components/TimerSettings/TimerSettings";
-import PomodoroSettings from "./components/PomodoroSettings/PomodoroSettings";
+import FlipClock from "./components/FlipClock";
+import ModeSelector from "./components/ModeSelector";
+import TimerControls from "./components/TimerControls";
+import CustomizationPanel from "./components/CustomizationPanel";
+import TimerSettings from "./components/TimerSettings";
+import PomodoroSettings from "./components/PomodoroSettings";
 import { useTimer } from "./hooks/useTimer";
 import { usePomodoroTimer } from "./hooks/usePomodoroTimer";
 import { MODES } from "./constants";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 
+/**
+ * AppContent - Main application content component that manages the flip clock interface
+ *
+ * This component handles the core application state including mode selection (Clock, Timer, Pomodoro),
+ * settings panel visibility, and background theme application. It integrates with the theme system
+ * to apply backgrounds to the document body for full-screen coverage and manages the interaction
+ * between different timer modes and their respective controls.
+ *
+ * State Management:
+ * - selectedMode: Current display mode (MODES.CLOCK, MODES.TIMER, MODES.POMODORO)
+ * - Modal visibility states for customization and settings panels
+ * - Timer and Pomodoro timer instances from custom hooks
+ * - Theme integration through useTheme context
+ *
+ * @returns {JSX.Element} The main application interface
+ */
 function AppContent() {
   const [selectedMode, setSelectedMode] = useState(MODES.CLOCK);
   const [isCustomizationOpen, setIsCustomizationOpen] = useState(false);
@@ -20,7 +36,38 @@ function AppContent() {
   const pomodoroTimer = usePomodoroTimer();
   const { background } = useTheme();
 
-  // Apply background to document body for full screen coverage
+  /**
+   * Handle mode changes with automatic timer pausing
+   *
+   * When switching modes, pause any running timers from other modes to prevent
+   * conflicts and ensure smooth animations. This creates a clean single-timer
+   * experience where only the active mode's timer can run.
+   *
+   * @param {string} newMode - The mode to switch to
+   */
+  const handleModeChange = (newMode) => {
+    // Pause other timers when switching away from their modes
+    if (newMode !== MODES.TIMER && timer.isRunning) {
+      timer.pauseTimer();
+    }
+    if (newMode !== MODES.POMODORO && pomodoroTimer.isRunning) {
+      pomodoroTimer.pauseTimer();
+    }
+
+    setSelectedMode(newMode);
+  };
+
+  /**
+   * Apply background theme to document body for full screen coverage
+   *
+   * This effect handles different background types:
+   * - "default": No background applied
+   * - URL backgrounds: Applied as background property for images
+   * - Gradient backgrounds: Applied as background property
+   * - Solid colors: Applied as backgroundColor property
+   *
+   * Cleanup ensures background is reset when component unmounts.
+   */
   useEffect(() => {
     const applyBackgroundToBody = () => {
       // Clear any existing background styles first
@@ -51,7 +98,11 @@ function AppContent() {
     };
   }, [background]);
 
-  // Determine if we need light text based on background
+  /**
+   * Determine if the current background requires light text for proper contrast
+   *
+   * @returns {boolean} True if background is light and requires dark text
+   */
   const isLightBackground = () => {
     if (background === "default" || background === "#f5f5f5") {
       return true;
@@ -88,11 +139,9 @@ function AppContent() {
 
         <ModeSelector
           selectedMode={selectedMode}
-          onModeChange={setSelectedMode}
-          isTimerRunning={
-            (selectedMode === MODES.TIMER && timer.isRunning) ||
-            (selectedMode === MODES.POMODORO && pomodoroTimer.isRunning)
-          }
+          onModeChange={handleModeChange}
+          timer={timer}
+          pomodoroTimer={pomodoroTimer}
           onCustomizationClick={() => setIsCustomizationOpen(true)}
         />
 
@@ -125,6 +174,19 @@ function AppContent() {
   );
 }
 
+/**
+ * App - Root application component that provides theme context
+ *
+ * This is the main entry point component that wraps the entire application
+ * with the ThemeProvider context. The ThemeProvider manages global theme state
+ * including background colors/images, font selections, and color schemes,
+ * making theme data available to all child components through React Context.
+ *
+ * Architecture:
+ * App (ThemeProvider) → AppContent → Feature Components
+ *
+ * @returns {JSX.Element} The root application with theme context
+ */
 function App() {
   return (
     <ThemeProvider>

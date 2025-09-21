@@ -3,21 +3,56 @@ import { useTheme } from "../../contexts/ThemeContext";
 import { FLIP_ANIMATION_MIDPOINT } from "../../constants";
 import "./FlipCard.css";
 
+/**
+ * FlipCard - Individual flip card component with smooth animation transitions
+ *
+ * This component creates the iconic flip card animation effect for displaying changing
+ * time values. It manages the complex animation sequence that shows the old value
+ * flipping away to reveal the new value, creating a realistic mechanical flip effect.
+ *
+ * Animation Mechanics:
+ * - Top half always shows the new value (gets revealed during flip)
+ * - Bottom half shows old value until animation midpoint, then switches to new value
+ * - Animated flip element handles the 3D rotation effect
+ * - Animation timing is synchronized with FLIP_ANIMATION_MIDPOINT constant
+ *
+ * Theme Integration:
+ * - Applies theme colors for text, background, and divider
+ * - Handles different background types (solid colors, gradients, images)
+ * - Maintains visual consistency across different theme configurations
+ *
+ * @param {Object} props - Component props
+ * @param {string|number} props.value - Current value to display (new value)
+ * @param {string|number} props.prevValue - Previous value for animation transition
+ * @param {boolean} props.isFlipping - Whether the card is currently animating
+ * @param {string} [props.size="normal"] - Card size variant ("normal", "large", etc.)
+ * @returns {JSX.Element} Animated flip card displaying the time value
+ */
 function FlipCard({ value, prevValue, isFlipping, size = "normal" }) {
   const { clockColor, panelColor, background } = useTheme();
 
-  // Track the displayed bottom value separately - initialize with prevValue to avoid immediate change
+  /**
+   * Track the displayed bottom value separately to control animation timing
+   * Initialize with prevValue to avoid immediate change on first render
+   */
   const [displayedBottomValue, setDisplayedBottomValue] = useState(
     prevValue || value
   );
 
-  // Create style object for theme colors
+  /**
+   * Create style object for theme colors applied to card elements
+   */
   const cardStyle = {
     color: clockColor,
     backgroundColor: panelColor,
   };
 
-  // Get background style for divider
+  /**
+   * Get appropriate background style for the central divider line
+   * Handles different background types from theme system
+   *
+   * @returns {string} CSS background value for the divider
+   */
   const getBackgroundStyle = () => {
     if (background === "default") {
       return "#1a1a1a";
@@ -36,6 +71,17 @@ function FlipCard({ value, prevValue, isFlipping, size = "normal" }) {
     return "#1a1a1a";
   };
 
+  /**
+   * Manage the bottom value display timing for smooth flip animation
+   *
+   * Animation sequence:
+   * 1. When flip starts: bottom shows OLD value (prevValue)
+   * 2. At animation midpoint (90°): bottom switches to NEW value
+   * 3. When not flipping: immediately show current value
+   *
+   * This creates the illusion that the bottom half "catches up" to the top half
+   * at the perfect moment during the flip animation.
+   */
   useEffect(() => {
     if (isFlipping) {
       // When flip starts, ensure bottom shows the OLD value (prevValue)

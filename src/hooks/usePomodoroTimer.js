@@ -14,6 +14,82 @@ const DEFAULT_POMODORO_TIME = {
   seconds: 0,
 };
 
+/**
+ * Custom hook for Pomodoro timer functionality with session management
+ *
+ * Extends the basic timer functionality to support Pomodoro technique sessions including
+ * focus periods, short breaks, and long breaks. Manages automatic session transitions,
+ * cycle counting, and customizable durations. Compatible with useTimer interface while
+ * adding Pomodoro-specific features like session types and auto-advancement.
+ *
+ * @returns {Object} Pomodoro timer state and control functions
+ *
+ * // Timer state (compatible with useTimer interface)
+ * @returns {string} returns.timerState - Current timer state (TIMER_STATES)
+ * @returns {number} returns.hours - Current hours (0-23)
+ * @returns {number} returns.minutes - Current minutes (0-59)
+ * @returns {number} returns.seconds - Current seconds (0-59)
+ * @returns {number} returns.prevHours - Previous hours for flip animations
+ * @returns {number} returns.prevMinutes - Previous minutes for flip animations
+ * @returns {number} returns.prevSeconds - Previous seconds for flip animations
+ * @returns {boolean} returns.isRunning - True when timer is actively running
+ * @returns {boolean} returns.isPaused - True when timer is paused
+ * @returns {boolean} returns.isStopped - True when timer is stopped
+ * @returns {boolean} returns.hasHours - True if session duration includes hours
+ * @returns {boolean} returns.isReverting - True during revert animation
+ *
+ * // Pomodoro-specific state
+ * @returns {string} returns.sessionType - Current session type (FOCUS, SHORT_BREAK, LONG_BREAK)
+ * @returns {number} returns.cycleCount - Number of completed focus sessions in current cycle
+ * @returns {string} returns.currentTask - Current task name/description
+ * @returns {boolean} returns.isAutoAdvancing - Whether sessions auto-advance when complete
+ * @returns {string} returns.pomodoroState - Pomodoro-specific state (IDLE, ACTIVE, PAUSED, etc.)
+ * @returns {Object} returns.pomodoroSettings - Current Pomodoro settings (durations, intervals)
+ *
+ * // Computed Pomodoro state
+ * @returns {boolean} returns.isActive - True when Pomodoro session is actively running
+ * @returns {boolean} returns.isTransitioning - True during session transition period
+ * @returns {boolean} returns.isCompleted - True when session just completed
+ * @returns {boolean} returns.isIdle - True when Pomodoro is idle/ready to start
+ * @returns {boolean} returns.isFocusSession - True during focus sessions
+ * @returns {boolean} returns.isBreakSession - True during any break session
+ * @returns {boolean} returns.isLongBreak - True during long break sessions
+ * @returns {number} returns.sessionsUntilLongBreak - Focus sessions remaining until long break
+ *
+ * // Timer controls (compatible with useTimer interface)
+ * @returns {Function} returns.startTimer - Start or resume the current session
+ * @returns {Function} returns.pauseTimer - Pause the running session
+ * @returns {Function} returns.stopTimer - Stop the session (keeps current time)
+ * @returns {Function} returns.resetTimer - Reset current session to full duration
+ * @returns {Function} returns.revertToOriginalTime - Animate back to session start time
+ *
+ * // Pomodoro-specific controls
+ * @returns {Function} returns.skipToNextSession - Skip current session and advance to next
+ * @returns {Function} returns.switchToSessionType - Manually switch to specific session type
+ * @returns {Function} returns.updatePomodoroSettings - Update session durations and settings
+ * @returns {Function} returns.setTaskName - Set current task name/description
+ * @returns {Function} returns.toggleAutoAdvance - Toggle automatic session advancement
+ * @returns {Function} returns.resetCycle - Reset to beginning of Pomodoro cycle
+ *
+ * @example
+ * const {
+ *   sessionType, cycleCount, isActive,
+ *   hours, minutes, seconds,
+ *   startTimer, pauseTimer, skipToNextSession,
+ *   updatePomodoroSettings, setTaskName
+ * } = usePomodoroTimer();
+ *
+ * // Set task and start focus session
+ * setTaskName("Write documentation");
+ * startTimer();
+ *
+ * // Update session durations
+ * updatePomodoroSettings({
+ *   focusDuration: 25,
+ *   shortBreakDuration: 5,
+ *   longBreakDuration: 15
+ * });
+ */
 export function usePomodoroTimer() {
   // Core timer state (extending useTimer patterns)
   const [timerState, setTimerState] = useState(TIMER_STATES.STOPPED);
@@ -77,8 +153,9 @@ export function usePomodoroTimer() {
     setOriginalTimerTime(duration);
   }, [sessionType, getSessionDuration]);
 
-  // Timer countdown logic - runs continuously when active
+  // Timer countdown logic - extends basic timer with Pomodoro session handling
   useEffect(() => {
+    // Clean up any existing timer when not running
     if (timerState !== TIMER_STATES.RUNNING) {
       if (timerRef.current) {
         clearInterval(timerRef.current);
@@ -87,12 +164,13 @@ export function usePomodoroTimer() {
       return;
     }
 
+    // Start countdown interval for active Pomodoro session
     timerRef.current = setInterval(() => {
       setTimerTime((currentTime) => {
-        // Set this as previous time
+        // Capture current time as previous for flip animation support
         setPrevTimerTime(currentTime);
 
-        // Calculate new time
+        // Calculate new time by decrementing, handling rollovers
         const { hours, minutes, seconds } = currentTime;
         let newTime;
 
@@ -103,22 +181,24 @@ export function usePomodoroTimer() {
         } else if (hours > 0) {
           newTime = { hours: hours - 1, minutes: 59, seconds: 59 };
         } else {
-          // Session completed
+          // Pomodoro session completed (00:00:00 reached)
           setTimerState(TIMER_STATES.STOPPED);
           setPomodoroState(POMODORO_STATES.COMPLETED);
 
-          // Trigger session completion logic
+          // Trigger automatic session transition if auto-advance is enabled
+          // This handles moving from focus->break or break->focus
           if (isAutoAdvancing) {
             handleSessionCompletion();
           }
 
-          newTime = currentTime;
+          newTime = currentTime; // Keep at 00:00:00
         }
 
         return newTime;
       });
     }, 1000);
 
+    // Cleanup interval on unmount or state change
     return () => {
       if (timerRef.current) {
         clearInterval(timerRef.current);
@@ -127,34 +207,44 @@ export function usePomodoroTimer() {
     };
   }, [timerState, isAutoAdvancing]);
 
-  // Session completion handler
+  // Session completion handler - manages Pomodoro session transitions
+  // Automatically determines next session type based on current session and cycle count
+  // This implements the core Pomodoro technique logic: work -> break -> work -> break...
   const handleSessionCompletion = useCallback(() => {
     if (sessionType === POMODORO_SESSION_TYPES.FOCUS) {
-      // Completed a focus session
+      // Completed a focus session - increment cycle count and determine break type
+      // The cycle count tracks how many focus sessions have been completed
       const newCycleCount = cycleCount + 1;
       setCycleCount(newCycleCount);
 
-      // Determine next session type based on cycle count
+      // Determine next session type based on cycle count and long break interval
+      // Traditional Pomodoro: 4 focus sessions, then long break, then reset cycle
       if (newCycleCount >= pomodoroSettings.longBreakInterval) {
-        // Time for long break, reset cycle
+        // Reached long break interval - time for extended break and cycle reset
+        // Example: After 4th focus session (25min each), take 15-30min long break
         setSessionType(POMODORO_SESSION_TYPES.LONG_BREAK);
-        setCycleCount(0);
+        setCycleCount(0); // Reset cycle counter after long break
       } else {
-        // Short break
+        // Haven't reached long break interval - take short break
+        // Example: After 1st, 2nd, 3rd focus session, take 5min short break
         setSessionType(POMODORO_SESSION_TYPES.SHORT_BREAK);
       }
     } else {
-      // Completed a break session, return to focus
+      // Completed any break session (short or long) - return to focus work
+      // This handles both SHORT_BREAK and LONG_BREAK completion
       setSessionType(POMODORO_SESSION_TYPES.FOCUS);
     }
 
+    // Set transitioning state to show completion message/animation
+    // This gives user feedback that a session has completed before auto-advancing
     setPomodoroState(POMODORO_STATES.TRANSITIONING);
 
-    // Auto-advance to next session after a brief delay
+    // Auto-advance to next session after brief transition period (if enabled)
+    // This allows users to see the completion state before automatically continuing
     if (isAutoAdvancing) {
       transitionTimeoutRef.current = setTimeout(() => {
-        setPomodoroState(POMODORO_STATES.IDLE);
-      }, 3000); // 3 second transition display
+        setPomodoroState(POMODORO_STATES.IDLE); // Ready to start next session
+      }, 3000); // 3 second transition display allows user to see completion message
     }
   }, [
     sessionType,

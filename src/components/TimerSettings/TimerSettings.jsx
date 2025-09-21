@@ -3,7 +3,7 @@ import TimeInput from "./TimeInput";
 import { TIMER_LIMITS, TIMER_SETTINGS_DEFAULTS } from "../../constants";
 import "./TimerSettings.css";
 
-function TimerSettings({ isOpen, onClose, onSave, currentTimer }) {
+function TimerSettings({ isOpen, onClose, onSave }) {
   const [hours, setHours] = useState(TIMER_SETTINGS_DEFAULTS.hours);
   const [minutes, setMinutes] = useState(TIMER_SETTINGS_DEFAULTS.minutes);
   const [seconds, setSeconds] = useState(TIMER_SETTINGS_DEFAULTS.seconds);

@@ -1,13 +1,44 @@
 {
   "name": "flip-clock-app",
+  "version": "1.0.0",
+  "description": "A customizable flip clock application with timer and Pomodoro functionality, featuring smooth flip animations and theme customization",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
+  "keywords": [
+    "flip-clock",
+    "timer",
+    "pomodoro",
+    "react",
+    "vite",
+    "clock",
+    "countdown",
+    "customizable",
+    "themes",
+    "animations"
+  ],
+  "author": {
+    "name": "[Author Name]",
+    "email": "[author@email.com]"
+  },
+  "repository": {
+    "type": "git",
+    "url": "[repository-url]"
+  },
+  "homepage": "[homepage-url]",
+  "bugs": {
+    "url": "[repository-url]/issues"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
+  },
+  "scriptsDescription": {
+    "dev": "Start development server with hot module replacement",
+    "build": "Build the application for production deployment",
+    "lint": "Run ESLint to check code quality and style",
+    "preview": "Preview the production build locally"
   },
   "dependencies": {
     "react": "^19.1.0",

@@ -6,6 +6,36 @@ import ColorSelector from "../ColorSelector/ColorSelector";
 import ClockPreview from "../ClockPreview/ClockPreview";
 import "./CustomizationPanel.css";
 
+/**
+ * CustomizationPanel - Modal panel for customizing clock appearance and themes
+ *
+ * This component provides a comprehensive interface for users to customize their clock
+ * appearance including backgrounds, fonts, and colors. It features a tabbed interface
+ * with live preview functionality and integrates with the theme system to persist
+ * user preferences.
+ *
+ * Features:
+ * - Tabbed interface for organizing customization options
+ * - Live preview of changes before applying
+ * - Integration with ThemeContext for state management
+ * - Modal overlay with proper accessibility
+ * - Responsive layout with options and preview sections
+ *
+ * Theme System Integration:
+ * - All changes are immediately reflected in the theme context
+ * - Changes persist across sessions via localStorage
+ * - Preview component shows real-time updates
+ *
+ * Tabs:
+ * - Background: Background colors, gradients, and images
+ * - Fonts: Font family selection with live samples
+ * - Colors: Clock text and card background colors
+ *
+ * @param {Object} props - Component props
+ * @param {boolean} props.isOpen - Whether the customization panel is visible
+ * @param {Function} props.onClose - Callback function to close the panel
+ * @returns {JSX.Element|null} Customization panel modal, or null if not open
+ */
 const CustomizationPanel = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState("background");
 

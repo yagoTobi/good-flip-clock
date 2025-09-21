@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React from "react";
 import { FaPlay, FaPause, FaStop, FaCog, FaForward } from "react-icons/fa";
 import { TIMER_STATES, MODES } from "../../constants";
 import "./PomodoroControls.css";
@@ -46,10 +46,7 @@ function PomodoroControls({ mode, pomodoroTimer, onSettingsClick }) {
         </button>
 
         {showStopButton && (
-          <button
-            className="control-button stop-button"
-            onClick={handleStop}
-          >
+          <button className="control-button stop-button" onClick={handleStop}>
             <FaStop />
           </button>
         )}
