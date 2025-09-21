@@ -116,7 +116,7 @@
 }
 
 .stop-button {
-  background: #dc2626;
+  background: #2a2a2a !important;
   animation: slideInRight 0.3s ease-out;
   position: absolute;
   right: -65px;
@@ -124,7 +124,7 @@
 }
 
 .stop-button:hover:not(:disabled) {
-  background: #b91c1c;
+  background: #dc2626 !important;
 }
 
 .stop-button svg {

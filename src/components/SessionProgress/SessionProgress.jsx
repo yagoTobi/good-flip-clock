@@ -71,9 +71,9 @@ function SessionProgress({ pomodoroTimer, totalSessions = 4 }) {
             }`}
           >
             {indicator.isActive ? (
-              <div className="progress-bar">
+              <div className={`progress-bar ${sessionType}`}>
                 <div
-                  className="progress-fill"
+                  className={`progress-fill ${sessionType}`}
                   style={{ width: `${indicator.progressPercentage}%` }}
                 />
               </div>

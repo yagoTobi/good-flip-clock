@@ -7,7 +7,7 @@ function PomodoroSessionIndicator({ mode, pomodoroTimer }) {
 
   return (
     <div className="pomodoro-session-indicator">
-      {/* Session progress indicators only */}
+      {/* Session progress indicators */}
       <SessionProgress
         pomodoroTimer={pomodoroTimer}
         totalSessions={pomodoroTimer.pomodoroSettings.longBreakInterval}

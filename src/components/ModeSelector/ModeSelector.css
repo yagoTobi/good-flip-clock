@@ -169,6 +169,14 @@
   pointer-events: none;
   white-space: nowrap;
   margin-top: 4px;
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+/* Light background adaptation */
+.app.light-bg .mode-label {
+  color: #000000;
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
 }
 
 .selector-option:hover .mode-icon {

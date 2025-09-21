@@ -112,10 +112,6 @@ function AppContent() {
 
   return (
     <div className={`app ${isLightBackground() ? "light-bg" : "dark-bg"}`}>
-      <header className="app-header">
-        <h1>Flip Clock</h1>
-      </header>
-
       <main className="app-main">
         <div className="clock-container">
           <FlipClock

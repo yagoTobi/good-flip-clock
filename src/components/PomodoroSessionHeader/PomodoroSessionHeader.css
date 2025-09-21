@@ -1,6 +1,6 @@
 .pomodoro-session-header {
   position: absolute;
-  top: -60px;
+  top: 0px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -17,92 +17,57 @@
 
 .session-type {
   display: block;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   transition: color 0.3s ease;
 }
 
+.session-type {
+  color: #ffffff !important;
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+}
+
 .session-type.focus {
-  color: rgba(239, 68, 68, 1);
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  background: rgba(239, 68, 68, 0.9);
 }
 
 .session-type.shortBreak {
-  color: rgba(34, 197, 94, 1);
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  background: rgba(59, 130, 246, 0.9);
 }
 
 .session-type.longBreak {
-  color: rgba(59, 130, 246, 1);
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  background: rgba(59, 130, 246, 0.9);
 }
 
-.task-input-container {
-  width: 100%;
-  max-width: 280px;
-}
-
-.task-input {
-  width: 100%;
-  padding: 0.5rem 0.75rem;
-  border: 2px solid rgba(255, 255, 255, 0.4);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.15);
-  color: rgba(255, 255, 255, 1);
-  font-size: 0.85rem;
-  text-align: center;
-  transition: all 0.3s ease;
-  outline: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.task-input::placeholder {
-  color: rgba(255, 255, 255, 0.7);
-  font-style: italic;
-}
-
-.task-input:focus {
-  border-color: rgba(59, 130, 246, 0.6);
-  background: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.task-input:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  border-color: rgba(255, 255, 255, 0.1);
+/* Ensure consistent positioning in Pomodoro mode */
+.flip-clock.pomodoro-mode .pomodoro-session-header {
+  top: 20px;
 }
 
 /* Responsive design */
 @media (max-width: 768px) {
   .pomodoro-session-header {
-    top: -50px;
+    top: -30px;
     max-width: 350px;
   }
 
   .session-type {
-    font-size: 0.9rem;
-  }
-
-  .task-input {
-    font-size: 0.8rem;
+    font-size: 1.1rem;
   }
 }
 
 @media (max-width: 480px) {
   .pomodoro-session-header {
-    top: -45px;
+    top: -25px;
     max-width: 300px;
   }
 
   .session-type {
-    font-size: 0.8rem;
-  }
-
-  .task-input {
-    font-size: 0.75rem;
-    padding: 0.4rem 0.6rem;
+    font-size: 1rem;
   }
 }

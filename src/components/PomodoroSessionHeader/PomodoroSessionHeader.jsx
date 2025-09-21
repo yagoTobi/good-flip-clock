@@ -26,20 +26,6 @@ function PomodoroSessionHeader({ mode, pomodoroTimer }) {
           {getSessionTypeDisplay()}
         </span>
       </div>
-
-      {/* Task input for focus sessions */}
-      {pomodoroTimer.isFocusSession && (
-        <div className="task-input-container">
-          <input
-            type="text"
-            placeholder="What are you working on?"
-            value={pomodoroTimer.currentTask}
-            onChange={(e) => pomodoroTimer.setTaskName(e.target.value)}
-            className="task-input"
-            disabled={pomodoroTimer.isRunning}
-          />
-        </div>
-      )}
     </div>
   );
 }

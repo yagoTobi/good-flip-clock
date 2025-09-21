@@ -1,14 +1,21 @@
 .pomodoro-session-indicator {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
   width: 100%;
   max-width: 400px;
+  margin-top: 0.5rem;
+}
+
+/* In Pomodoro mode, position absolutely below the task input */
+.flip-clock.pomodoro-mode .pomodoro-session-indicator {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 0;
+  z-index: 10;
 }
 
 .session-type-display {
@@ -37,70 +44,23 @@
   color: rgba(59, 130, 246, 0.9);
 }
 
-.task-input-container {
-  width: 100%;
-  max-width: 280px;
-}
-
-.task-input {
-  width: 100%;
-  padding: 0.4rem 0.6rem;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 0.8rem;
-  text-align: center;
-  transition: all 0.3s ease;
-  outline: none;
-}
-
-.task-input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
-  font-style: italic;
-}
-
-.task-input:focus {
-  border-color: rgba(59, 130, 246, 0.6);
-  background: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.task-input:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
 /* Responsive design */
 @media (max-width: 768px) {
   .pomodoro-session-indicator {
-    bottom: 15px;
     max-width: 350px;
   }
 
   .session-type {
     font-size: 0.8rem;
   }
-
-  .task-input {
-    font-size: 0.75rem;
-    padding: 0.35rem 0.5rem;
-  }
 }
 
 @media (max-width: 480px) {
   .pomodoro-session-indicator {
-    bottom: 10px;
     max-width: 300px;
   }
 
   .session-type {
     font-size: 0.75rem;
-  }
-
-  .task-input {
-    font-size: 0.7rem;
-    padding: 0.3rem 0.4rem;
   }
 }
