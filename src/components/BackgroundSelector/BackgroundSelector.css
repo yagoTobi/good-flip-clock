@@ -39,10 +39,18 @@
   grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
 }
 
-/* Regular grid for gradients and images */
-.background-category:not(
-    :has(.background-option:first-child[title*="Default"])
-  ):not(:has(.background-option:first-child[title*="White"]))
+/* 3x3 grid specifically for gradients */
+.background-category:has(.category-title:contains("Gradients"))
+  .background-options,
+.background-category
+  .background-options:has(.background-option[title*="Sunset"]) {
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+/* Regular grid for images */
+.background-category:has(.category-title:contains("Images"))
   .background-options {
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
 }
@@ -106,11 +114,29 @@
   line-height: 1.2;
 }
 
+/* Override with specific class-based rules */
+.gradients-grid {
+  grid-template-columns: repeat(3, 1fr) !important;
+  max-width: 360px !important;
+  margin: 0 auto !important;
+  gap: 8px !important;
+}
+
+.images-grid {
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) !important;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .background-options {
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     gap: 0.5rem;
+  }
+
+  .gradients-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    max-width: 300px !important;
+    gap: 6px !important;
   }
 
   .background-option {

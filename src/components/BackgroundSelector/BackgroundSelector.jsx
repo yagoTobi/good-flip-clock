@@ -1,5 +1,6 @@
 import { useTheme } from "../../contexts/ThemeContext";
 import SpectrumColorPicker from "../SpectrumColorPicker";
+import GradientPicker from "../GradientPicker";
 import "./BackgroundSelector.css";
 
 /**
@@ -18,19 +19,12 @@ import "./BackgroundSelector.css";
  * - category: Grouping for organization
  */
 const BACKGROUND_OPTIONS = [
-  // Gradients
-  {
-    id: "gradient-blue",
-    name: "Blue Wave",
-    value: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-    thumbnail: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-    category: "gradients",
-  },
+  // Gradients - Curated 3x3 grid of beautiful gradients
   {
     id: "gradient-sunset",
     name: "Sunset",
-    value: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
-    thumbnail: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+    value: "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)",
+    thumbnail: "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)",
     category: "gradients",
   },
   {
@@ -48,19 +42,45 @@ const BACKGROUND_OPTIONS = [
     category: "gradients",
   },
   {
+    id: "gradient-purple",
+    name: "Purple Dream",
+    value: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    thumbnail: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    category: "gradients",
+  },
+  {
     id: "gradient-fire",
     name: "Fire",
-    value: "linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%)",
-    thumbnail: "linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%)",
+    value: "linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%)",
+    thumbnail: "linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%)",
+    category: "gradients",
+  },
+  {
+    id: "gradient-mint",
+    name: "Mint Fresh",
+    value: "linear-gradient(135deg, #00c9ff 0%, #92fe9d 100%)",
+    thumbnail: "linear-gradient(135deg, #00c9ff 0%, #92fe9d 100%)",
     category: "gradients",
   },
   {
     id: "gradient-cosmic",
     name: "Cosmic",
-    value:
-      "linear-gradient(135deg, #667db6 0%, #0082c8 25%, #0082c8 75%, #667db6 100%)",
-    thumbnail:
-      "linear-gradient(135deg, #667db6 0%, #0082c8 25%, #0082c8 75%, #667db6 100%)",
+    value: "linear-gradient(135deg, #667db6 0%, #0082c8 100%)",
+    thumbnail: "linear-gradient(135deg, #667db6 0%, #0082c8 100%)",
+    category: "gradients",
+  },
+  {
+    id: "gradient-rose",
+    name: "Rose Gold",
+    value: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+    thumbnail: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+    category: "gradients",
+  },
+  {
+    id: "gradient-night",
+    name: "Night Sky",
+    value: "linear-gradient(135deg, #2c3e50 0%, #34495e 100%)",
+    thumbnail: "linear-gradient(135deg, #2c3e50 0%, #34495e 100%)",
     category: "gradients",
   },
 
@@ -207,12 +227,21 @@ const BackgroundSelector = () => {
         />
       </div>
 
-      {/* Other Background Categories */}
-      {Object.entries(groupedOptions).map(([category, options]) => (
-        <div key={category} className="background-category">
-          <h4 className="category-title">{categoryTitles[category]}</h4>
-          <div className="background-options">
-            {options.map((option) => (
+      {/* Gradient Picker Section */}
+      <div className="background-category">
+        <GradientPicker
+          value={background}
+          onChange={setBackground}
+          label="Gradients"
+        />
+      </div>
+
+      {/* Images Section */}
+      {groupedOptions.images && (
+        <div className="background-category images-category">
+          <h4 className="category-title">{categoryTitles.images}</h4>
+          <div className="background-options images-grid">
+            {groupedOptions.images.map((option) => (
               <button
                 key={option.id}
                 className={`background-option ${
@@ -231,7 +260,7 @@ const BackgroundSelector = () => {
             ))}
           </div>
         </div>
-      ))}
+      )}
     </div>
   );
 };

@@ -1,6 +1,70 @@
 import "./SpectrumColorPicker.css";
 
 /**
+ * Convert HSL color to hex format
+ * @param {string} hsl - HSL color string like "hsl(120, 100%, 50%)"
+ * @returns {string} Hex color string like "#00ff00"
+ */
+const hslToHex = (hsl) => {
+  const match = hsl.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+  if (!match) return hsl;
+
+  const [, h, s, l] = match.map(Number);
+  const hDecimal = l / 100;
+  const a = (s * Math.min(hDecimal, 1 - hDecimal)) / 100;
+  const f = (n) => {
+    const k = (n + h / 30) % 12;
+    const color = hDecimal - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * color)
+      .toString(16)
+      .padStart(2, "0");
+  };
+  return `#${f(0)}${f(8)}${f(4)}`;
+};
+
+/**
+ * Convert hex color to HSL format for comparison
+ * @param {string} hex - Hex color string like "#ff0000"
+ * @returns {string} HSL color string like "hsl(0, 100%, 50%)"
+ */
+const hexToHsl = (hex) => {
+  if (!hex || !hex.startsWith("#")) return hex;
+
+  const r = parseInt(hex.slice(1, 3), 16) / 255;
+  const g = parseInt(hex.slice(3, 5), 16) / 255;
+  const b = parseInt(hex.slice(5, 7), 16) / 255;
+
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  let h,
+    s,
+    l = (max + min) / 2;
+
+  if (max === min) {
+    h = s = 0;
+  } else {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r:
+        h = (g - b) / d + (g < b ? 6 : 0);
+        break;
+      case g:
+        h = (b - r) / d + 2;
+        break;
+      case b:
+        h = (r - g) / d + 4;
+        break;
+    }
+    h /= 6;
+  }
+
+  return `hsl(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${Math.round(
+    l * 100
+  )}%)`;
+};
+
+/**
  * Generate a curated spectrum of colors in a proper grid format
  * Creates a balanced 7x6 grid (7 columns, 6 rows) for better organization
  */
@@ -65,8 +129,32 @@ const SpectrumColorPicker = ({ value, onChange, label = "Color" }) => {
    * @param {string} color - HSL color string
    */
   const handleColorSelect = (color) => {
-    onChange(color);
+    // Convert HSL to hex for theme context compatibility
+    const hexColor = hslToHex(color);
+    onChange(hexColor);
   };
+
+  /**
+   * Find the closest HSL color to the current hex value for selection highlighting
+   */
+  const getCurrentHslColor = () => {
+    if (!value || !value.startsWith("#")) return null;
+
+    // Convert current hex value to HSL for comparison
+
+    // Find the closest color in our spectrum
+    for (const row of colorSpectrum) {
+      for (const color of row) {
+        if (hslToHex(color) === value) {
+          return color;
+        }
+      }
+    }
+
+    return null;
+  };
+
+  const selectedHslColor = getCurrentHslColor();
 
   return (
     <div className="spectrum-color-picker">
@@ -82,7 +170,7 @@ const SpectrumColorPicker = ({ value, onChange, label = "Color" }) => {
                 <button
                   key={`${rowIndex}-${colIndex}`}
                   className={`spectrum-color ${
-                    value === color ? "selected" : ""
+                    selectedHslColor === color ? "selected" : ""
                   }`}
                   style={{ backgroundColor: color }}
                   onClick={() => handleColorSelect(color)}

@@ -1,5 +1,5 @@
 import { useTheme } from "../../contexts/ThemeContext";
-import ColorPicker from "../ColorPicker/ColorPicker";
+import SpectrumColorPicker from "../SpectrumColorPicker/SpectrumColorPicker";
 import "./ColorSelector.css";
 
 /**
@@ -33,13 +33,13 @@ const ColorSelector = () => {
         Customize the colors of your clock display
       </p>
 
-      <ColorPicker
+      <SpectrumColorPicker
         value={clockColor}
         onChange={setClockColor}
         label="Text Color"
       />
 
-      <ColorPicker
+      <SpectrumColorPicker
         value={panelColor}
         onChange={setPanelColor}
         label="Card Background"
