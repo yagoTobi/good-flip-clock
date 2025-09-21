@@ -1,6 +1,7 @@
 import { useTheme } from "../../contexts/ThemeContext";
 import SpectrumColorPicker from "../SpectrumColorPicker";
 import GradientPicker from "../GradientPicker";
+import ImagePicker from "../ImagePicker";
 import "./BackgroundSelector.css";
 
 /**
@@ -236,31 +237,14 @@ const BackgroundSelector = () => {
         />
       </div>
 
-      {/* Images Section */}
-      {groupedOptions.images && (
-        <div className="background-category images-category">
-          <h4 className="category-title">{categoryTitles.images}</h4>
-          <div className="background-options images-grid">
-            {groupedOptions.images.map((option) => (
-              <button
-                key={option.id}
-                className={`background-option ${
-                  background === option.value ? "selected" : ""
-                }`}
-                onClick={() => handleBackgroundSelect(option.value)}
-                aria-label={`Select ${option.name} background`}
-                title={option.name}
-              >
-                <div
-                  className="background-thumbnail"
-                  style={{ background: option.thumbnail }}
-                />
-                <span className="background-name">{option.name}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Image Picker Section */}
+      <div className="background-category">
+        <ImagePicker
+          value={background}
+          onChange={setBackground}
+          label="Images"
+        />
+      </div>
     </div>
   );
 };

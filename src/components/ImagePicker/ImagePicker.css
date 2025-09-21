@@ -1,0 +1,155 @@
+.image-picker {
+  margin-bottom: 1.5rem;
+}
+
+.image-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.image-header h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-color, #333);
+}
+
+.image-grid-container {
+  background: var(--panel-bg, #fff);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 12px;
+  padding: 0;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  width: 100%;
+}
+
+.image-square {
+  width: 100%;
+  height: 60px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  border-radius: 0;
+  overflow: hidden;
+  aspect-ratio: 2;
+}
+
+.image-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transition: all 0.15s ease;
+}
+
+.image-icon {
+  color: white;
+  font-size: 18px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+.image-square:hover {
+  transform: scale(1.05);
+  z-index: 10;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.image-square:hover .image-overlay {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.image-square:hover .image-icon {
+  transform: scale(1.1);
+}
+
+.image-square.selected {
+  transform: scale(1.08);
+  z-index: 15;
+  border-radius: 4px;
+  box-shadow: 0 0 0 3px white, 0 0 0 6px var(--accent-color, #3b82f6);
+}
+
+.image-square.selected .image-overlay {
+  background: rgba(59, 130, 246, 0.3);
+}
+
+.image-square.selected .image-icon {
+  color: white;
+  transform: scale(1.2);
+}
+
+/* Fallback for missing images */
+.image-square .image-background:not([style*="background-image"]) {
+  background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+}
+
+.image-square
+  .image-background:not([style*="background-image"])
+  + .image-overlay {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.image-square
+  .image-background:not([style*="background-image"])
+  + .image-overlay
+  .image-icon {
+  color: #999;
+}
+
+/* Focus states for accessibility */
+.image-square:focus {
+  outline: 2px solid var(--accent-color, #3b82f6);
+  outline-offset: 2px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .image-square {
+    height: 50px;
+  }
+
+  .image-icon {
+    font-size: 16px;
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .image-square,
+  .image-overlay,
+  .image-icon {
+    transition: none;
+  }
+
+  .image-square:hover {
+    transform: none;
+  }
+}
