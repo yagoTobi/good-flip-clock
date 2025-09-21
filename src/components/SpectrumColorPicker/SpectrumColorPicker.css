@@ -1,0 +1,88 @@
+.spectrum-color-picker {
+  margin-bottom: 1.5rem;
+}
+
+.spectrum-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.spectrum-header h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-color, #333);
+}
+
+.spectrum-grid-container {
+  background: var(--panel-bg, #fff);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 12px;
+  padding: 0;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.spectrum-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 0;
+  border-radius: 8px;
+  overflow: visible;
+  width: 100%;
+}
+
+.spectrum-row {
+  display: contents;
+}
+
+.spectrum-color {
+  width: 100%;
+  height: 40px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  border-radius: 0;
+  aspect-ratio: 1;
+}
+
+.spectrum-color:hover {
+  transform: scale(1.1);
+  z-index: 10;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.spectrum-color.selected {
+  transform: scale(1.15);
+  z-index: 15;
+  border-radius: 4px;
+  box-shadow: 0 0 0 3px white, 0 0 0 6px var(--accent-color, #3b82f6);
+}
+
+/* Focus states for accessibility */
+.spectrum-color:focus {
+  outline: 2px solid var(--accent-color, #3b82f6);
+  outline-offset: 2px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .spectrum-color {
+    height: 35px;
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .spectrum-color {
+    transition: none;
+  }
+
+  .spectrum-color:hover {
+    transform: none;
+  }
+}

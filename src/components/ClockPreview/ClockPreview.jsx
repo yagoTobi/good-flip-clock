@@ -32,6 +32,8 @@ const ClockPreview = () => {
     // If it's already a CSS value (color, gradient, or image), use it directly
     if (
       background.startsWith("#") ||
+      background.startsWith("hsl(") ||
+      background.startsWith("rgb(") ||
       background.startsWith("linear-gradient") ||
       background.startsWith("url(")
     ) {

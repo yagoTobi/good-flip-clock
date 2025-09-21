@@ -1,4 +1,5 @@
 import { useTheme } from "../../contexts/ThemeContext";
+import SpectrumColorPicker from "../SpectrumColorPicker";
 import "./BackgroundSelector.css";
 
 /**
@@ -17,120 +18,6 @@ import "./BackgroundSelector.css";
  * - category: Grouping for organization
  */
 const BACKGROUND_OPTIONS = [
-  // Solid Colors
-  {
-    id: "default",
-    name: "Default",
-    value: "default",
-    thumbnail: "#1a1a1a",
-    category: "colors",
-  },
-  {
-    id: "dark",
-    name: "Dark",
-    value: "#0a0a0a",
-    thumbnail: "#0a0a0a",
-    category: "colors",
-  },
-  {
-    id: "light",
-    name: "Light",
-    value: "#f5f5f5",
-    thumbnail: "#f5f5f5",
-    category: "colors",
-  },
-  {
-    id: "white",
-    name: "White",
-    value: "#ffffff",
-    thumbnail: "#ffffff",
-    category: "colors",
-  },
-  {
-    id: "red",
-    name: "Red",
-    value: "#dc2626",
-    thumbnail: "#dc2626",
-    category: "colors",
-  },
-  {
-    id: "orange",
-    name: "Orange",
-    value: "#ea580c",
-    thumbnail: "#ea580c",
-    category: "colors",
-  },
-  {
-    id: "yellow",
-    name: "Yellow",
-    value: "#ca8a04",
-    thumbnail: "#ca8a04",
-    category: "colors",
-  },
-  {
-    id: "green",
-    name: "Green",
-    value: "#16a34a",
-    thumbnail: "#16a34a",
-    category: "colors",
-  },
-  {
-    id: "blue",
-    name: "Blue",
-    value: "#2563eb",
-    thumbnail: "#2563eb",
-    category: "colors",
-  },
-  {
-    id: "indigo",
-    name: "Indigo",
-    value: "#4f46e5",
-    thumbnail: "#4f46e5",
-    category: "colors",
-  },
-  {
-    id: "purple",
-    name: "Purple",
-    value: "#9333ea",
-    thumbnail: "#9333ea",
-    category: "colors",
-  },
-  {
-    id: "pink",
-    name: "Pink",
-    value: "#ec4899",
-    thumbnail: "#ec4899",
-    category: "colors",
-  },
-  {
-    id: "teal",
-    name: "Teal",
-    value: "#0d9488",
-    thumbnail: "#0d9488",
-    category: "colors",
-  },
-  {
-    id: "cyan",
-    name: "Cyan",
-    value: "#0891b2",
-    thumbnail: "#0891b2",
-    category: "colors",
-  },
-  {
-    id: "navy",
-    name: "Navy",
-    value: "#1e3a8a",
-    thumbnail: "#1e3a8a",
-    category: "colors",
-  },
-  {
-    id: "forest",
-    name: "Forest",
-    value: "#166534",
-    thumbnail: "#166534",
-    category: "colors",
-  },
-
   // Gradients
   {
     id: "gradient-blue",
@@ -287,14 +174,40 @@ const BackgroundSelector = () => {
    * Human-readable category titles for UI display
    */
   const categoryTitles = {
-    colors: "Solid Colors",
     gradients: "Gradients",
     images: "Images",
   };
 
+  /**
+   * Handle custom color selection from spectrum picker
+   * @param {string} color - Selected color value
+   */
+  const handleCustomColorSelect = (color) => {
+    setBackground(color);
+  };
+
+  /**
+   * Check if current background is a custom color (not in predefined options)
+   */
+  const isCustomColor = !BACKGROUND_OPTIONS.some(
+    (option) => option.value === background
+  );
+  const currentCustomColor = isCustomColor ? background : "hsl(220, 100%, 50%)";
+
   return (
     <div className="background-selector">
       <h3>Choose Background</h3>
+
+      {/* Custom Color Picker Section */}
+      <div className="background-category">
+        <SpectrumColorPicker
+          value={currentCustomColor}
+          onChange={handleCustomColorSelect}
+          label="Solid Colors"
+        />
+      </div>
+
+      {/* Other Background Categories */}
       {Object.entries(groupedOptions).map(([category, options]) => (
         <div key={category} className="background-category">
           <h4 className="category-title">{categoryTitles[category]}</h4>
