@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import { useFont } from "../hooks/useFont";
+import { isLightColor } from "../utils/colorUtils";
 
 /**
  * React Context for managing global theme state
@@ -52,6 +53,13 @@ export const ThemeProvider = ({ children }) => {
   // Apply font styling automatically when font changes
   // This ensures the selected font is applied globally to the document
   useFont(font);
+
+  // Apply background-based styling to document root
+  useEffect(() => {
+    const isLight = isLightColor(background);
+    document.documentElement.classList.toggle("light-bg", isLight);
+    document.documentElement.classList.toggle("dark-bg", !isLight);
+  }, [background]);
 
   // Load saved theme settings from localStorage on component mount
   // This effect runs once when the ThemeProvider is first rendered

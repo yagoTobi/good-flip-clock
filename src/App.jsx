@@ -6,6 +6,7 @@ import TimerControls from "./components/TimerControls";
 import CustomizationPanel from "./components/CustomizationPanel";
 import TimerSettings from "./components/TimerSettings";
 import PomodoroSettings from "./components/PomodoroSettings";
+import CoffeeButton from "./components/CoffeeButton";
 import { useTimer } from "./hooks/useTimer";
 import { usePomodoroTimer } from "./hooks/usePomodoroTimer";
 import { MODES } from "./constants";
@@ -112,6 +113,8 @@ function AppContent() {
 
   return (
     <div className={`app ${isLightBackground() ? "light-bg" : "dark-bg"}`}>
+      <CoffeeButton />
+
       <main className="app-main">
         <div className="clock-container">
           <FlipClock

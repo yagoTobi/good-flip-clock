@@ -104,6 +104,7 @@ const CustomizationPanel = ({ isOpen, onClose }) => {
         </div>
 
         <div className="panel-actions">
+          <div className="panel-signature">Made with care 🇪🇸 - Yago Tobio</div>
           <button className="action-button secondary" onClick={onClose}>
             Done
           </button>

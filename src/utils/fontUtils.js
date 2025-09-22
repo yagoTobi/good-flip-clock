@@ -68,6 +68,20 @@ export const FONT_OPTIONS = {
     value: "'Anton', sans-serif",
     sample: "12:34",
   },
+  /** Elegant serif font for sophisticated look */
+  playfair: {
+    id: "playfair",
+    name: "Playfair",
+    value: "'Playfair Display', serif",
+    sample: "12:34",
+  },
+  /** Modern geometric sans-serif font */
+  poppins: {
+    id: "poppins",
+    name: "Poppins",
+    value: "'Poppins', sans-serif",
+    sample: "12:34",
+  },
 };
 
 /**

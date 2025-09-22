@@ -1,103 +1,144 @@
 /**
- * Color utility functions for theme customization and contrast analysis
- *
- * This module provides utilities for determining color brightness, calculating
- * appropriate contrast colors, and analyzing background types (colors, gradients, images).
- * Used primarily by the theme system to ensure proper text contrast and UI visibility.
+ * Color utility functions for theme management and color analysis
  */
 
 /**
- * Determines if a background color/gradient/image is dark or light
- *
- * This function analyzes different background types to determine their brightness,
- * which is used to select appropriate text colors and UI elements for contrast.
- *
- * @param {string} background - The background value (color, gradient, or image URL)
- * @returns {boolean} true if the background is dark, false if light
- *
- * @example
- * isDarkBackground("#000000") // returns true
- * isDarkBackground("#ffffff") // returns false
- * isDarkBackground("linear-gradient(45deg, #000000, #333333)") // returns true
- * isDarkBackground("url('/path/to/image.jpg')") // returns true (assumes dark)
+ * Convert hex color to RGB values
+ * @param {string} hex - Hex color string (e.g., "#ff0000")
+ * @returns {Object} RGB values {r, g, b}
  */
-export const isDarkBackground = (background) => {
-  // Default background is considered dark for better text contrast
-  if (background === "default") {
-    return true;
+export const hexToRgb = (hex) => {
+  if (!hex || !hex.startsWith("#")) return { r: 0, g: 0, b: 0 };
+
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
+    : { r: 0, g: 0, b: 0 };
+};
+
+/**
+ * Convert HSL color to RGB values
+ * @param {string} hsl - HSL color string (e.g., "hsl(120, 100%, 50%)")
+ * @returns {Object} RGB values {r, g, b}
+ */
+export const hslToRgb = (hsl) => {
+  const match = hsl.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+  if (!match) return { r: 0, g: 0, b: 0 };
+
+  const [, h, s, l] = match.map(Number);
+  const hDecimal = h / 360;
+  const sDecimal = s / 100;
+  const lDecimal = l / 100;
+
+  const hue2rgb = (p, q, t) => {
+    if (t < 0) t += 1;
+    if (t > 1) t -= 1;
+    if (t < 1 / 6) return p + (q - p) * 6 * t;
+    if (t < 1 / 2) return q;
+    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+    return p;
+  };
+
+  let r, g, b;
+
+  if (sDecimal === 0) {
+    r = g = b = lDecimal; // achromatic
+  } else {
+    const q =
+      lDecimal < 0.5
+        ? lDecimal * (1 + sDecimal)
+        : lDecimal + sDecimal - lDecimal * sDecimal;
+    const p = 2 * lDecimal - q;
+    r = hue2rgb(p, q, hDecimal + 1 / 3);
+    g = hue2rgb(p, q, hDecimal);
+    b = hue2rgb(p, q, hDecimal - 1 / 3);
   }
 
-  // Handle solid hex colors by analyzing their luminance
-  if (background.startsWith("#")) {
-    return isColorDark(background);
-  }
+  return {
+    r: Math.round(r * 255),
+    g: Math.round(g * 255),
+    b: Math.round(b * 255),
+  };
+};
 
-  // Handle CSS gradients by analyzing the first color found
-  if (background.startsWith("linear-gradient")) {
-    const colorMatch = background.match(/#[0-9a-fA-F]{6}/);
+/**
+ * Calculate the relative luminance of a color
+ * @param {Object} rgb - RGB color object {r, g, b}
+ * @returns {number} Relative luminance (0-1)
+ */
+export const getLuminance = (rgb) => {
+  const { r, g, b } = rgb;
+
+  // Convert to sRGB
+  const rsRGB = r / 255;
+  const gsRGB = g / 255;
+  const bsRGB = b / 255;
+
+  // Apply gamma correction
+  const rLinear =
+    rsRGB <= 0.03928 ? rsRGB / 12.92 : Math.pow((rsRGB + 0.055) / 1.055, 2.4);
+  const gLinear =
+    gsRGB <= 0.03928 ? gsRGB / 12.92 : Math.pow((gsRGB + 0.055) / 1.055, 2.4);
+  const bLinear =
+    bsRGB <= 0.03928 ? bsRGB / 12.92 : Math.pow((bsRGB + 0.055) / 1.055, 2.4);
+
+  // Calculate relative luminance
+  return 0.2126 * rLinear + 0.7152 * gLinear + 0.0722 * bLinear;
+};
+
+/**
+ * Determine if a background color is light or dark
+ * @param {string} color - Color string (hex, hsl, or css value)
+ * @returns {boolean} True if the color is light, false if dark
+ */
+export const isLightColor = (color) => {
+  if (!color) return false;
+
+  let rgb;
+
+  // Handle special "default" background
+  if (color === "default") {
+    // Default background is #1a1a1a (dark)
+    rgb = hexToRgb("#1a1a1a");
+  }
+  // Handle hex colors
+  else if (color.startsWith("#")) {
+    rgb = hexToRgb(color);
+  }
+  // Handle HSL colors
+  else if (color.startsWith("hsl(")) {
+    rgb = hslToRgb(color);
+  }
+  // Handle gradients - use the first color
+  else if (color.includes("linear-gradient")) {
+    const colorMatch = color.match(/#[a-f\d]{6}|hsl\(\d+,\s*\d+%,\s*\d+%\)/i);
     if (colorMatch) {
-      return isColorDark(colorMatch[0]);
+      return isLightColor(colorMatch[0]);
     }
-    // If no hex color found in gradient, assume dark for safety
-    return true;
+    return false; // Default to dark for gradients
+  }
+  // Handle image backgrounds
+  else if (color.includes("url(")) {
+    return false; // Default to dark for images
+  }
+  // Handle named colors or other formats
+  else {
+    return false; // Default to dark for unknown formats
   }
 
-  // Handle background images - assume dark for better text contrast
-  if (background.startsWith("url(")) {
-    return true;
-  }
-
-  // Default to dark for unknown background values
-  return true;
+  const luminance = getLuminance(rgb);
+  return luminance > 0.5; // Threshold for light vs dark
 };
 
 /**
- * Determines if a hex color is dark or light using relative luminance calculation
- *
- * Uses the standard relative luminance formula to determine color brightness.
- * This is more accurate than simple RGB averaging as it accounts for human
- * perception of different color channels.
- *
- * @param {string} hexColor - Hex color string (e.g., "#ffffff", "#000000")
- * @returns {boolean} true if the color is dark (luminance < 0.5), false if light
- *
- * @example
- * isColorDark("#000000") // returns true (black)
- * isColorDark("#ffffff") // returns false (white)
- * isColorDark("#808080") // returns true (medium gray)
+ * Get appropriate text color (black or white) for a given background
+ * @param {string} backgroundColor - Background color string
+ * @returns {string} Either "#000000" or "#ffffff"
  */
-const isColorDark = (hexColor) => {
-  // Remove # prefix if present
-  const hex = hexColor.replace("#", "");
-
-  // Convert hex to RGB values (0-255)
-  const r = parseInt(hex.substr(0, 2), 16);
-  const g = parseInt(hex.substr(2, 2), 16);
-  const b = parseInt(hex.substr(4, 2), 16);
-
-  // Calculate relative luminance using ITU-R BT.709 coefficients
-  // These weights account for human eye sensitivity to different colors
-  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-
-  // Return true if dark (luminance below 50% threshold)
-  return luminance < 0.5;
-};
-
-/**
- * Gets the appropriate panel background color based on the main background
- *
- * Provides high contrast panel colors to ensure UI elements remain visible
- * and accessible regardless of the main background. Used for customization
- * panels, modals, and other overlay elements.
- *
- * @param {string} background - The main background value (color, gradient, or image)
- * @returns {string} "#ffffff" for dark backgrounds, "#1a1a1a" for light backgrounds
- *
- * @example
- * getContrastingPanelColor("#000000") // returns "#ffffff" (white panel on dark bg)
- * getContrastingPanelColor("#ffffff") // returns "#1a1a1a" (dark panel on light bg)
- * getContrastingPanelColor("url('/dark-image.jpg')") // returns "#ffffff"
- */
-export const getContrastingPanelColor = (background) => {
-  return isDarkBackground(background) ? "#ffffff" : "#1a1a1a";
+export const getContrastTextColor = (backgroundColor) => {
+  return isLightColor(backgroundColor) ? "#000000" : "#ffffff";
 };
