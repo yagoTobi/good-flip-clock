@@ -23,9 +23,10 @@
   font-size: 1.5rem;
   font-weight: 700;
   text-align: center;
-  font-family: 'Impact', 'Arial Black', Arial, sans-serif;
+  font-family: "Impact", "Arial Black", Arial, sans-serif;
   transition: all 0.2s ease;
   outline: none;
+  -webkit-tap-highlight-color: transparent; /* Remove default mobile tap highlight */
 }
 
 .time-input-field:focus {
@@ -39,4 +40,41 @@
 
 .time-input-field::placeholder {
   color: #666666;
+}
+
+/* Mobile Responsive Design */
+@media (max-width: 767px) {
+  .time-input {
+    gap: 0.75rem; /* Increased spacing */
+  }
+
+  .time-input-label {
+    font-size: 1rem; /* Larger label text on mobile */
+  }
+
+  .time-input-field {
+    width: 70px; /* Wider input field for easier touch */
+    height: 56px; /* Taller for better touch targets */
+    font-size: 1.75rem; /* Larger text for better readability */
+    border-width: 3px; /* Thicker border for better visibility */
+  }
+
+  .time-input-field:focus {
+    border-color: #646cff;
+    box-shadow: 0 0 0 4px rgba(100, 108, 255, 0.15); /* Larger focus ring */
+  }
+
+  .time-input-field:active {
+    transform: scale(0.98); /* Subtle press feedback */
+    transition: transform 0.1s ease;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .time-input-field {
+    width: 65px;
+    height: 52px;
+    font-size: 1.6rem;
+  }
 }

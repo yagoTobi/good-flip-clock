@@ -1,0 +1,271 @@
+/* Mobile Performance Optimizations */
+
+/* Reduce motion for users who prefer it and on mobile devices */
+@media (prefers-reduced-motion: reduce), (max-width: 767px) {
+  /* Disable complex flip animations on mobile for better performance */
+  .flip-card.flipping .flip-animation {
+    animation: none !important;
+  }
+
+  /* Simplify mode selector animations */
+  .selector-slider {
+    transition: transform 0.15s ease !important;
+  }
+
+  /* Reduce customization panel fade animation */
+  .tab-content {
+    animation: none !important;
+  }
+
+  /* Simplify button hover animations */
+  .control-button:hover {
+    transform: none !important;
+  }
+
+  .customization-button:hover {
+    transform: none !important;
+  }
+
+  /* Disable pulse animation on mobile */
+  .timer-indicator {
+    animation: none !important;
+  }
+
+  /* Disable brush wiggle animation */
+  .customization-button:hover svg {
+    animation: none !important;
+  }
+
+  /* Simplify play/pause transitions */
+  .play-button svg {
+    animation: none !important;
+  }
+
+  /* Disable stop button slide animations */
+  .stop-button {
+    animation: none !important;
+  }
+
+  .stop-button.exiting {
+    animation: none !important;
+  }
+}
+
+/* Hardware acceleration optimizations for mobile */
+@media (max-width: 767px) {
+  /* Use transform3d to trigger hardware acceleration */
+  .flip-card-inner,
+  .flip-animation,
+  .flip-animation-front,
+  .flip-animation-back {
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+  }
+
+  /* Optimize selector slider for hardware acceleration */
+  .selector-slider {
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+  }
+
+  /* Optimize control buttons for touch interactions */
+  .control-button {
+    transform: translate3d(0, 0, 0);
+    will-change: transform, background-color;
+  }
+
+  /* Optimize customization panel for smooth scrolling */
+  .customization-panel {
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+  }
+
+  .panel-content {
+    transform: translate3d(0, 0, 0);
+    will-change: scroll-position;
+  }
+}
+
+/* CSS Containment for better performance */
+@media (max-width: 767px) {
+  /* Contain layout and style changes within flip cards */
+  .flip-card {
+    contain: layout style;
+  }
+
+  /* Contain paint operations for better performance */
+  .flip-card-inner {
+    contain: paint;
+  }
+
+  /* Contain customization panel operations */
+  .customization-panel {
+    contain: layout style;
+  }
+
+  /* Contain timer controls layout */
+  .timer-controls {
+    contain: layout;
+  }
+
+  /* Contain mode selector operations */
+  .mode-selector {
+    contain: layout style;
+  }
+}
+
+/* Optimize reflows and repaints on mobile */
+@media (max-width: 767px) {
+  /* Use transform instead of changing position properties */
+  .timer-controls {
+    transform: translate3d(0, 0, 0);
+  }
+
+  /* Optimize backdrop filter performance */
+  .customization-overlay {
+    backdrop-filter: blur(2px); /* Reduced blur for better performance */
+  }
+
+  .clock-container {
+    backdrop-filter: blur(5px); /* Reduced blur for better performance */
+  }
+
+  /* Optimize box-shadow performance */
+  .flip-card-inner {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Simplified shadow */
+  }
+
+  .customization-panel {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Simplified shadow */
+  }
+}
+
+/* Touch-specific optimizations */
+@media (max-width: 767px) and (pointer: coarse) {
+  /* Disable hover effects on touch devices */
+  .control-button:hover,
+  .customization-button:hover,
+  .selector-option:hover,
+  .tab-button:hover,
+  .close-button:hover {
+    background: inherit !important;
+    transform: none !important;
+    box-shadow: inherit !important;
+  }
+
+  /* Optimize touch feedback with faster transitions */
+  .control-button:active,
+  .customization-button:active,
+  .selector-option:active {
+    transition: all 0.1s ease !important;
+  }
+}
+
+/* Memory optimization for mobile */
+@media (max-width: 767px) {
+  /* Reduce will-change usage when not needed */
+  .flip-card:not(.flipping) .flip-card-inner,
+  .flip-card:not(.flipping) .flip-animation {
+    will-change: auto;
+  }
+
+  .selector-slider:not(:hover) {
+    will-change: auto;
+  }
+
+  .control-button:not(:active) {
+    will-change: auto;
+  }
+}
+
+/* Low-end device optimizations */
+@media (max-width: 767px) and (max-resolution: 1.5dppx) {
+  /* Further reduce effects on low-end devices */
+  .customization-overlay {
+    backdrop-filter: none;
+    background: rgba(0, 0, 0, 0.8);
+  }
+
+  .clock-container {
+    backdrop-filter: none;
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  /* Disable text shadows on low-end devices */
+  .app-header h1,
+  .flip-card .digit {
+    text-shadow: none;
+  }
+}
+
+/* Battery optimization - reduce animations when battery is low */
+@media (max-width: 767px) {
+  /* This will be enhanced by JavaScript battery API if available */
+  .battery-low .flip-card.flipping .flip-animation,
+  .battery-low .selector-slider,
+  .battery-low .control-button,
+  .battery-low .customization-button {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Additional optimizations for detected mobile devices */
+.mobile-device {
+  /* Optimize scrolling performance */
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: auto; /* Disable smooth scrolling on mobile */
+}
+
+.mobile-device .customization-overlay {
+  /* Reduce backdrop blur on mobile */
+  backdrop-filter: blur(2px);
+}
+
+.mobile-device .clock-container {
+  /* Reduce backdrop blur on mobile */
+  backdrop-filter: blur(5px);
+}
+
+/* Low-end device specific optimizations */
+.low-end-device .flip-card.flipping .flip-animation {
+  animation: none !important;
+}
+
+.low-end-device .customization-overlay,
+.low-end-device .clock-container {
+  backdrop-filter: none !important;
+}
+
+.low-end-device .timer-indicator {
+  animation: none !important;
+}
+
+.low-end-device .customization-button:hover svg {
+  animation: none !important;
+}
+
+/* Reduced motion preferences */
+.reduced-motion * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+/* Force hardware acceleration on key elements */
+.flip-card-inner,
+.selector-slider,
+.control-button,
+.customization-panel {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Optimize text rendering on mobile */
+@media (max-width: 767px) {
+  .flip-card .digit {
+    text-rendering: optimizeSpeed;
+    -webkit-font-smoothing: subpixel-antialiased;
+  }
+}

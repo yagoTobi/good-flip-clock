@@ -37,6 +37,9 @@
   height: 80px;
   position: relative;
   border-radius: 0;
+  min-width: 44px; /* Ensure minimum touch target size */
+  min-height: 44px; /* Ensure minimum touch target size */
+  -webkit-tap-highlight-color: transparent; /* Remove default mobile tap highlight */
 }
 
 .font-option:hover {
@@ -89,10 +92,19 @@
   outline-offset: 2px;
 }
 
+/* Enhanced touch feedback for mobile */
+@media (max-width: 767px) {
+  .font-option:active {
+    transform: scale(0.95);
+    transition: all 0.1s ease;
+  }
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .font-options {
     max-width: 360px;
+    gap: 2px; /* Slight gap to prevent accidental touches */
   }
 
   .font-option {

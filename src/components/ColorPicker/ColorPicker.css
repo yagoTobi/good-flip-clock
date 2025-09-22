@@ -16,6 +16,22 @@
   margin-bottom: 1rem;
 }
 
+/* Mobile: increase spacing and adjust grid for better touch accessibility */
+@media (max-width: 767px) {
+  .preset-colors {
+    gap: 0.75rem; /* Increased spacing to prevent accidental touches */
+    grid-template-columns: repeat(
+      6,
+      1fr
+    ); /* Fewer columns for larger touch targets */
+  }
+
+  .color-swatch:active {
+    transform: scale(0.95);
+    transition: all 0.1s ease;
+  }
+}
+
 .color-swatch {
   width: 40px;
   height: 40px;
@@ -27,6 +43,9 @@
   align-items: center;
   justify-content: center;
   position: relative;
+  min-width: 44px; /* Ensure minimum touch target size */
+  min-height: 44px; /* Ensure minimum touch target size */
+  -webkit-tap-highlight-color: transparent; /* Remove default mobile tap highlight */
 }
 
 .color-swatch:hover {
@@ -84,6 +103,9 @@
   border-radius: 6px;
   cursor: pointer;
   background: none;
+  min-width: 44px; /* Ensure minimum touch target size */
+  min-height: 44px; /* Ensure minimum touch target size */
+  -webkit-tap-highlight-color: transparent; /* Remove default mobile tap highlight */
 }
 
 .color-value {

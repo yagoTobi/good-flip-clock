@@ -1,13 +1,30 @@
 .pomodoro-controls {
-  position: absolute;
-  right: -150px;
-  top: 50%;
-  transform: translateY(-50%);
+  /* Mobile-first: static positioning, vertical layout */
+  position: static;
   display: flex;
   flex-direction: column;
   gap: 1rem;
   align-items: center;
   padding: 4px 0;
+  width: 100%;
+}
+
+/* Tablet and up: restore desktop layout */
+@media (min-width: 768px) {
+  .pomodoro-controls {
+    position: absolute;
+    right: -150px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: auto;
+  }
+}
+
+/* Mobile: increase spacing between controls to prevent accidental touches */
+@media (max-width: 767px) {
+  .pomodoro-controls {
+    gap: 1.5rem; /* Increased spacing for better touch accessibility */
+  }
 }
 
 .play-stop-container {
@@ -49,11 +66,21 @@
   min-height: 60px;
   max-height: 60px;
   flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent; /* Remove default mobile tap highlight */
 }
 
 .control-button:hover:not(:disabled) {
   background: #3a3a3a;
   transform: translateY(-1px);
+}
+
+/* Enhanced touch feedback for mobile */
+@media (max-width: 767px) {
+  .control-button:active:not(:disabled) {
+    background: #4a4a4a;
+    transform: scale(0.95);
+    transition: all 0.1s ease;
+  }
 }
 
 .control-button:disabled {

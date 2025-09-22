@@ -12,6 +12,7 @@
   font-size: 1.2rem;
   min-width: 48px;
   min-height: 48px;
+  -webkit-tap-highlight-color: transparent; /* Remove default mobile tap highlight */
 }
 
 .customization-button:hover {
@@ -24,6 +25,14 @@
 .customization-button:active {
   transform: translateY(0);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Enhanced touch feedback for mobile */
+@media (max-width: 767px) {
+  .customization-button:active {
+    transform: scale(0.95);
+    transition: all 0.1s ease;
+  }
 }
 
 .customization-button svg {

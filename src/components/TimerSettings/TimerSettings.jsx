@@ -8,6 +8,43 @@ function TimerSettings({ isOpen, onClose, onSave }) {
   const [minutes, setMinutes] = useState(TIMER_SETTINGS_DEFAULTS.minutes);
   const [seconds, setSeconds] = useState(TIMER_SETTINGS_DEFAULTS.seconds);
 
+  // Focus management for accessibility
+  useEffect(() => {
+    if (isOpen) {
+      // Focus the first input when modal opens
+      const firstInput = document.querySelector("#time-input-hours");
+      if (firstInput) {
+        firstInput.focus();
+      }
+
+      // Trap focus within the modal
+      const handleKeyDown = (e) => {
+        if (e.key === "Escape") {
+          onClose();
+        }
+
+        if (e.key === "Tab") {
+          const focusableElements = document.querySelectorAll(
+            '.timer-settings-modal button, .timer-settings-modal input, .timer-settings-modal select, .timer-settings-modal [tabindex]:not([tabindex="-1"])'
+          );
+          const firstElement = focusableElements[0];
+          const lastElement = focusableElements[focusableElements.length - 1];
+
+          if (e.shiftKey && document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement.focus();
+          } else if (!e.shiftKey && document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement.focus();
+          }
+        }
+      };
+
+      document.addEventListener("keydown", handleKeyDown);
+      return () => document.removeEventListener("keydown", handleKeyDown);
+    }
+  }, [isOpen, onClose]);
+
   // Reset to defaults when modal opens
   useEffect(() => {
     if (isOpen) {
@@ -42,28 +79,42 @@ function TimerSettings({ isOpen, onClose, onSave }) {
   if (!isOpen) return null;
 
   return (
-    <div className="timer-settings-overlay" onClick={handleOverlayClick}>
+    <div
+      className="timer-settings-overlay"
+      onClick={handleOverlayClick}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="timer-settings-title"
+    >
       <div className="timer-settings-modal">
         <div className="timer-settings-header">
-          <h2>Set Timer</h2>
+          <h2 id="timer-settings-title">Set Timer</h2>
         </div>
 
         <div className="timer-settings-content">
-          <div className="time-inputs">
+          <div
+            className="time-inputs"
+            role="group"
+            aria-label="Timer duration settings"
+          >
             <TimeInput
               label="Hours"
               value={hours}
               maxValue={TIMER_LIMITS.MAX_HOURS}
               onChange={setHours}
             />
-            <div className="time-separator">:</div>
+            <div className="time-separator" aria-hidden="true">
+              :
+            </div>
             <TimeInput
               label="Minutes"
               value={minutes}
               maxValue={TIMER_LIMITS.MAX_MINUTES}
               onChange={setMinutes}
             />
-            <div className="time-separator">:</div>
+            <div className="time-separator" aria-hidden="true">
+              :
+            </div>
             <TimeInput
               label="Seconds"
               value={seconds}
@@ -77,10 +128,15 @@ function TimerSettings({ isOpen, onClose, onSave }) {
           <button
             className="settings-button cancel-button"
             onClick={handleCancel}
+            aria-label="Cancel timer settings without saving"
           >
             Cancel
           </button>
-          <button className="settings-button save-button" onClick={handleSave}>
+          <button
+            className="settings-button save-button"
+            onClick={handleSave}
+            aria-label="Save timer settings and close dialog"
+          >
             Set Timer
           </button>
         </div>

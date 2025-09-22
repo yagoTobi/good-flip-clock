@@ -47,6 +47,43 @@ function PomodoroSettings({ isOpen, onClose, onSave, currentSettings }) {
     }
   }, [isOpen, currentSettings]);
 
+  // Focus management for accessibility
+  useEffect(() => {
+    if (isOpen) {
+      // Focus the first preset button when modal opens
+      const firstPresetButton = document.querySelector(".preset-button");
+      if (firstPresetButton) {
+        firstPresetButton.focus();
+      }
+
+      // Trap focus within the modal
+      const handleKeyDown = (e) => {
+        if (e.key === "Escape") {
+          handleCancel();
+        }
+
+        if (e.key === "Tab") {
+          const focusableElements = document.querySelectorAll(
+            '.pomodoro-settings-modal button, .pomodoro-settings-modal input, .pomodoro-settings-modal select, .pomodoro-settings-modal [tabindex]:not([tabindex="-1"])'
+          );
+          const firstElement = focusableElements[0];
+          const lastElement = focusableElements[focusableElements.length - 1];
+
+          if (e.shiftKey && document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement.focus();
+          } else if (!e.shiftKey && document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement.focus();
+          }
+        }
+      };
+
+      document.addEventListener("keydown", handleKeyDown);
+      return () => document.removeEventListener("keydown", handleKeyDown);
+    }
+  }, [isOpen]);
+
   const validateDuration = (value, min = 1, max = 120) => {
     const num = parseInt(value);
     if (isNaN(num) || num < min || num > max) {

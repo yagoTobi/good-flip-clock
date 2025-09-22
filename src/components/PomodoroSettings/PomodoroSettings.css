@@ -88,6 +88,8 @@
   cursor: pointer;
   transition: all 0.2s ease;
   min-width: 80px;
+  min-height: 44px; /* Ensure minimum touch target size */
+  -webkit-tap-highlight-color: transparent; /* Remove default mobile tap highlight */
 }
 
 .preset-button:hover {
@@ -193,6 +195,8 @@
   cursor: pointer;
   transition: all 0.2s ease;
   min-width: 120px;
+  min-height: 44px; /* Ensure minimum touch target size */
+  -webkit-tap-highlight-color: transparent; /* Remove default mobile tap highlight */
 }
 
 .cancel-button {
@@ -224,24 +228,249 @@
   transform: translateY(0);
 }
 
-/* Responsive Design */
-@media (max-width: 600px) {
+/* Mobile Responsive Design */
+@media (max-width: 767px) {
+  .pomodoro-settings-overlay {
+    padding: 0.5rem;
+    align-items: flex-end; /* Align modal to bottom on mobile */
+  }
+
   .pomodoro-settings-modal {
     min-width: auto;
     width: 100%;
-    margin: 1rem;
+    max-width: none;
+    margin: 0;
     padding: 1.5rem;
+    border-radius: 16px 16px 0 0; /* Rounded top corners only */
+    max-height: 85vh; /* Limit height to prevent overflow */
+    animation: modalSlideUp 0.3s ease-out;
   }
 
+  @keyframes modalSlideUp {
+    from {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .pomodoro-settings-header h2 {
+    font-size: 1.25rem; /* Slightly smaller on mobile */
+  }
+
+  .pomodoro-settings-content {
+    gap: 2rem; /* Increased spacing between sections */
+  }
+
+  .settings-section {
+    gap: 1rem; /* Increased spacing within sections */
+  }
+
+  .settings-section h3 {
+    font-size: 1rem; /* Slightly smaller section headers */
+    padding-bottom: 0.75rem;
+  }
+
+  /* Preset buttons optimization */
   .preset-buttons {
+    gap: 0.75rem; /* Increased spacing to prevent accidental touches */
     justify-content: center;
   }
 
+  .preset-button {
+    padding: 0.75rem 1.25rem; /* Larger padding for better touch targets */
+    font-size: 1rem; /* Larger text */
+    min-width: 90px; /* Wider minimum width */
+    min-height: 48px; /* Larger minimum touch target */
+  }
+
+  .preset-button:active {
+    transform: scale(0.95);
+    transition: all 0.1s ease;
+  }
+
+  /* Duration inputs optimization */
+  .duration-inputs {
+    gap: 1.5rem; /* Increased spacing between input groups */
+  }
+
+  .duration-input-group {
+    gap: 0.5rem; /* Increased spacing within input groups */
+  }
+
+  .duration-input-group label {
+    font-size: 1rem; /* Larger label text */
+    font-weight: 600; /* Bolder labels for better readability */
+  }
+
+  .duration-input-group input {
+    padding: 0.75rem; /* Larger padding for better touch targets */
+    font-size: 1.1rem; /* Larger text */
+    width: 120px; /* Wider input fields */
+    min-height: 48px; /* Larger minimum touch target */
+    border-width: 3px; /* Thicker border for better visibility */
+  }
+
+  .duration-input-group input:focus {
+    border-color: #22c55e;
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15); /* Larger focus ring */
+  }
+
+  .duration-input-group input:active {
+    transform: scale(0.98); /* Subtle press feedback */
+    transition: transform 0.1s ease;
+  }
+
+  .error-message {
+    font-size: 0.9rem; /* Slightly larger error text */
+  }
+
+  /* Toggle section optimization */
+  .toggle-group {
+    gap: 1rem; /* Increased spacing */
+    padding: 0.5rem 0; /* Added padding for better touch area */
+  }
+
+  .toggle-label {
+    font-size: 1.1rem; /* Larger label text */
+  }
+
+  .toggle-checkbox {
+    width: 24px; /* Larger checkbox */
+    height: 24px;
+    min-width: 44px; /* Ensure minimum touch target with padding */
+    min-height: 44px;
+    padding: 10px; /* Invisible padding for larger touch area */
+  }
+
+  .toggle-description {
+    font-size: 0.95rem; /* Slightly larger description text */
+    margin-top: 0.5rem;
+  }
+
+  /* Actions optimization */
   .pomodoro-settings-actions {
-    flex-direction: column;
+    gap: 1rem;
+    flex-direction: column; /* Stack buttons vertically on mobile */
+    margin-top: 2.5rem; /* Increased top margin */
+    padding-top: 1.5rem; /* Increased padding */
   }
 
   .settings-button {
+    width: 100%; /* Full width buttons on mobile */
+    padding: 1rem 2rem; /* Larger padding for better touch targets */
+    font-size: 1.1rem; /* Slightly larger text */
+    min-height: 48px; /* Larger minimum touch target */
+  }
+
+  .settings-button:active:not(:disabled) {
+    transform: scale(0.95);
+    transition: all 0.1s ease;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .pomodoro-settings-modal {
+    min-width: 450px;
+    max-width: 600px;
+    margin: 2rem;
+  }
+
+  .preset-buttons {
+    gap: 0.75rem;
+  }
+
+  .duration-input-group input {
+    width: 110px;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .pomodoro-settings-modal {
+    padding: 1rem;
+  }
+
+  .preset-buttons {
+    flex-direction: column; /* Stack preset buttons on very small screens */
+    align-items: stretch;
+  }
+
+  .preset-button {
     width: 100%;
+    min-width: auto;
+  }
+
+  .duration-input-group input {
+    width: 100%; /* Full width inputs on very small screens */
+  }
+}
+/* Landscape orientation optimizations for mobile */
+@media (max-width: 767px) and (orientation: landscape) {
+  .pomodoro-settings-overlay {
+    align-items: center; /* Center modal in landscape */
+    padding: 1rem;
+  }
+
+  .pomodoro-settings-modal {
+    border-radius: 16px; /* Full rounded corners in landscape */
+    animation: modalSlideIn 0.3s ease-out; /* Use slide-in animation */
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 1rem 1.5rem;
+    max-width: 90vw;
+  }
+
+  .pomodoro-settings-header {
+    margin-bottom: 1rem;
+  }
+
+  .pomodoro-settings-header h2 {
+    font-size: 1.125rem;
+  }
+
+  .settings-section {
+    margin-bottom: 1rem;
+  }
+
+  .settings-section h3 {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .time-inputs {
+    gap: 0.75rem;
+    flex-wrap: nowrap;
+  }
+
+  .time-separator {
+    font-size: 1.125rem;
+  }
+
+  .pomodoro-settings-actions {
+    flex-direction: row; /* Horizontal buttons in landscape */
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .settings-button {
+    width: auto;
+    min-width: 100px;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+    min-height: 40px;
+  }
+}
+
+/* Smooth transitions for orientation changes */
+@media (max-width: 767px) {
+  .pomodoro-settings-modal,
+  .settings-section,
+  .pomodoro-settings-actions {
+    transition: all 0.3s ease;
   }
 }

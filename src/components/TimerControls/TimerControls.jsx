@@ -67,14 +67,23 @@ function TimerControls({ mode, timer, pomodoroTimer, onSettingsClick }) {
 
   return (
     <>
-      <div className="timer-controls">
+      <div className="timer-controls" role="group" aria-label="Timer controls">
         {/* Play/Stop buttons in horizontal container */}
         <div className="play-stop-container">
           <button
             className={`control-button play-button ${timer.timerState}`}
             onClick={handlePlayPause}
+            aria-label={timer.isRunning ? "Pause timer" : "Start timer"}
+            aria-pressed={timer.isRunning}
           >
-            {timer.isRunning ? <FaPause /> : <FaPlay />}
+            {timer.isRunning ? (
+              <FaPause aria-hidden="true" />
+            ) : (
+              <FaPlay aria-hidden="true" />
+            )}
+            <span className="sr-only">
+              {timer.isRunning ? "Pause timer" : "Start timer"}
+            </span>
           </button>
 
           {/* Show stop button with smooth horizontal animation */}
@@ -84,8 +93,10 @@ function TimerControls({ mode, timer, pomodoroTimer, onSettingsClick }) {
                 isStopButtonExiting ? "exiting" : ""
               }`}
               onClick={handleStop}
+              aria-label="Stop timer and reset to original time"
             >
-              <FaStop />
+              <FaStop aria-hidden="true" />
+              <span className="sr-only">Stop timer and reset</span>
             </button>
           )}
         </div>
@@ -94,8 +105,11 @@ function TimerControls({ mode, timer, pomodoroTimer, onSettingsClick }) {
         <button
           className="control-button settings-button"
           onClick={handleSettings}
+          aria-label="Open timer settings"
+          aria-haspopup="dialog"
         >
-          <FaCog />
+          <FaCog aria-hidden="true" />
+          <span className="sr-only">Timer settings</span>
         </button>
       </div>
     </>

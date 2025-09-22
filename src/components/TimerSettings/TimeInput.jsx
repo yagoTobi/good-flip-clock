@@ -106,10 +106,15 @@ function TimeInput({ label, value, maxValue, onChange }) {
     setIsProgressiveTyping(false); // Reset progressive typing state
   };
 
+  const inputId = `time-input-${label.toLowerCase()}`;
+
   return (
     <div className="time-input">
-      <label className="time-input-label">{label}</label>
+      <label className="time-input-label" htmlFor={inputId}>
+        {label}
+      </label>
       <input
+        id={inputId}
         type="text"
         className="time-input-field"
         value={inputValue}
@@ -119,7 +124,16 @@ function TimeInput({ label, value, maxValue, onChange }) {
         onClick={handleClick}
         readOnly
         placeholder="00"
+        aria-label={`${label} (0 to ${maxValue})`}
+        aria-describedby={`${inputId}-help`}
+        role="spinbutton"
+        aria-valuemin="0"
+        aria-valuemax={maxValue}
+        aria-valuenow={value}
       />
+      <div id={`${inputId}-help`} className="sr-only">
+        Use number keys to set {label.toLowerCase()}. Range: 0 to {maxValue}.
+      </div>
     </div>
   );
 }

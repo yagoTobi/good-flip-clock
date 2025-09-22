@@ -32,6 +32,18 @@
   width: 100%;
 }
 
+/* Mobile: add spacing and touch feedback */
+@media (max-width: 767px) {
+  .gradient-grid {
+    gap: 2px; /* Small gap to prevent accidental touches */
+  }
+
+  .gradient-square:active {
+    transform: scale(0.95);
+    transition: all 0.1s ease;
+  }
+}
+
 .gradient-square {
   width: 100%;
   height: 60px;
@@ -41,6 +53,9 @@
   position: relative;
   border-radius: 0;
   aspect-ratio: 2;
+  min-width: 44px; /* Ensure minimum touch target size */
+  min-height: 44px; /* Ensure minimum touch target size */
+  -webkit-tap-highlight-color: transparent; /* Remove default mobile tap highlight */
 }
 
 .gradient-square::before {

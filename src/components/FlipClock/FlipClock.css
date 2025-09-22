@@ -39,39 +39,42 @@
 /* Mode flip animations */
 @keyframes flipLeft {
   0% {
-    transform: rotateY(0deg);
+    transform: rotateY(0deg) translateZ(0);
   }
   50% {
-    transform: rotateY(-90deg);
+    transform: rotateY(-90deg) translateZ(0);
   }
   100% {
-    transform: rotateY(0deg);
+    transform: rotateY(0deg) translateZ(0);
   }
 }
 
 @keyframes flipRight {
   0% {
-    transform: rotateY(0deg);
+    transform: rotateY(0deg) translateZ(0);
   }
   50% {
-    transform: rotateY(90deg);
+    transform: rotateY(90deg) translateZ(0);
   }
   100% {
-    transform: rotateY(0deg);
+    transform: rotateY(0deg) translateZ(0);
   }
 }
 
 .flip-clock.flipping-left {
   animation: flipLeft 0.3s ease-in-out;
+  will-change: transform;
 }
 
 .flip-clock.flipping-right {
   animation: flipRight 0.3s ease-in-out;
+  will-change: transform;
 }
 
 .flip-clock.flipping-left,
 .flip-clock.flipping-right {
   transform-style: preserve-3d;
+  transform: translateZ(0); /* Force hardware acceleration */
 }
 
 /* Pomodoro task input */
@@ -140,4 +143,39 @@
   border-color: rgba(59, 130, 246, 0.6);
   background: rgba(255, 255, 255, 0.9);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+/* Landscape orientation optimizations for mobile */
+@media (max-width: 767px) and (orientation: landscape) {
+  .flip-clock {
+    padding: 1rem;
+    min-height: calc(15vw + 4rem);
+    max-height: calc(250px + 4rem);
+  }
+
+  .time-display {
+    gap: 1rem;
+    min-height: 15vw;
+    max-height: 250px;
+  }
+
+  /* Adjust Pomodoro task input for landscape */
+  .flip-clock.pomodoro-mode .pomodoro-task-input {
+    bottom: 15px;
+    max-width: 300px;
+  }
+
+  .task-input-field {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+    max-width: 280px;
+  }
+}
+
+/* Smooth transitions for orientation changes */
+@media (max-width: 767px) {
+  .flip-clock,
+  .time-display,
+  .task-input-field {
+    transition: all 0.3s ease;
+  }
 }

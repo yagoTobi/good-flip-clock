@@ -31,6 +31,18 @@
   gap: 0.5rem;
 }
 
+/* Mobile: increase spacing for better touch accessibility */
+@media (max-width: 767px) {
+  .background-options {
+    gap: 0.75rem; /* Increased spacing to prevent accidental touches */
+  }
+
+  .background-option:active {
+    transform: scale(0.95);
+    transition: all 0.1s ease;
+  }
+}
+
 /* Special grid for colors - more compact */
 .background-category:has(.background-option:first-child[title*="Default"])
   .background-options,
@@ -67,6 +79,8 @@
   cursor: pointer;
   transition: all 0.2s ease;
   min-height: 70px;
+  min-width: 44px; /* Ensure minimum touch target size */
+  -webkit-tap-highlight-color: transparent; /* Remove default mobile tap highlight */
 }
 
 /* Compact style for color swatches */
