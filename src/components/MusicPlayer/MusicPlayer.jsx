@@ -18,8 +18,7 @@ function loadYTScript() {
   document.head.appendChild(tag);
 }
 
-function MusicPlayer() {
-  const [isOpen, setIsOpen] = useState(false);
+function MusicPlayer({ isOpen, onToggle, onPlayingChange }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [stationIdx, setStationIdx] = useState(0);
@@ -54,8 +53,11 @@ function MusicPlayer() {
         },
         events: {
           onReady: () => setReady(true),
-          onStateChange: (e) =>
-            setIsPlaying(e.data === window.YT.PlayerState.PLAYING),
+          onStateChange: (e) => {
+            const playing = e.data === window.YT.PlayerState.PLAYING;
+            setIsPlaying(playing);
+            onPlayingChange?.(playing);
+          },
         },
       });
     };
@@ -115,7 +117,7 @@ function MusicPlayer() {
             <span className="music-panel-label">Study Beats</span>
             <button
               className="music-panel-close"
-              onClick={() => setIsOpen(false)}
+              onClick={onToggle}
               aria-label="Close music player"
             >
               <FaTimes size={12} aria-hidden="true" />
@@ -159,7 +161,7 @@ function MusicPlayer() {
       {/* Toggle button — always visible */}
       <button
         className={`music-toggle${isPlaying ? " is-playing" : ""}`}
-        onClick={() => setIsOpen((o) => !o)}
+        onClick={onToggle}
         aria-label={isOpen ? "Close music player" : "Open music player"}
         title="Study beats"
       >

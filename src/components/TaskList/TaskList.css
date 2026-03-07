@@ -1,0 +1,423 @@
+.task-list-root {
+  position: fixed;
+  bottom: 30px;
+  left: 84px; /* 30px music-root + 44px button + 10px gap */
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+/* ── Toggle button ──────────────────────────────────────── */
+.task-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+
+  background: rgba(20, 20, 20, 0.55);
+  color: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+
+  font-family: inherit;
+  cursor: pointer;
+
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.25), 0 2px 12px rgba(0, 0, 0, 0.2);
+  transform: translateZ(0);
+
+  transition: background-color 0.25s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.task-toggle:hover {
+  background: rgba(40, 40, 40, 0.7);
+  transform: translateY(-1px) translateZ(0);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.25), 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.task-toggle:active {
+  transform: translateY(0) translateZ(0);
+  transition: transform 0.1s ease;
+}
+
+/* ── Panel ──────────────────────────────────────────────── */
+.task-panel {
+  background: rgba(20, 20, 20, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 14px;
+  width: 224px;
+  height: 300px;
+
+  display: flex;
+  flex-direction: column;
+
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.25), 0 8px 32px rgba(0, 0, 0, 0.35);
+  transform: translateZ(0);
+
+  animation: task-panel-in 0.18s ease forwards;
+}
+
+@keyframes task-panel-in {
+  from { opacity: 0; transform: translateY(6px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)  scale(1); }
+}
+
+/* ── Header ─────────────────────────────────────────────── */
+.task-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+.task-panel-label {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.task-panel-close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-family: inherit;
+  transition: color 0.15s ease, background 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.task-panel-close:hover {
+  color: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ── Task list ──────────────────────────────────────────── */
+.task-items {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+}
+
+.task-items::-webkit-scrollbar {
+  width: 3px;
+}
+
+.task-items::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.task-items::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 2px;
+}
+
+.task-empty {
+  color: rgba(255, 255, 255, 0.28);
+  font-size: 12px;
+  text-align: center;
+  padding: 24px 0;
+  margin: 0;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.task-item:last-child {
+  border-bottom: none;
+}
+
+/* ── Completion circle ───────────────────────────────────── */
+.task-check {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.28);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-family: inherit;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.task-check:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.task-item.done .task-check {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+/* ── Task text ──────────────────────────────────────────── */
+.task-text {
+  flex: 1;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.4;
+  text-align: left;
+  word-break: break-word;
+  transition: color 0.15s ease;
+}
+
+.task-item.done .task-text {
+  color: rgba(255, 255, 255, 0.28);
+  text-decoration: line-through;
+}
+
+/* ── Delete button ──────────────────────────────────────── */
+.task-delete {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  padding: 0;
+  border-radius: 5px;
+  font-family: inherit;
+  transition: color 0.15s ease, background 0.15s ease, opacity 0.15s ease;
+  opacity: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.task-item:hover .task-delete {
+  opacity: 1;
+}
+
+.task-delete:hover {
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ── Add row ────────────────────────────────────────────── */
+.task-add-row {
+  flex-shrink: 0;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.task-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 12px;
+  font-family: inherit;
+  padding: 7px 10px;
+  outline: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.task-input::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.task-input:focus {
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.task-add-btn {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+  transition: background 0.15s ease, transform 0.1s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.task-add-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.17);
+}
+
+.task-add-btn:active:not(:disabled) {
+  transform: scale(0.93);
+}
+
+.task-add-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* ── Light background adaptation ───────────────────────── */
+:root.light-bg .task-toggle {
+  background: rgba(255, 255, 255, 0.55);
+  color: #333;
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.06), 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+:root.light-bg .task-toggle:hover {
+  background: rgba(255, 255, 255, 0.75);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+:root.light-bg .task-panel {
+  background: rgba(255, 255, 255, 0.6);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.04), 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+:root.light-bg .task-panel-label {
+  color: rgba(0, 0, 0, 0.75);
+}
+
+:root.light-bg .task-panel-close {
+  color: rgba(0, 0, 0, 0.3);
+}
+
+:root.light-bg .task-panel-close:hover {
+  color: rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.06);
+}
+
+:root.light-bg .task-text {
+  color: rgba(0, 0, 0, 0.72);
+}
+
+:root.light-bg .task-item.done .task-text {
+  color: rgba(0, 0, 0, 0.28);
+}
+
+:root.light-bg .task-empty {
+  color: rgba(0, 0, 0, 0.28);
+}
+
+:root.light-bg .task-check {
+  border-color: rgba(0, 0, 0, 0.22);
+  color: rgba(0, 0, 0, 0.7);
+}
+
+:root.light-bg .task-check:hover {
+  border-color: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.05);
+}
+
+:root.light-bg .task-item.done .task-check {
+  background: rgba(0, 0, 0, 0.09);
+  border-color: rgba(0, 0, 0, 0.32);
+}
+
+:root.light-bg .task-delete {
+  color: rgba(0, 0, 0, 0.2);
+}
+
+:root.light-bg .task-delete:hover {
+  color: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.06);
+}
+
+:root.light-bg .task-input {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: rgba(0, 0, 0, 0.8);
+}
+
+:root.light-bg .task-input::placeholder {
+  color: rgba(0, 0, 0, 0.3);
+}
+
+:root.light-bg .task-input:focus {
+  border-color: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.07);
+}
+
+:root.light-bg .task-add-btn {
+  background: rgba(0, 0, 0, 0.07);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: rgba(0, 0, 0, 0.7);
+}
+
+:root.light-bg .task-add-btn:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+:root.light-bg .task-item {
+  border-color: rgba(0, 0, 0, 0.05);
+}
+
+:root.light-bg .task-items::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+/* ── Mobile ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .task-list-root {
+    bottom: 20px;
+    left: 74px; /* 20px music-root + 44px button + 10px gap */
+  }
+
+  .task-toggle {
+    border-radius: 50%;
+  }
+
+  .task-panel {
+    width: 204px;
+  }
+}
+
+/* ── Focus rings ────────────────────────────────────────── */
+.task-toggle:focus-visible,
+.task-panel-close:focus-visible,
+.task-check:focus-visible,
+.task-delete:focus-visible,
+.task-add-btn:focus-visible,
+.task-input:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 2px;
+}
+
+/* ── Reduced motion ─────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .task-panel {
+    animation: none;
+  }
+}

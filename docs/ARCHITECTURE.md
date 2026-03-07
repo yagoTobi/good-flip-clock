@@ -51,12 +51,13 @@ The Flip Clock App is built using modern React patterns with a focus on componen
 - **Purpose**: Main application logic and layout management
 - **Responsibilities**:
   - Mode state management (Clock, Timer, Pomodoro)
-  - Modal visibility state management
-  - Background theme application to document body
+  - Modal visibility state coordination (Customization, Timer Settings, Pomodoro Settings)
+  - Floating panel state ownership: `isMusicOpen`, `isTasksOpen`, `isMusicPlaying`
+  - Mutual exclusion between MusicPlayer and TaskList panels
   - Integration between timer hooks and display components
 - **Key Features**:
-  - Background theme application with full-screen coverage
-  - Modal state coordination
+  - `handleMusicToggle` / `handleTasksToggle` — opening one panel automatically closes the other
+  - Background theme application via BackgroundLayer
   - Timer instance management
 
 ### Core Display Components
@@ -100,6 +101,15 @@ The Flip Clock App is built using modern React patterns with a focus on componen
 - **TimerSettings**: Duration configuration interface
 - **PomodoroControls**: Pomodoro-specific controls
 - **PomodoroSettings**: Pomodoro session configuration
+
+### Floating UI Components
+
+Fixed-position components that sit above the main layout at `z-index: 100`. Their open state is lifted to `AppContent` so they can enforce mutual exclusion.
+
+- **MusicPlayer** (`bottom-left`): Streams study music via YouTube IFrame API; four curated stations
+- **TaskList** (`bottom-left`, offset right of MusicPlayer): Persistent to-do list panel; tasks saved to `localStorage`
+- **CoffeeButton** (`bottom-right`): Support link
+- **MobileBottomBar**: Mobile-only bottom navigation bar
 
 ### Customization System
 

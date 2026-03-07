@@ -8,6 +8,9 @@ import TimerSettings from "./components/TimerSettings";
 import PomodoroSettings from "./components/PomodoroSettings";
 import CoffeeButton from "./components/CoffeeButton";
 import MusicPlayer from "./components/MusicPlayer";
+import TaskList from "./components/TaskList";
+import MobileBottomBar from "./components/MobileBottomBar/MobileBottomBar";
+import InspirationalQuote from "./components/InspirationalQuote/InspirationalQuote";
 import LiveRegion from "./components/LiveRegion";
 import { useTimer } from "./hooks/useTimer";
 import { usePomodoroTimer } from "./hooks/usePomodoroTimer";
@@ -147,6 +150,21 @@ function AppContent() {
   const [isTimerSettingsOpen, setIsTimerSettingsOpen] = useState(false);
   const [isPomodoroSettingsOpen, setIsPomodoroSettingsOpen] = useState(false);
   const [liveMessage, setLiveMessage] = useState("");
+  const [isMusicOpen, setIsMusicOpen] = useState(false);
+  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
+  const [isTasksOpen, setIsTasksOpen] = useState(false);
+
+  const handleMusicToggle = () => {
+    const next = !isMusicOpen;
+    setIsMusicOpen(next);
+    if (next) setIsTasksOpen(false);
+  };
+
+  const handleTasksToggle = () => {
+    const next = !isTasksOpen;
+    setIsTasksOpen(next);
+    if (next) setIsMusicOpen(false);
+  };
   const timer = useTimer();
   const pomodoroTimer = usePomodoroTimer();
   const { background } = useTheme();
@@ -263,8 +281,14 @@ function AppContent() {
 
   return (
     <div className={`app ${isLightBg ? "light-bg" : "dark-bg"}`}>
+      <InspirationalQuote />
       <CoffeeButton />
-      <MusicPlayer />
+      <MusicPlayer
+        isOpen={isMusicOpen}
+        onToggle={handleMusicToggle}
+        onPlayingChange={setIsMusicPlaying}
+      />
+      <TaskList isOpen={isTasksOpen} onToggle={handleTasksToggle} />
 
       <main
         id="main-content"
@@ -330,6 +354,24 @@ function AppContent() {
             setLiveMessage("Pomodoro settings saved");
           }}
           currentSettings={pomodoroTimer.pomodoroSettings}
+        />
+
+        <MobileBottomBar
+          selectedMode={selectedMode}
+          onModeChange={handleModeChange}
+          timer={timer}
+          pomodoroTimer={pomodoroTimer}
+          onSettingsClick={() => {
+            if (selectedMode === MODES.POMODORO) {
+              setIsPomodoroSettingsOpen(true);
+            } else {
+              setIsTimerSettingsOpen(true);
+            }
+          }}
+          onCustomizationClick={() => setIsCustomizationOpen(true)}
+          isMusicOpen={isMusicOpen}
+          onMusicToggle={handleMusicToggle}
+          isMusicPlaying={isMusicPlaying}
         />
 
         <LiveRegion message={liveMessage} />
