@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaTimes } from "react-icons/fa";
 import BackgroundSelector from "../BackgroundSelector/BackgroundSelector";
 import FontSelector from "../FontSelector/FontSelector";

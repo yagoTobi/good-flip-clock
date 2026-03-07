@@ -30,6 +30,14 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 0;
   width: 100%;
+  /* Performance optimization */
+  contain: layout style paint;
+}
+
+.image-square {
+  /* Optimize rendering performance */
+  content-visibility: auto;
+  contain-intrinsic-size: 100px 60px;
 }
 
 .image-square {
@@ -53,6 +61,23 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  /* Performance optimizations */
+  will-change: background-image;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  /* Loading state */
+  background-color: #f0f0f0;
+  transition: opacity 0.3s ease;
+}
+
+.image-background.loading {
+  opacity: 0.5;
+  background-image: none !important;
+}
+
+.image-background.error {
+  background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+  opacity: 0.7;
 }
 
 .image-overlay {
@@ -130,7 +155,33 @@
   outline-offset: 2px;
 }
 
-/* Responsive design */
+/* Performance optimizations */
+.image-background {
+  /* Optimize image rendering */
+  image-rendering: optimizeQuality;
+  transform: translateZ(0); /* Force hardware acceleration */
+  will-change: background-image;
+}
+
+/* Loading placeholder */
+.image-background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+  z-index: -1;
+}
+
+/* Smooth image loading */
+.image-background {
+  background-color: #f0f0f0; /* Fallback while loading */
+  transition: opacity 0.3s ease;
+}
+
+/* Reduce image quality on mobile for better performance */
 @media (max-width: 768px) {
   .image-square {
     height: 50px;
@@ -138,6 +189,28 @@
 
   .image-icon {
     font-size: 16px;
+  }
+
+  /* Use smaller background size on mobile */
+  .image-background {
+    background-size: cover;
+    image-rendering: optimizeSpeed;
+    /* Reduce image quality for better performance */
+    filter: contrast(0.9) brightness(1.1);
+  }
+
+  /* Disable hover effects on mobile for better performance */
+  .image-square:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .image-square:hover .image-overlay {
+    background: rgba(0, 0, 0, 0.4);
+  }
+
+  .image-square:hover .image-icon {
+    transform: none;
   }
 }
 

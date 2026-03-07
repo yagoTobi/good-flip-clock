@@ -1,12 +1,23 @@
 /* Mobile Performance Optimizations */
 
-/* Reduce motion for users who prefer it and on mobile devices */
-@media (prefers-reduced-motion: reduce), (max-width: 767px) {
-  /* Disable complex flip animations on mobile for better performance */
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  /* Disable complex flip animations for users who prefer reduced motion */
   .flip-card.flipping .flip-animation {
     animation: none !important;
   }
+}
 
+/* Optimize flip animations on mobile instead of disabling them */
+@media (max-width: 767px) {
+  /* Faster, more optimized flip animation for mobile */
+  .flip-card.flipping .flip-animation {
+    animation: flipDown 0.4s ease-out forwards !important;
+  }
+}
+
+/* Additional reduced motion rules */
+@media (prefers-reduced-motion: reduce) {
   /* Simplify mode selector animations */
   .selector-slider {
     transition: transform 0.15s ease !important;
@@ -26,7 +37,7 @@
     transform: none !important;
   }
 
-  /* Disable pulse animation on mobile */
+  /* Disable pulse animation for reduced motion users */
   .timer-indicator {
     animation: none !important;
   }
@@ -48,6 +59,30 @@
 
   .stop-button.exiting {
     animation: none !important;
+  }
+}
+
+/* Keep smooth animations on mobile for better UX */
+@media (max-width: 767px) {
+  /* Keep pulse animation on mobile - it's not too heavy */
+  .timer-indicator {
+    animation: pulse 2s infinite !important;
+  }
+
+  /* Keep smooth mode selector transitions */
+  .selector-slider {
+    transition: transform 0.3s ease !important;
+  }
+
+  /* Keep subtle button feedback */
+  .control-button:active {
+    transform: scale(0.95) !important;
+    transition: transform 0.1s ease !important;
+  }
+
+  .customization-button:active {
+    transform: scale(0.95) !important;
+    transition: transform 0.1s ease !important;
   }
 }
 
@@ -132,7 +167,7 @@
 
   /* Optimize box-shadow performance */
   .flip-card-inner {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Simplified shadow */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06); /* Subtle shadow */
   }
 
   .customization-panel {
@@ -229,7 +264,7 @@
 
 /* Low-end device specific optimizations */
 .low-end-device .flip-card.flipping .flip-animation {
-  animation: none !important;
+  animation: flipDown 0.3s ease-out forwards !important; /* Faster but still smooth */
 }
 
 .low-end-device .customization-overlay,
@@ -238,7 +273,7 @@
 }
 
 .low-end-device .timer-indicator {
-  animation: none !important;
+  animation: pulse 3s infinite !important; /* Slower pulse to reduce CPU usage */
 }
 
 .low-end-device .customization-button:hover svg {

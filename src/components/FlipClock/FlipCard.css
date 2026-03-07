@@ -21,9 +21,9 @@
   min-width: 160px;
   min-height: 135px;
   border-radius: 12px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
   overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   contain: paint;
 }
 
@@ -220,7 +220,7 @@
 
 .flip-card.flipping .flip-animation {
   animation: flipDown 0.6s ease-in-out forwards;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
   will-change: transform;
   transform: translateZ(0); /* Force hardware acceleration */
 }
@@ -269,4 +269,33 @@
 /* Remove flip animation shadow for mini cards */
 .flip-card.mini.flipping .flip-animation {
   box-shadow: none;
+}
+
+/* Mobile font scaling fixes */
+@media (max-width: 767px) {
+  /* Ensure text scales properly with panels on mobile */
+  .flip-card-top .digit,
+  .flip-card-bottom .digit,
+  .flip-animation-front .digit,
+  .flip-animation-back .digit {
+    font-size: clamp(3rem, 15vw, 8rem); /* Better scaling for mobile */
+  }
+
+  /* Mini seconds scaling for mobile */
+  .flip-card.mini .flip-card-top .digit,
+  .flip-card.mini .flip-card-bottom .digit,
+  .flip-card.mini .flip-animation-front .digit,
+  .flip-card.mini .flip-animation-back .digit {
+    font-size: clamp(1rem, 4vw, 2rem);
+  }
+}
+
+/* Mobile portrait: Optimize text size for vertical layout */
+@media (max-width: 767px) and (orientation: portrait) {
+  .flip-card-top .digit,
+  .flip-card-bottom .digit,
+  .flip-animation-front .digit,
+  .flip-animation-back .digit {
+    font-size: clamp(3.5rem, 18vw, 9rem); /* Larger text for vertical layout */
+  }
 }

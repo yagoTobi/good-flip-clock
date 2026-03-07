@@ -93,7 +93,7 @@ function AppContent() {
    */
   useEffect(() => {
     // Apply browser-specific fixes and optimizations
-    const browserInfo = applyBrowserFixes();
+    applyBrowserFixes();
 
     // Apply device-specific performance optimizations
     applyPerformanceOptimizations();

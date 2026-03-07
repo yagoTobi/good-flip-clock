@@ -163,10 +163,29 @@
     transition: all 0.1s ease;
   }
 
+  /* Remove persistent background on mobile - use only scale feedback */
   .selector-option:active {
-    background: rgba(255, 255, 255, 0.1);
+    background: transparent !important;
     transform: scale(0.95);
     transition: all 0.1s ease;
+  }
+
+  /* Ensure no background persists after touch */
+  .selector-option:focus {
+    background: transparent !important;
+  }
+
+  /* Additional mobile touch fixes */
+  .selector-option {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    /* Remove any lingering touch states */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
   }
 }
 

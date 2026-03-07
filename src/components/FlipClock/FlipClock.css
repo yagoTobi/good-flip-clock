@@ -171,6 +171,43 @@
   }
 }
 
+/* Mobile portrait: Stack time panels vertically */
+@media (max-width: 767px) and (orientation: portrait) {
+  .time-display {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .flip-clock {
+    padding: 1.5rem;
+    min-height: calc(40vw + 4rem); /* Adjust height for vertical layout */
+    max-height: calc(600px + 4rem);
+  }
+
+  /* Center the minutes group in vertical layout */
+  .minutes-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* Adjust seconds overlay position for vertical layout */
+  .seconds-overlay {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    margin-top: 0.5rem;
+  }
+
+  /* Adjust Pomodoro task input for vertical layout */
+  .flip-clock.pomodoro-mode .pomodoro-task-input {
+    bottom: 20px;
+  }
+}
+
 /* Smooth transitions for orientation changes */
 @media (max-width: 767px) {
   .flip-clock,
