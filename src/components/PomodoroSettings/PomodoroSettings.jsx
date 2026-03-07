@@ -190,7 +190,7 @@ function PomodoroSettings({ isOpen, onClose, onSave, currentSettings }) {
         <div className="pomodoro-settings-content">
           {/* Preset Selection */}
           <div className="settings-section">
-            <h3>Presets</h3>
+            <p className="settings-section-label">Presets</p>
             <div className="preset-buttons">
               {Object.entries(POMODORO_PRESETS).map(([key, config]) => (
                 <button
@@ -206,10 +206,10 @@ function PomodoroSettings({ isOpen, onClose, onSave, currentSettings }) {
 
           {/* Duration Inputs */}
           <div className="settings-section">
-            <h3>Durations (minutes)</h3>
+            <p className="settings-section-label">Durations (minutes)</p>
             <div className="duration-inputs">
               <div className="duration-input-group">
-                <label htmlFor="focus-duration">Focus Session</label>
+                <label htmlFor="focus-duration">Focus</label>
                 <input
                   id="focus-duration"
                   type="number"
@@ -227,7 +227,7 @@ function PomodoroSettings({ isOpen, onClose, onSave, currentSettings }) {
               </div>
 
               <div className="duration-input-group">
-                <label htmlFor="short-break-duration">Short Break</label>
+                <label htmlFor="short-break-duration">Short break</label>
                 <input
                   id="short-break-duration"
                   type="number"
@@ -245,7 +245,7 @@ function PomodoroSettings({ isOpen, onClose, onSave, currentSettings }) {
               </div>
 
               <div className="duration-input-group">
-                <label htmlFor="long-break-duration">Long Break</label>
+                <label htmlFor="long-break-duration">Long break</label>
                 <input
                   id="long-break-duration"
                   type="number"
@@ -265,18 +265,18 @@ function PomodoroSettings({ isOpen, onClose, onSave, currentSettings }) {
           </div>
 
           {/* Auto-advance Toggle */}
+          <div className="settings-divider" />
           <div className="settings-section">
-            <div className="toggle-group">
-              <label htmlFor="auto-advance" className="toggle-label">
-                Auto-advance sessions
+            <div className="toggle-row">
+              <span className="toggle-label">Auto-advance sessions</span>
+              <label className="toggle-switch">
+                <input
+                  type="checkbox"
+                  checked={autoAdvance}
+                  onChange={(e) => setAutoAdvance(e.target.checked)}
+                />
+                <span className="toggle-track" />
               </label>
-              <input
-                id="auto-advance"
-                type="checkbox"
-                checked={autoAdvance}
-                onChange={(e) => setAutoAdvance(e.target.checked)}
-                className="toggle-checkbox"
-              />
             </div>
             <p className="toggle-description">
               Automatically start the next session when current one ends

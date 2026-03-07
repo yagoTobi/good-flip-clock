@@ -40,7 +40,7 @@
 
   .gradient-square:active {
     transform: scale(0.95);
-    transition: all 0.1s ease;
+    transition: transform 0.1s ease;
   }
 }
 
@@ -49,7 +49,7 @@
   height: 60px;
   border: none;
   cursor: pointer;
-  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   border-radius: 0;
   aspect-ratio: 2;
@@ -86,7 +86,7 @@
   transform: scale(1.08);
   z-index: 15;
   border-radius: 4px;
-  box-shadow: 0 0 0 3px white, 0 0 0 6px var(--accent-color, #3b82f6);
+  box-shadow: 0 0 0 2.5px #fff, 0 0 0 4px rgba(0, 0, 0, 0.25);
 }
 
 .gradient-square.selected::before {
@@ -106,8 +106,8 @@
 }
 
 /* Focus states for accessibility */
-.gradient-square:focus {
-  outline: 2px solid var(--accent-color, #3b82f6);
+.gradient-square:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
   outline-offset: 2px;
 }
 

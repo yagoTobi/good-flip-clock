@@ -42,9 +42,6 @@
   max-width: 60px !important;
   box-sizing: border-box !important;
   flex-shrink: 0 !important;
-  background: var(
-    --mobile-bg-secondary
-  ) !important; /* Match play button color */
   border-radius: var(--mobile-radius-lg) !important;
 }
 
@@ -78,32 +75,35 @@
 .control-button {
   width: 60px;
   height: 60px;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--mobile-radius-lg);
-  background: var(--mobile-bg-secondary);
-  color: var(--mobile-text-primary);
+  background: rgba(20, 20, 20, 0.55);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  color: rgba(255, 255, 255, 0.92);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0; /* Override global button padding */
-  box-sizing: border-box; /* Ensure padding doesn't affect dimensions */
-  /* Ensure minimum touch target size for accessibility */
+  padding: 0;
+  box-sizing: border-box;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
   min-width: var(--touch-target-min);
   min-height: var(--touch-target-min);
-  -webkit-tap-highlight-color: transparent; /* Remove default mobile tap highlight */
+  -webkit-tap-highlight-color: transparent;
 }
 
 .control-button:hover {
-  background: var(--mobile-bg-tertiary);
+  background: rgba(40, 40, 40, 0.7);
   transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
 }
 
 /* Enhanced touch feedback for mobile */
 @media (max-width: 767px) {
   .control-button:active {
-    background: var(--mobile-bg-tertiary);
+    background: rgba(40, 40, 40, 0.7);
     transform: scale(0.95);
     transition: all 0.1s ease;
   }
@@ -163,23 +163,22 @@
 }
 
 .stop-button {
-  background: #dc2626;
+  background: rgba(185, 28, 28, 0.75) !important;
+  border-color: rgba(255, 100, 100, 0.2) !important;
   animation: slideInRight 0.3s ease-out;
   position: absolute;
-  right: -35px; /* Move much further right for bigger gap */
-  z-index: 1; /* Behind play button */
+  right: -35px;
+  z-index: 1;
 }
 
-/* Mobile: adjust stop button positioning for horizontal layout */
 @media (max-width: 767px) {
   .stop-button {
-    /* Keep the same positioning logic but ensure it works in mobile context */
     right: -35px;
   }
 }
 
 .stop-button:hover {
-  background: #b91c1c;
+  background: rgba(185, 28, 28, 0.9) !important;
 }
 
 .stop-button svg {
@@ -215,7 +214,7 @@
 }
 
 .timer-controls .settings-button:hover {
-  background: var(--mobile-bg-tertiary) !important;
+  background: rgba(40, 40, 40, 0.7) !important;
 }
 
 .timer-controls .settings-button svg {
@@ -270,9 +269,7 @@
 
 /* Enhanced transitions for orientation changes */
 @media (max-width: 767px) {
-  .timer-controls,
-  .play-stop-container,
-  .control-button {
-    transition: all 0.3s ease;
+  .timer-controls {
+    transition: position 0s, right 0.3s ease, top 0.3s ease;
   }
 }

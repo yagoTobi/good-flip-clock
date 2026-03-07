@@ -6,40 +6,39 @@
 }
 
 .time-input-label {
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  color: #ffffff;
+  color: rgba(255, 255, 255, 0.38);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.07em;
 }
 
 .time-input-field {
-  width: 60px;
-  height: 50px;
-  background: #1a1a1a;
-  border: 2px solid #3a3a3a;
-  border-radius: 8px;
-  color: #ffffff;
-  font-size: 1.5rem;
+  width: 72px;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 1.75rem;
   font-weight: 700;
   text-align: center;
-  font-family: "Impact", "Arial Black", Arial, sans-serif;
-  transition: all 0.2s ease;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
   outline: none;
-  -webkit-tap-highlight-color: transparent; /* Remove default mobile tap highlight */
+  -webkit-tap-highlight-color: transparent;
 }
 
 .time-input-field:focus {
-  border-color: #646cff;
-  box-shadow: 0 0 0 3px rgba(100, 108, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.09);
 }
 
 .time-input-field:hover {
-  border-color: #4a4a4a;
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .time-input-field::placeholder {
-  color: #666666;
+  color: rgba(255, 255, 255, 0.25);
 }
 
 /* Mobile Responsive Design */
@@ -53,19 +52,18 @@
   }
 
   .time-input-field {
-    width: 70px; /* Wider input field for easier touch */
-    height: 56px; /* Taller for better touch targets */
-    font-size: 1.75rem; /* Larger text for better readability */
-    border-width: 3px; /* Thicker border for better visibility */
+    width: 76px;
+    height: 68px;
+    font-size: 2rem;
   }
 
   .time-input-field:focus {
-    border-color: #646cff;
-    box-shadow: 0 0 0 4px rgba(100, 108, 255, 0.15); /* Larger focus ring */
+    border-color: rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.09);
   }
 
   .time-input-field:active {
-    transform: scale(0.98); /* Subtle press feedback */
+    transform: scale(0.98);
     transition: transform 0.1s ease;
   }
 }
@@ -73,8 +71,8 @@
 /* Tablet adjustments */
 @media (min-width: 768px) and (max-width: 1023px) {
   .time-input-field {
-    width: 65px;
-    height: 52px;
-    font-size: 1.6rem;
+    width: 68px;
+    height: 60px;
+    font-size: 1.75rem;
   }
 }

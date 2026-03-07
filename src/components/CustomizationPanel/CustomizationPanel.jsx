@@ -93,17 +93,6 @@ const CustomizationPanel = ({ isOpen, onClose }) => {
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div className="customization-panel">
-        <div className="panel-header">
-          <h2 id="customization-title">Customize Your Clock</h2>
-          <button
-            className="close-button"
-            onClick={onClose}
-            aria-label="Close customization panel"
-          >
-            <FaTimes aria-hidden="true" />
-          </button>
-        </div>
-
         <div
           className="panel-tabs"
           role="tablist"
@@ -144,6 +133,13 @@ const CustomizationPanel = ({ isOpen, onClose }) => {
               {tab.label}
             </button>
           ))}
+          <button
+            className="close-button"
+            onClick={onClose}
+            aria-label="Close customization panel"
+          >
+            <FaTimes aria-hidden="true" />
+          </button>
         </div>
 
         <div className="panel-content">

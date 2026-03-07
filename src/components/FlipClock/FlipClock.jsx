@@ -120,24 +120,9 @@ function FlipClock({ mode, timer, pomodoroTimer }) {
         isFlippingMode ? `flipping-${flipDirection}` : ""
       } ${mode === MODES.POMODORO ? "pomodoro-mode" : ""}`}
     >
-      <PomodoroSessionHeader mode={mode} pomodoroTimer={pomodoroTimer} />
+      <PomodoroSessionHeader mode={displayMode} pomodoroTimer={pomodoroTimer} />
       {renderDisplay()}
-
-      {/* Task input for pomodoro focus sessions */}
-      {mode === MODES.POMODORO && pomodoroTimer.isFocusSession && (
-        <div className="pomodoro-task-input">
-          <input
-            type="text"
-            placeholder="What are you working on now?"
-            value={pomodoroTimer.currentTask}
-            onChange={(e) => pomodoroTimer.setTaskName(e.target.value)}
-            className="task-input-field"
-            disabled={pomodoroTimer.isRunning}
-          />
-        </div>
-      )}
-
-      <PomodoroSessionIndicator mode={mode} pomodoroTimer={pomodoroTimer} />
+      <PomodoroSessionIndicator mode={displayMode} pomodoroTimer={pomodoroTimer} />
     </div>
   );
 }

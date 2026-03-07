@@ -1,17 +1,10 @@
 .flip-clock {
   position: relative;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 2rem;
-  /* Fixed height consistent across all modes */
-  min-height: calc(20vw + 6rem);
-  max-height: calc(350px + 6rem);
-}
-
-/* Adjust layout for Pomodoro mode to maintain consistent clock positioning */
-.flip-clock.pomodoro-mode {
-  overflow: visible;
+  gap: 0.75rem;
 }
 
 .time-display {
@@ -74,82 +67,13 @@
 .flip-clock.flipping-left,
 .flip-clock.flipping-right {
   transform-style: preserve-3d;
-  transform: translateZ(0); /* Force hardware acceleration */
+  transform: translateZ(0);
 }
 
-/* Pomodoro task input */
-.pomodoro-task-input {
-  width: 100%;
-  max-width: 400px;
-  display: flex;
-  justify-content: center;
-  margin: 1.5rem 0 1rem 0;
-}
-
-/* In Pomodoro mode, position task input absolutely below the clock */
-.flip-clock.pomodoro-mode .pomodoro-task-input {
-  position: absolute;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  margin: 0;
-  z-index: 10;
-}
-
-.task-input-field {
-  width: 100%;
-  max-width: 350px;
-  padding: 0.6rem 1rem;
-  font-size: 0.9rem;
-  border: 2px solid rgba(0, 0, 0, 0.3);
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.4);
-  color: rgba(255, 255, 255, 1);
-  text-align: center;
-  transition: all 0.2s ease;
-  outline: none;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.task-input-field::placeholder {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.task-input-field:focus {
-  border-color: rgba(59, 130, 246, 0.6);
-  background: rgba(0, 0, 0, 0.5);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 0 3px rgba(59, 130, 246, 0.2);
-}
-
-.task-input-field:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* Light background adaptation */
-.app.light-bg .task-input-field {
-  border: 2px solid rgba(0, 0, 0, 0.2);
-  background: rgba(255, 255, 255, 0.8);
-  color: rgba(0, 0, 0, 0.9);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.app.light-bg .task-input-field::placeholder {
-  color: rgba(0, 0, 0, 0.5);
-}
-
-.app.light-bg .task-input-field:focus {
-  border-color: rgba(59, 130, 246, 0.6);
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 0 0 3px rgba(59, 130, 246, 0.2);
-}
 /* Landscape orientation optimizations for mobile */
 @media (max-width: 767px) and (orientation: landscape) {
   .flip-clock {
-    padding: 1rem;
-    min-height: calc(15vw + 4rem);
-    max-height: calc(250px + 4rem);
+    gap: 0.5rem;
   }
 
   .time-display {
@@ -158,17 +82,6 @@
     max-height: 250px;
   }
 
-  /* Adjust Pomodoro task input for landscape */
-  .flip-clock.pomodoro-mode .pomodoro-task-input {
-    bottom: 15px;
-    max-width: 300px;
-  }
-
-  .task-input-field {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.8rem;
-    max-width: 280px;
-  }
 }
 
 /* Mobile portrait: Stack time panels vertically */
@@ -181,9 +94,7 @@
   }
 
   .flip-clock {
-    padding: 1.5rem;
-    min-height: calc(40vw + 4rem); /* Adjust height for vertical layout */
-    max-height: calc(600px + 4rem);
+    gap: 0.75rem;
   }
 
   /* Center the minutes group in vertical layout */
@@ -202,17 +113,15 @@
     margin-top: 0.5rem;
   }
 
-  /* Adjust Pomodoro task input for vertical layout */
-  .flip-clock.pomodoro-mode .pomodoro-task-input {
-    bottom: 20px;
-  }
+
 }
 
 /* Smooth transitions for orientation changes */
 @media (max-width: 767px) {
-  .flip-clock,
-  .time-display,
-  .task-input-field {
-    transition: all 0.3s ease;
+  .flip-clock {
+    transition: padding 0.3s ease, min-height 0.3s ease;
+  }
+  .time-display {
+    transition: gap 0.3s ease, flex-direction 0.3s ease;
   }
 }

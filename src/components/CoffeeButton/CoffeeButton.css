@@ -2,36 +2,37 @@
   position: fixed;
   bottom: 30px;
   right: 30px;
-  z-index: 1000;
+  z-index: 100;
 
   display: flex;
   align-items: center;
-  gap: 8px;
+  overflow: hidden;
 
-  background: rgba(255, 255, 255, 0.9);
-  color: #333;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 25px;
-  padding: 10px 16px;
+  background: rgba(20, 20, 20, 0.55);
+  color: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 10px 12px;
 
   font-size: 14px;
   font-weight: 500;
-  text-decoration: none;
+  font-family: inherit;
 
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 0.25s ease, transform 0.2s ease, box-shadow 0.2s ease;
 
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.25), 0 2px 12px rgba(0, 0, 0, 0.2);
 
-  /* Ensure it doesn't interfere with other elements */
+  -webkit-tap-highlight-color: transparent;
   pointer-events: auto;
 }
 
 .coffee-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-  background: rgba(255, 255, 255, 1);
+  background: rgba(40, 40, 40, 0.7);
+  transform: translateY(-1px);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.25), 0 6px 16px rgba(0, 0, 0, 0.3);
 }
 
 .coffee-button:active {
@@ -41,6 +42,7 @@
 
 .coffee-icon {
   font-size: 16px;
+  flex-shrink: 0;
   transition: transform 0.3s ease;
 }
 
@@ -51,58 +53,52 @@
 .coffee-text {
   font-family: inherit;
   white-space: nowrap;
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  padding-left: 0;
+  transition: max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.25s ease,
+              padding-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Dark background adaptation */
-:root.dark-bg .coffee-button {
-  background: rgba(0, 0, 0, 0.8);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-:root.dark-bg .coffee-button:hover {
-  background: rgba(0, 0, 0, 0.9);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+.coffee-button:hover .coffee-text {
+  max-width: 160px;
+  opacity: 1;
+  padding-left: 8px;
 }
 
 /* Light background adaptation */
 :root.light-bg .coffee-button {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.55);
   color: #333333;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.06), 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
 :root.light-bg .coffee-button:hover {
-  background: rgba(255, 255, 255, 1);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.75);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
-/* Responsive design */
+/* Mobile: always icon-only since there's no hover on touch */
 @media (max-width: 768px) {
   .coffee-button {
     bottom: 20px;
     right: 20px;
-    padding: 8px 14px;
-    font-size: 13px;
-  }
-
-  .coffee-icon {
-    font-size: 14px;
-  }
-}
-
-/* Extra small screens - show icon only */
-@media (max-width: 480px) {
-  .coffee-text {
-    display: none;
-  }
-
-  .coffee-button {
     padding: 10px;
     border-radius: 50%;
     width: 44px;
     height: 44px;
     justify-content: center;
+  }
+
+  .coffee-icon {
+    font-size: 16px;
+  }
+
+  .coffee-text {
+    display: none;
   }
 }
 
@@ -122,14 +118,8 @@
   }
 }
 
-/* Focus states for accessibility */
-.coffee-button:focus {
-  outline: 2px solid #ff813f;
+/* Focus for keyboard navigation only */
+.coffee-button:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
   outline-offset: 2px;
-}
-
-/* Ensure it doesn't interfere with modals */
-.customization-overlay ~ * .coffee-button,
-.modal-overlay ~ * .coffee-button {
-  z-index: 999;
 }

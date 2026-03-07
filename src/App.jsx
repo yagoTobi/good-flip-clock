@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import FlipClock from "./components/FlipClock";
 import ModeSelector from "./components/ModeSelector";
@@ -12,11 +12,8 @@ import { useTimer } from "./hooks/useTimer";
 import { usePomodoroTimer } from "./hooks/usePomodoroTimer";
 import { MODES } from "./constants";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
-import {
-  applyPerformanceOptimizations,
-  optimizeWillChange,
-  throttle,
-} from "./utils/performanceUtils";
+import { isLightColor } from "./utils/colorUtils";
+import { applyPerformanceOptimizations } from "./utils/performanceUtils";
 import {
   applyBrowserFixes,
   logCompatibilityInfo,
@@ -32,20 +29,116 @@ import {
 } from "./utils/accessibilityTest";
 
 /**
- * AppContent - Main application content component that manages the flip clock interface
+ * BackgroundLayer - Smooth background transitions via GPU-accelerated opacity crossfade.
  *
- * This component handles the core application state including mode selection (Clock, Timer, Pomodoro),
- * settings panel visibility, and background theme application. It integrates with the theme system
- * to apply backgrounds to the document body for full-screen coverage and manages the interaction
- * between different timer modes and their respective controls.
+ * Instead of transitioning `background` on the body (which triggers full-viewport repaints
+ * every frame and is very expensive with image backgrounds), this component maintains two
+ * stacked background divs and transitions the opacity of the incoming one.
  *
- * State Management:
- * - selectedMode: Current display mode (MODES.CLOCK, MODES.TIMER, MODES.POMODORO)
- * - Modal visibility states for customization and settings panels
- * - Timer and Pomodoro timer instances from custom hooks
- * - Theme integration through useTheme context
- *
- * @returns {JSX.Element} The main application interface
+ * Opacity transitions are composited on the GPU — no layout or paint cost.
+ * Image URLs are preloaded before the transition begins to prevent jank.
+ */
+function BackgroundLayer() {
+  const { background } = useTheme();
+  const [bottomBg, setBottomBg] = useState(background);
+  const [topBg, setTopBg] = useState(null);
+  const topRef = useRef(null);
+  const bottomRef = useRef(background);
+  const cleanupRef = useRef(null);
+
+  const getBGStyle = (bg) => {
+    if (!bg || bg === "default") return { backgroundColor: "#1a1a1a" };
+    return { background: bg };
+  };
+
+  useEffect(() => {
+    if (background === bottomRef.current && topRef.current === null) return;
+    if (background === topRef.current) return;
+
+    if (cleanupRef.current) clearTimeout(cleanupRef.current);
+
+    const doTransition = () => {
+      // If a transition is already in progress, promote its target to the bottom
+      // layer first so we don't snap back to the original source background.
+      if (topRef.current !== null) {
+        setBottomBg(topRef.current);
+        bottomRef.current = topRef.current;
+      }
+
+      topRef.current = background;
+      setTopBg(background);
+
+      cleanupRef.current = setTimeout(() => {
+        bottomRef.current = background;
+        topRef.current = null;
+        setBottomBg(background);
+        setTopBg(null);
+      }, 600);
+    };
+
+    // For image backgrounds, preload AND decode before applying so the first
+    // painted frame already has the image ready — no blank-flash on the fade-in.
+    if (background.includes("url(")) {
+      const match = background.match(/url\("([^"]+)"\)/);
+      if (match) {
+        let cancelled = false;
+        const img = new Image();
+
+        const onReady = () => {
+          if (cancelled) return;
+          if (typeof img.decode === "function") {
+            img
+              .decode()
+              .then(() => { if (!cancelled) doTransition(); })
+              .catch(() => { if (!cancelled) doTransition(); });
+          } else {
+            doTransition();
+          }
+        };
+
+        img.onload = onReady;
+        img.onerror = () => { if (!cancelled) doTransition(); };
+        img.src = match[1];
+
+        return () => {
+          cancelled = true;
+          if (cleanupRef.current) clearTimeout(cleanupRef.current);
+        };
+      }
+    }
+
+    doTransition();
+
+    return () => {
+      if (cleanupRef.current) clearTimeout(cleanupRef.current);
+    };
+  }, [background]);
+
+  return (
+    <div
+      style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none" }}
+    >
+      <div
+        style={{ position: "absolute", inset: 0, ...getBGStyle(bottomBg) }}
+      />
+      {topBg && (
+        <div
+          key={topBg}
+          style={{
+            position: "absolute",
+            inset: 0,
+            ...getBGStyle(topBg),
+            animation: "bgCrossfade 0.5s ease forwards",
+            willChange: "opacity",
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+/**
+ * AppContent - Main application content component
  */
 function AppContent() {
   const [selectedMode, setSelectedMode] = useState(MODES.CLOCK);
@@ -57,17 +150,7 @@ function AppContent() {
   const pomodoroTimer = usePomodoroTimer();
   const { background } = useTheme();
 
-  /**
-   * Handle mode changes with automatic timer pausing
-   *
-   * When switching modes, pause any running timers from other modes to prevent
-   * conflicts and ensure smooth animations. This creates a clean single-timer
-   * experience where only the active mode's timer can run.
-   *
-   * @param {string} newMode - The mode to switch to
-   */
   const handleModeChange = (newMode) => {
-    // Pause other timers when switching away from their modes
     if (newMode !== MODES.TIMER && timer.isRunning) {
       timer.pauseTimer();
       setLiveMessage("Timer paused");
@@ -79,7 +162,6 @@ function AppContent() {
 
     setSelectedMode(newMode);
 
-    // Announce mode change
     const modeNames = {
       [MODES.CLOCK]: "Clock",
       [MODES.TIMER]: "Timer",
@@ -88,17 +170,10 @@ function AppContent() {
     setLiveMessage(`Switched to ${modeNames[newMode]} mode`);
   };
 
-  /**
-   * Initialize performance optimizations and browser compatibility fixes on component mount
-   */
   useEffect(() => {
-    // Apply browser-specific fixes and optimizations
     applyBrowserFixes();
-
-    // Apply device-specific performance optimizations
     applyPerformanceOptimizations();
 
-    // Set up keyboard vs touch user detection for accessibility
     const handleFirstTab = (e) => {
       if (e.key === "Tab") {
         document.body.classList.add("keyboard-user");
@@ -116,26 +191,22 @@ function AppContent() {
       document.body.classList.remove("touch-user");
     };
 
-    // Add event listeners for input method detection
     document.addEventListener("keydown", handleFirstTab);
     document.addEventListener("touchstart", handleFirstTouch);
     document.addEventListener("mousedown", handleFirstMouse);
 
-    // Log compatibility information in development
     if (process.env.NODE_ENV === "development") {
       logCompatibilityInfo();
 
-      // Check for known compatibility issues
       const issues = checkCompatibilityIssues();
       if (issues.length > 0) {
-        console.group("⚠️ Compatibility Issues Detected");
+        console.group("Compatibility Issues Detected");
         issues.forEach((issue) => {
           console.log(`${issue.type.toUpperCase()}: ${issue.issue}`, issue);
         });
         console.groupEnd();
       }
 
-      // Add global test functions for manual testing
       window.runMobileCompatibilityTests = async () => {
         const results = await runMobileCompatibilityTests();
         exportTestResults(results);
@@ -147,76 +218,16 @@ function AppContent() {
         exportAccessibilityResults(results);
         return results;
       };
-
-      console.log(
-        "🧪 Mobile compatibility tests available. Run window.runMobileCompatibilityTests() in console."
-      );
-      console.log(
-        "♿ Accessibility tests available. Run window.runAccessibilityTests() in console."
-      );
     }
 
-    // Set up throttled will-change optimization
-    const throttledOptimizeWillChange = throttle(optimizeWillChange, 1000);
-
-    // Optimize will-change properties periodically
-    const willChangeInterval = setInterval(throttledOptimizeWillChange, 5000);
-
-    // Cleanup interval on unmount
     return () => {
-      clearInterval(willChangeInterval);
       document.removeEventListener("keydown", handleFirstTab);
       document.removeEventListener("touchstart", handleFirstTouch);
       document.removeEventListener("mousedown", handleFirstMouse);
     };
   }, []);
 
-  /**
-   * Apply background theme to document body for full screen coverage
-   *
-   * This effect handles different background types:
-   * - "default": No background applied
-   * - URL backgrounds: Applied as background property for images
-   * - Gradient backgrounds: Applied as background property
-   * - Solid colors: Applied as backgroundColor property
-   *
-   * Cleanup ensures background is reset when component unmounts.
-   */
   useEffect(() => {
-    const applyBackgroundToBody = () => {
-      // Clear any existing background styles first
-      document.body.style.background = "";
-      document.body.style.backgroundColor = "";
-
-      if (background === "default") {
-        // Keep default (no background)
-        return;
-      } else if (background.includes("url(")) {
-        document.body.style.background = background;
-      } else if (
-        background.includes("gradient") ||
-        background.includes("linear-gradient")
-      ) {
-        document.body.style.background = background;
-      } else {
-        document.body.style.backgroundColor = background;
-      }
-    };
-
-    applyBackgroundToBody();
-
-    // Cleanup function to reset background when component unmounts
-    return () => {
-      document.body.style.background = "";
-      document.body.style.backgroundColor = "";
-    };
-  }, [background]);
-
-  /**
-   * Monitor timer state changes for accessibility announcements
-   */
-  useEffect(() => {
-    // Announce timer state changes
     if (selectedMode === MODES.TIMER) {
       if (timer.isRunning) {
         setLiveMessage("Timer started");
@@ -229,7 +240,6 @@ function AppContent() {
   }, [timer.isRunning, timer.isPaused, timer.timerState, selectedMode]);
 
   useEffect(() => {
-    // Announce pomodoro timer state changes
     if (selectedMode === MODES.POMODORO) {
       if (pomodoroTimer.isRunning) {
         const sessionType = pomodoroTimer.currentSession?.type || "focus";
@@ -248,28 +258,10 @@ function AppContent() {
     selectedMode,
   ]);
 
-  /**
-   * Determine if the current background requires light text for proper contrast
-   *
-   * @returns {boolean} True if background is light and requires dark text
-   */
-  const isLightBackground = () => {
-    if (background === "default" || background === "#f5f5f5") {
-      return true;
-    }
-    return false;
-  };
+  const isLightBg = background !== "default" ? isLightColor(background) : false;
 
   return (
-    <div className={`app ${isLightBackground() ? "light-bg" : "dark-bg"}`}>
-      {/* Skip links for keyboard navigation */}
-      <a href="#main-content" className="skip-link">
-        Skip to main content
-      </a>
-      <a href="#mode-selector" className="skip-link">
-        Skip to mode selector
-      </a>
-
+    <div className={`app ${isLightBg ? "light-bg" : "dark-bg"}`}>
       <CoffeeButton />
 
       <main
@@ -345,21 +337,12 @@ function AppContent() {
 }
 
 /**
- * App - Root application component that provides theme context
- *
- * This is the main entry point component that wraps the entire application
- * with the ThemeProvider context. The ThemeProvider manages global theme state
- * including background colors/images, font selections, and color schemes,
- * making theme data available to all child components through React Context.
- *
- * Architecture:
- * App (ThemeProvider) → AppContent → Feature Components
- *
- * @returns {JSX.Element} The root application with theme context
+ * App - Root component with theme context and background layer
  */
 function App() {
   return (
     <ThemeProvider>
+      <BackgroundLayer />
       <AppContent />
     </ThemeProvider>
   );

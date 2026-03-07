@@ -117,10 +117,7 @@ function FlipCard({ value, prevValue, isFlipping, size = "normal" }) {
         </div>
 
         {/* Central divider line */}
-        <div
-          className="flip-card-divider"
-          style={{ background: getBackgroundStyle() }}
-        ></div>
+        <div className="flip-card-divider"></div>
 
         {/* Animated flip card - only visible during animation */}
         {isFlipping && (

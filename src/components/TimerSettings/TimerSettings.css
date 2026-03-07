@@ -14,11 +14,10 @@
 }
 
 .timer-settings-modal {
-  background: #2a2a2a;
-  border-radius: 16px;
+  background: #1c1c1e;
+  border-radius: 20px;
   padding: 2rem;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-  border: 1px solid #3a3a3a;
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.06);
   min-width: 400px;
   max-width: 90vw;
   animation: modalSlideIn 0.3s ease-out;
@@ -41,9 +40,9 @@
 }
 
 .timer-settings-header h2 {
-  color: #ffffff;
-  font-size: 1.5rem;
-  font-weight: 700;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 1.25rem;
+  font-weight: 600;
   margin: 0;
 }
 
@@ -61,11 +60,11 @@
 }
 
 .time-separator {
-  color: #ffffff;
-  font-size: 2rem;
-  font-weight: 700;
-  font-family: "Impact", "Arial Black", Arial, sans-serif;
-  margin: 0 0.5rem;
+  color: rgba(255, 255, 255, 0.38);
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0 0.25rem;
+  padding-top: 1.5rem; /* align with input, below the label */
 }
 
 .timer-settings-actions {
@@ -88,7 +87,7 @@
     max-width: none;
     margin: 0;
     padding: 1.5rem;
-    border-radius: 16px 16px 0 0; /* Rounded top corners only */
+    border-radius: 20px 20px 0 0; /* Rounded top corners only */
     animation: modalSlideUp 0.3s ease-out;
   }
 
@@ -136,7 +135,7 @@
 
   .settings-button:active {
     transform: scale(0.95);
-    transition: all 0.1s ease;
+    transition: transform 0.1s ease;
   }
 }
 
@@ -149,30 +148,33 @@
 }
 
 .settings-button {
-  padding: 0.75rem 2rem;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
+  padding: 0.625rem 1.5rem;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-size: 0.9375rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
   min-width: 100px;
-  min-height: 44px; /* Ensure minimum touch target size */
-  -webkit-tap-highlight-color: transparent; /* Remove default mobile tap highlight */
+  min-height: 44px;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .cancel-button {
-  background: #3a3a3a;
-  color: #ffffff;
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.85);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .cancel-button:hover {
-  background: #4a4a4a;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
 .save-button {
   background: #22c55e;
   color: #ffffff;
+  border-color: transparent;
 }
 
 .save-button:hover {
@@ -191,7 +193,7 @@
   }
 
   .timer-settings-modal {
-    border-radius: 16px; /* Full rounded corners in landscape */
+    border-radius: 20px; /* Full rounded corners in landscape */
     animation: modalSlideIn 0.3s ease-out; /* Use slide-in animation */
     max-height: 80vh;
     overflow-y: auto;
@@ -234,11 +236,3 @@
   }
 }
 
-/* Smooth transitions for orientation changes */
-@media (max-width: 767px) {
-  .timer-settings-modal,
-  .timer-settings-content,
-  .timer-settings-actions {
-    transition: all 0.3s ease;
-  }
-}

@@ -20,9 +20,8 @@
   background: var(--panel-bg, #fff);
   border: 1px solid var(--border-color, #e5e7eb);
   border-radius: 12px;
-  padding: 0;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
 .image-grid {
@@ -30,14 +29,6 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 0;
   width: 100%;
-  /* Performance optimization */
-  contain: layout style paint;
-}
-
-.image-square {
-  /* Optimize rendering performance */
-  content-visibility: auto;
-  contain-intrinsic-size: 100px 60px;
 }
 
 .image-square {
@@ -45,59 +36,40 @@
   height: 60px;
   border: none;
   cursor: pointer;
-  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
   position: relative;
   border-radius: 0;
   overflow: hidden;
   aspect-ratio: 2;
+  padding: 0;
+  background: #e5e7eb;
 }
 
+/* The thumbnail <img> fills the button */
 .image-background {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  /* Performance optimizations */
-  will-change: background-image;
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  /* Loading state */
-  background-color: #f0f0f0;
-  transition: opacity 0.3s ease;
-}
-
-.image-background.loading {
-  opacity: 0.5;
-  background-image: none !important;
-}
-
-.image-background.error {
-  background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
-  opacity: 0.7;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .image-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 1;
-  transition: all 0.15s ease;
+  transition: background 0.15s ease;
 }
 
 .image-icon {
   color: white;
   font-size: 18px;
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+  transition: transform 0.15s ease;
 }
 
 .image-square:hover {
@@ -108,7 +80,7 @@
 }
 
 .image-square:hover .image-overlay {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.15);
 }
 
 .image-square:hover .image-icon {
@@ -119,11 +91,11 @@
   transform: scale(1.08);
   z-index: 15;
   border-radius: 4px;
-  box-shadow: 0 0 0 3px white, 0 0 0 6px var(--accent-color, #3b82f6);
+  box-shadow: 0 0 0 2.5px #fff, 0 0 0 4px rgba(0, 0, 0, 0.25);
 }
 
 .image-square.selected .image-overlay {
-  background: rgba(59, 130, 246, 0.3);
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .image-square.selected .image-icon {
@@ -131,57 +103,12 @@
   transform: scale(1.2);
 }
 
-/* Fallback for missing images */
-.image-square .image-background:not([style*="background-image"]) {
-  background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
-}
-
-.image-square
-  .image-background:not([style*="background-image"])
-  + .image-overlay {
-  background: rgba(0, 0, 0, 0.1);
-}
-
-.image-square
-  .image-background:not([style*="background-image"])
-  + .image-overlay
-  .image-icon {
-  color: #999;
-}
-
 /* Focus states for accessibility */
-.image-square:focus {
-  outline: 2px solid var(--accent-color, #3b82f6);
+.image-square:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
   outline-offset: 2px;
 }
 
-/* Performance optimizations */
-.image-background {
-  /* Optimize image rendering */
-  image-rendering: optimizeQuality;
-  transform: translateZ(0); /* Force hardware acceleration */
-  will-change: background-image;
-}
-
-/* Loading placeholder */
-.image-background::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
-  z-index: -1;
-}
-
-/* Smooth image loading */
-.image-background {
-  background-color: #f0f0f0; /* Fallback while loading */
-  transition: opacity 0.3s ease;
-}
-
-/* Reduce image quality on mobile for better performance */
 @media (max-width: 768px) {
   .image-square {
     height: 50px;
@@ -191,30 +118,12 @@
     font-size: 16px;
   }
 
-  /* Use smaller background size on mobile */
-  .image-background {
-    background-size: cover;
-    image-rendering: optimizeSpeed;
-    /* Reduce image quality for better performance */
-    filter: contrast(0.9) brightness(1.1);
-  }
-
-  /* Disable hover effects on mobile for better performance */
   .image-square:hover {
     transform: none;
     box-shadow: none;
   }
-
-  .image-square:hover .image-overlay {
-    background: rgba(0, 0, 0, 0.4);
-  }
-
-  .image-square:hover .image-icon {
-    transform: none;
-  }
 }
 
-/* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
   .image-square,
   .image-overlay,

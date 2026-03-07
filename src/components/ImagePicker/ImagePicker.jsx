@@ -1,8 +1,4 @@
-import { useState, useEffect, useRef } from "react";
-import {
-  getOptimizedBackgroundCSS,
-  getImageLoadingStrategy,
-} from "../../utils/imageOptimization";
+import { useState } from "react";
 import {
   FaMountain,
   FaTree,
@@ -30,104 +26,104 @@ import "./ImagePicker.css";
 const BACKGROUND_IMAGES = [
   // Row 1
   {
-    path: "/images/backgrounds/image1.jpg",
-    thumbnail: "/images/backgrounds/thumbs/image1_thumb.jpg",
+    path: "/images/backgrounds/image1.webp",
+    thumbnail: "/images/backgrounds/thumbs/image1_thumb.webp",
     icon: FaMountain,
     name: "Mountains",
   },
   {
-    path: "/images/backgrounds/image2.jpg",
-    thumbnail: "/images/backgrounds/thumbs/image2_thumb.jpg",
+    path: "/images/backgrounds/image2.webp",
+    thumbnail: "/images/backgrounds/thumbs/image2_thumb.webp",
     icon: FaTree,
     name: "Forest",
   },
   {
-    path: "/images/backgrounds/image3.jpg",
-    thumbnail: "/images/backgrounds/thumbs/image3_thumb.jpg",
+    path: "/images/backgrounds/image3.webp",
+    thumbnail: "/images/backgrounds/thumbs/image3_thumb.webp",
     icon: FaWater,
     name: "Ocean",
   },
   {
-    path: "/images/backgrounds/image4.jpg",
-    thumbnail: "/images/backgrounds/thumbs/image4_thumb.jpg",
+    path: "/images/backgrounds/image4.webp",
+    thumbnail: "/images/backgrounds/thumbs/image4_thumb.webp",
     icon: FaCity,
     name: "City",
   },
 
   // Row 2
   {
-    path: "/images/backgrounds/image5.jpg",
-    thumbnail: "/images/backgrounds/thumbs/image5_thumb.jpg",
+    path: "/images/backgrounds/image5.webp",
+    thumbnail: "/images/backgrounds/thumbs/image5_thumb.webp",
     icon: FaSun,
     name: "Sunrise",
   },
   {
-    path: "/images/backgrounds/image6.jpg",
-    thumbnail: "/images/backgrounds/thumbs/image6_thumb.jpg",
+    path: "/images/backgrounds/image6.webp",
+    thumbnail: "/images/backgrounds/thumbs/image6_thumb.webp",
     icon: FaMoon,
     name: "Night",
   },
   {
-    path: "/images/backgrounds/image7.jpg",
-    thumbnail: "/images/backgrounds/thumbs/image7_thumb.jpg",
+    path: "/images/backgrounds/image7.webp",
+    thumbnail: "/images/backgrounds/thumbs/image7_thumb.webp",
     icon: FaCloud,
     name: "Sky",
   },
   {
-    path: "/images/backgrounds/image8.jpg",
-    thumbnail: "/images/backgrounds/thumbs/image8_thumb.jpg",
+    path: "/images/backgrounds/image8.webp",
+    thumbnail: "/images/backgrounds/thumbs/image8_thumb.webp",
     icon: FaLeaf,
     name: "Nature",
   },
 
   // Row 3
   {
-    path: "/images/backgrounds/image9.jpg",
-    thumbnail: "/images/backgrounds/thumbs/image9_thumb.jpg",
+    path: "/images/backgrounds/image9.webp",
+    thumbnail: "/images/backgrounds/thumbs/image9_thumb.webp",
     icon: FaFire,
     name: "Abstract",
   },
   {
-    path: "/images/backgrounds/image10.jpg",
-    thumbnail: "/images/backgrounds/thumbs/image10_thumb.jpg",
+    path: "/images/backgrounds/image10.webp",
+    thumbnail: "/images/backgrounds/thumbs/image10_thumb.webp",
     icon: FaSnowflake,
     name: "Winter",
   },
   {
-    path: "/images/backgrounds/image11.jpg",
-    thumbnail: "/images/backgrounds/thumbs/image11_thumb.jpg",
+    path: "/images/backgrounds/image11.webp",
+    thumbnail: "/images/backgrounds/thumbs/image11_thumb.webp",
     icon: FaStar,
     name: "Space",
   },
   {
-    path: "/images/backgrounds/image12.jpg",
-    thumbnail: "/images/backgrounds/thumbs/image12_thumb.jpg",
+    path: "/images/backgrounds/image12.webp",
+    thumbnail: "/images/backgrounds/thumbs/image12_thumb.webp",
     icon: FaHeart,
     name: "Artistic",
   },
 
   // Row 4
   {
-    path: "/images/backgrounds/image13.jpg",
-    thumbnail: "/images/backgrounds/thumbs/image13_thumb.jpg",
+    path: "/images/backgrounds/image13.webp",
+    thumbnail: "/images/backgrounds/thumbs/image13_thumb.webp",
     icon: FaGem,
     name: "Texture",
   },
   {
-    path: "/images/backgrounds/image14.jpg",
-    thumbnail: "/images/backgrounds/thumbs/image14_thumb.jpg",
+    path: "/images/backgrounds/image14.webp",
+    thumbnail: "/images/backgrounds/thumbs/image14_thumb.webp",
     icon: FaFeather,
     name: "Minimal",
   },
   {
-    path: "/images/backgrounds/image15.jpg",
-    thumbnail: "/images/backgrounds/thumbs/image15_thumb.jpg",
+    path: "/images/backgrounds/image15.webp",
+    thumbnail: "/images/backgrounds/thumbs/image15_thumb.webp",
     icon: FaSeedling,
     name: "Floral",
   },
   {
-    path: "/images/backgrounds/image16.jpg",
-    thumbnail: "/images/backgrounds/thumbs/image16_thumb.jpg",
+    path: "/images/backgrounds/image16.webp",
+    thumbnail: "/images/backgrounds/thumbs/image16_thumb.webp",
     icon: FaPalette,
     name: "Colorful",
   },
@@ -227,24 +223,6 @@ const ImagePicker = ({ value, onChange, label = "Images" }) => {
 
   const selectedImage = getCurrentImage();
 
-  // Preload images for better performance
-  useEffect(() => {
-    const preloadImages = () => {
-      // Only preload first 8 images initially to avoid overwhelming the browser
-      const imagesToPreload = BACKGROUND_IMAGES.slice(0, 8);
-
-      imagesToPreload.forEach((image, index) => {
-        setTimeout(() => {
-          const img = new Image();
-          img.src = image.path;
-        }, index * 100); // Stagger loading to avoid blocking
-      });
-    };
-
-    // Start preloading after a short delay
-    const timer = setTimeout(preloadImages, 300);
-    return () => clearTimeout(timer);
-  }, []);
   const [loadedImages, setLoadedImages] = useState(new Set());
 
   const handleImageLoad = (imagePath) => {
@@ -274,12 +252,11 @@ const ImagePicker = ({ value, onChange, label = "Images" }) => {
                 title={image.name}
                 aria-label={`Select ${image.name} background`}
               >
-                <div
+                <img
                   className="image-background"
-                  style={{
-                    backgroundImage: `url(${image.path})`,
-                    opacity: isLoaded ? 1 : 0.5,
-                  }}
+                  src={image.thumbnail}
+                  alt={image.name}
+                  loading="lazy"
                   onLoad={() => handleImageLoad(image.path)}
                 />
                 <div className="image-overlay">

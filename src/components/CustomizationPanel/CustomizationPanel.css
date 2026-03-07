@@ -15,10 +15,11 @@
 
 .customization-panel {
   background: var(--panel-bg, #ffffff);
-  border-radius: 16px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
   width: 100%;
   max-width: 900px;
+  height: 80vh;
   max-height: 80vh;
   overflow: hidden;
   display: flex;
@@ -26,81 +27,83 @@
   contain: layout style;
 }
 
-.panel-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.5rem 2rem;
-  border-bottom: 1px solid var(--border-color, #eee);
-  background: var(--header-bg, #f8f9fa);
-}
-
-.panel-header h2 {
-  margin: 0;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--text-color, #333);
-}
-
 .close-button {
   background: none;
   border: none;
-  font-size: 1.2rem;
-  color: var(--text-color, #666);
+  font-size: 0.95rem;
+  color: var(--text-muted, rgba(255, 255, 255, 0.4));
   cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 8px;
-  transition: all 0.2s ease;
+  padding: 0.4rem;
+  border-radius: 6px;
+  transition: background-color 0.15s ease, color 0.15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 44px;
-  min-height: 44px;
+  min-width: 36px;
+  min-height: 36px;
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
 .close-button:hover {
-  background: var(--hover-bg, #e9ecef);
-  color: var(--text-color, #333);
+  background: var(--hover-bg, rgba(0, 0, 0, 0.06));
+  color: var(--text-color, rgba(255, 255, 255, 0.8));
 }
 
 .panel-tabs {
   display: flex;
+  align-items: center;
   border-bottom: 1px solid var(--border-color, #eee);
   background: var(--tabs-bg, #ffffff);
-  padding: 0 1rem;
-  gap: 0.5rem;
+  padding: 0 1.5rem;
+  gap: 0;
 }
 
 .tab-button {
-  padding: 0.75rem 1.5rem;
+  padding: 1rem 1.25rem;
   border: none;
   background: none;
-  color: var(--text-muted, #666);
+  color: var(--text-muted, rgba(0, 0, 0, 0.4));
   font-weight: 500;
+  font-size: 0.9375rem;
   cursor: pointer;
-  transition: all 0.2s ease;
-  border-radius: 8px 8px 0 0;
+  transition: color 0.2s ease;
+  border-radius: 0;
   position: relative;
-  margin-bottom: -1px;
+  margin-bottom: 0;
+  white-space: nowrap;
 }
 
-.tab-button:hover:not(:disabled) {
-  background: var(--hover-bg, #f8f9fa);
-  color: var(--text-color, #333);
+.tab-button::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0.5rem;
+  right: 0.5rem;
+  height: 2px;
+  background: var(--text-color, #333);
+  border-radius: 1px;
+  transform: scaleX(0);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .tab-button.active {
-  color: var(--accent-color, #007bff);
-  background: var(--active-bg, #ffffff);
-  border: 1px solid var(--border-color, #eee);
-  border-bottom: 1px solid var(--active-bg, #ffffff);
+  color: var(--text-color, #333);
   font-weight: 600;
+}
+
+.tab-button.active::after {
+  transform: scaleX(1);
+}
+
+.tab-button:hover:not(.active):not(:disabled) {
+  color: var(--text-color, rgba(0, 0, 0, 0.7));
+  background: none;
 }
 
 .tab-button:disabled {
   opacity: 0.4;
   cursor: not-allowed;
-  color: var(--text-muted, #999);
 }
 
 .panel-content {
@@ -113,7 +116,6 @@
   display: grid;
   grid-template-columns: 1fr 300px;
   gap: 2rem;
-  height: 100%;
 }
 
 .options-section {
@@ -142,7 +144,7 @@
 }
 
 .panel-actions {
-  padding: 1.5rem 2rem;
+  padding: 1rem 1.5rem;
   border-top: 1px solid var(--border-color, #eee);
   background: var(--footer-bg, #f8f9fa);
   display: flex;
@@ -152,51 +154,53 @@
 }
 
 .action-button {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 8px;
-  font-weight: 500;
+  padding: 0.625rem 1.5rem;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9375rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
   min-width: 80px;
 }
 
 .action-button.primary {
-  background: var(--accent-color, #007bff);
-  color: white;
+  background: var(--text-color, #333);
+  color: var(--panel-bg, #fff);
+  border-color: transparent;
 }
 
 .action-button.primary:hover {
-  background: var(--accent-hover, #0056b3);
+  opacity: 0.85;
 }
 
 .action-button.secondary {
-  background: var(--secondary-bg, #6c757d);
-  color: white;
+  background: var(--hover-bg, rgba(0, 0, 0, 0.06));
+  color: var(--text-color, #333);
+  border-color: var(--border-color, rgba(0, 0, 0, 0.12));
 }
 
 .action-button.secondary:hover {
-  background: var(--secondary-hover, #545b62);
+  background: var(--hover-bg, rgba(0, 0, 0, 0.1));
 }
 
 .panel-signature {
-  font-size: 1rem;
-  color: var(--text-muted, #666);
-  font-weight: 500;
-  letter-spacing: 0.5px;
+  font-size: 0.875rem;
+  color: var(--text-muted, rgba(0, 0, 0, 0.4));
+  font-weight: 400;
+  letter-spacing: 0.2px;
 }
 
 /* Dark theme */
 .app.dark-bg .customization-panel {
-  --panel-bg: #2a2a2a;
-  --header-bg: #1a1a1a;
-  --tabs-bg: #2a2a2a;
-  --footer-bg: #1a1a1a;
-  --text-color: #ffffff;
-  --text-muted: #aaa;
-  --border-color: #444;
-  --hover-bg: #3a3a3a;
-  --active-bg: #2a2a2a;
+  --panel-bg: #1c1c1e;
+  --tabs-bg: #1c1c1e;
+  --footer-bg: #161618;
+  --text-color: rgba(255, 255, 255, 0.92);
+  --text-muted: rgba(255, 255, 255, 0.38);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --hover-bg: rgba(255, 255, 255, 0.07);
+  --active-bg: #1c1c1e;
 }
 
 /* Responsive design */
@@ -206,19 +210,12 @@
   }
 
   .customization-panel {
+    height: 95vh;
     max-height: 95vh;
     max-width: none;
     width: 100%;
     margin: 0;
     border-radius: 12px;
-  }
-
-  .panel-header {
-    padding: 0.75rem 1rem;
-  }
-
-  .panel-header h2 {
-    font-size: 1.125rem;
   }
 
   .panel-tabs {
@@ -275,14 +272,6 @@
     max-width: none;
   }
 
-  .panel-header {
-    padding: 0.5rem 0.75rem;
-  }
-
-  .panel-header h2 {
-    font-size: 1rem;
-  }
-
   .panel-tabs {
     padding: 0 0.25rem;
   }
@@ -315,14 +304,6 @@
     max-height: 90vh;
     max-width: 95vw;
     width: 100%;
-  }
-
-  .panel-header {
-    padding: 0.5rem 1rem;
-  }
-
-  .panel-header h2 {
-    font-size: 1rem;
   }
 
   .panel-tabs {
@@ -363,10 +344,7 @@
 
 /* Smooth transitions for orientation changes */
 @media (max-width: 767px) {
-  .customization-panel,
-  .panel-header,
-  .panel-content,
-  .content-layout {
-    transition: all 0.3s ease;
+  .customization-panel {
+    transition: border-radius 0.3s ease;
   }
 }

@@ -19,11 +19,11 @@
  * All fonts include appropriate fallbacks for cross-platform compatibility.
  */
 export const FONT_OPTIONS = {
-  /** Default bold font with strong visual impact */
+  /** Default elegant modern sans-serif */
   default: {
     id: "default",
-    name: "Impact",
-    value: "'Impact', 'Arial Black', Arial, sans-serif",
+    name: "DM Sans",
+    value: "'DM Sans', system-ui, sans-serif",
     sample: "12:34",
   },
   /** Modern, clean sans-serif font */
@@ -33,11 +33,11 @@ export const FONT_OPTIONS = {
     value: "'Roboto', sans-serif",
     sample: "12:34",
   },
-  /** Futuristic, sci-fi style monospace font */
-  orbitron: {
-    id: "orbitron",
-    name: "Orbitron",
-    value: "'Orbitron', monospace",
+  /** Geometric, modern technical font */
+  "space-grotesk": {
+    id: "space-grotesk",
+    name: "Space Grotesk",
+    value: "'Space Grotesk', sans-serif",
     sample: "12:34",
   },
   /** Digital/LCD display style font */

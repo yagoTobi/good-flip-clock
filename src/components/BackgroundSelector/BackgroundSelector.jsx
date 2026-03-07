@@ -217,8 +217,6 @@ const BackgroundSelector = () => {
 
   return (
     <div className="background-selector">
-      <h3>Choose Background</h3>
-
       {/* Custom Color Picker Section */}
       <div className="background-category">
         <SpectrumColorPicker

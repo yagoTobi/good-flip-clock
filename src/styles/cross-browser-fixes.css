@@ -102,11 +102,11 @@ textarea {
 }
 
 /* Fix Chrome mobile button focus outlines */
-.control-button:focus,
-.selector-option:focus,
-.customization-button:focus,
-.action-button:focus {
-  outline: 2px solid #007bff;
+.control-button:focus-visible,
+.selector-option:focus-visible,
+.customization-button:focus-visible,
+.action-button:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
   outline-offset: 2px;
 }
 

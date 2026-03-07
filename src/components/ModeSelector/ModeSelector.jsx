@@ -121,7 +121,6 @@ function ModeSelector({
                 tabIndex={isActive ? 0 : -1}
               >
                 <IconComponent className="mode-icon" aria-hidden="true" />
-                <span className="mode-label">{mode.label}</span>
                 {isRunning && (
                   <span
                     className="timer-indicator"

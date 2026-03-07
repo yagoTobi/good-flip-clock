@@ -2,12 +2,6 @@
   margin-bottom: 1.5rem;
 }
 
-.background-selector h3 {
-  margin: 0 0 1.5rem 0;
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: var(--text-color, #333);
-}
 
 .background-category {
   margin-bottom: 2rem;
@@ -39,7 +33,7 @@
 
   .background-option:active {
     transform: scale(0.95);
-    transition: all 0.1s ease;
+    transition: transform 0.1s ease;
   }
 }
 
@@ -77,10 +71,10 @@
   border-radius: 8px;
   background: var(--panel-bg, #fff);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   min-height: 70px;
-  min-width: 44px; /* Ensure minimum touch target size */
-  -webkit-tap-highlight-color: transparent; /* Remove default mobile tap highlight */
+  min-width: 44px;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Compact style for color swatches */
@@ -93,14 +87,14 @@
 }
 
 .background-option:hover {
-  border-color: var(--accent-color, #007bff);
+  border-color: rgba(0, 0, 0, 0.2);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .background-option.selected {
-  border-color: var(--accent-color, #007bff);
-  background: var(--accent-bg, rgba(0, 123, 255, 0.1));
+  border-color: rgba(0, 0, 0, 0.3);
+  background: var(--hover-bg, rgba(0, 0, 0, 0.05));
 }
 
 .background-thumbnail {
