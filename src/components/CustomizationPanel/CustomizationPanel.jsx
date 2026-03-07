@@ -3,6 +3,7 @@ import { FaTimes } from "react-icons/fa";
 import BackgroundSelector from "../BackgroundSelector/BackgroundSelector";
 import FontSelector from "../FontSelector/FontSelector";
 import ColorSelector from "../ColorSelector/ColorSelector";
+import DisplaySettings from "../DisplaySettings/DisplaySettings";
 import ClockPreview from "../ClockPreview/ClockPreview";
 import "./CustomizationPanel.css";
 
@@ -80,7 +81,7 @@ const CustomizationPanel = ({ isOpen, onClose }) => {
 
   const tabs = [
     { id: "background", label: "Background" },
-    { id: "fonts", label: "Fonts" },
+    { id: "display", label: "Display" },
     { id: "colors", label: "Colors" },
   ];
 
@@ -155,14 +156,17 @@ const CustomizationPanel = ({ isOpen, onClose }) => {
                   <BackgroundSelector />
                 </div>
               )}
-              {activeTab === "fonts" && (
+              {activeTab === "display" && (
                 <div
                   className="tab-content"
                   role="tabpanel"
-                  id="fonts-panel"
-                  aria-labelledby="fonts-tab"
+                  id="display-panel"
+                  aria-labelledby="display-tab"
                 >
+                  <h2 className="tab-section-heading">Display Options</h2>
                   <FontSelector />
+                  <div className="section-divider" />
+                  <DisplaySettings />
                 </div>
               )}
               {activeTab === "colors" && (

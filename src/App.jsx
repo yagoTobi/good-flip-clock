@@ -9,6 +9,7 @@ import PomodoroSettings from "./components/PomodoroSettings";
 import CoffeeButton from "./components/CoffeeButton";
 import MusicPlayer from "./components/MusicPlayer";
 import TaskList from "./components/TaskList";
+import NotesPanel, { loadNotes } from "./components/NotesPanel";
 import MobileBottomBar from "./components/MobileBottomBar/MobileBottomBar";
 import InspirationalQuote from "./components/InspirationalQuote/InspirationalQuote";
 import LiveRegion from "./components/LiveRegion";
@@ -153,6 +154,8 @@ function AppContent() {
   const [isMusicOpen, setIsMusicOpen] = useState(false);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [isTasksOpen, setIsTasksOpen] = useState(false);
+  const [isNotesOpen, setIsNotesOpen] = useState(false);
+  const [notes, setNotes] = useState(loadNotes);
 
   const handleMusicToggle = () => {
     const next = !isMusicOpen;
@@ -164,6 +167,19 @@ function AppContent() {
     const next = !isTasksOpen;
     setIsTasksOpen(next);
     if (next) setIsMusicOpen(false);
+  };
+
+  const handleNotesToggle = () => {
+    setIsNotesOpen((prev) => !prev);
+  };
+
+  const handleNotesChange = (value) => {
+    setNotes(value);
+    try {
+      localStorage.setItem("flip-clock-notes", value);
+    } catch {
+      // storage unavailable
+    }
   };
   const timer = useTimer();
   const pomodoroTimer = usePomodoroTimer();
@@ -289,6 +305,12 @@ function AppContent() {
         onPlayingChange={setIsMusicPlaying}
       />
       <TaskList isOpen={isTasksOpen} onToggle={handleTasksToggle} />
+      <NotesPanel
+        isOpen={isNotesOpen}
+        onToggle={handleNotesToggle}
+        notes={notes}
+        onNotesChange={handleNotesChange}
+      />
 
       <main
         id="main-content"
