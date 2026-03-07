@@ -7,6 +7,7 @@ import CustomizationPanel from "./components/CustomizationPanel";
 import TimerSettings from "./components/TimerSettings";
 import PomodoroSettings from "./components/PomodoroSettings";
 import CoffeeButton from "./components/CoffeeButton";
+import MusicPlayer from "./components/MusicPlayer";
 import LiveRegion from "./components/LiveRegion";
 import { useTimer } from "./hooks/useTimer";
 import { usePomodoroTimer } from "./hooks/usePomodoroTimer";
@@ -263,6 +264,7 @@ function AppContent() {
   return (
     <div className={`app ${isLightBg ? "light-bg" : "dark-bg"}`}>
       <CoffeeButton />
+      <MusicPlayer />
 
       <main
         id="main-content"
