@@ -673,6 +673,7 @@ import PomodoroSessionIndicator from "./components/PomodoroSessionIndicator";
 - Completed session tracking
 - Long break countdown display
 - Session type visual differentiation
+- **Hidden on mobile portrait** (`max-width: 767px` + `orientation: portrait`): `display: none` — space too tight alongside the stacked cards
 
 ---
 
@@ -777,7 +778,93 @@ import TaskList from "./components/TaskList";
 
 ---
 
+### Notes
 
+**Purpose**: Floating scratchpad panel for session notes
+
+**Props**:
+
+```typescript
+interface NotesProps {
+  isOpen: boolean;
+  onToggle: () => void;
+}
+```
+
+**Features**:
+
+- Glassmorphic panel (same visual style as MusicPlayer/TaskList)
+- `<textarea>` with `maxLength={10000}`; content persisted to `localStorage`
+- Full light/dark background adaptation
+
+---
+
+### MobileBottomBar
+
+**Purpose**: Mobile-only (`max-width: 767px`) persistent bottom navigation bar
+
+**Props**:
+
+```typescript
+interface MobileBottomBarProps {
+  selectedMode: string;             // Current mode — drives dot indicator and controls visibility
+  timer: TimerHook;                 // Timer instance for timer controls
+  pomodoroTimer: PomodoroTimerHook; // Pomodoro instance for pomodoro controls
+  onSettingsClick: () => void;      // Opens Timer or Pomodoro settings modal
+  onCustomizationClick: () => void; // Opens CustomizationPanel
+  isMusicOpen: boolean;
+  onMusicToggle: () => void;
+  isMusicPlaying: boolean;          // Drives music button pulse animation
+}
+```
+
+**Usage**:
+
+```jsx
+import MobileBottomBar from "./components/MobileBottomBar";
+
+<MobileBottomBar
+  selectedMode={selectedMode}
+  timer={timer}
+  pomodoroTimer={pomodoroTimer}
+  onSettingsClick={handleSettingsClick}
+  onCustomizationClick={() => setIsCustomizationOpen(true)}
+  isMusicOpen={isMusicOpen}
+  onMusicToggle={handleMusicToggle}
+  isMusicPlaying={isMusicPlaying}
+/>;
+```
+
+**Layout** (three rows):
+
+1. **Mode dots** — three dots for Clock/Timer/Pomodoro; active dot highlighted; pulses when a timer is running
+2. **Controls row** — animated max-height collapse (hidden in Clock mode, expanded in Timer/Pomodoro)
+   - Timer: Settings → Play/Pause → Stop
+   - Pomodoro: Settings → Play/Pause → Stop → Skip
+3. **Utility row** — Customize, Music, Coffee buttons
+
+**Notes**:
+- Stop and Skip buttons are dimmed when the timer hasn't started
+- Controls stay mounted for 250 ms after switching away from Timer/Pomodoro so the height-collapse CSS transition can complete before unmount
+- Hidden entirely on desktop (`display: none` at `min-width: 768px`)
+
+---
+
+### InspirationalQuote
+
+**Purpose**: Displays a rotating inspirational quote at the top of the screen
+
+**Props**: None (self-contained, pulls from an internal quote list)
+
+**Features**:
+
+- `position: fixed; top: 2rem; left: 50%; transform: translateX(-50%)`
+- Fades in on load via `quoteFadeIn` CSS animation
+- **Hidden on all mobile** (`max-width: 767px`): `display: none` — frees vertical space for flip cards
+- Visible on tablet (`min-width: 768px`) and desktop
+- Light/dark background adaptation via CSS custom properties
+
+---
 
 ### Modal Pattern
 

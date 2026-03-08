@@ -85,15 +85,19 @@ The system supports three types of backgrounds:
 
 #### 3. Images
 
+Images are stored locally as compressed WebP files in `public/images/backgrounds/` (full-size) and `public/images/backgrounds/thumbs/` (thumbnails used in the picker grid). The picker grid always uses `image.thumbnail` — not `image.path` — for scroll performance.
+
 ```javascript
 {
   id: "image-mountains",
   name: "Mountains",
-  value: 'url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&h=1080&fit=crop&crop=center") center/cover',
-  thumbnail: 'url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=100&h=100&fit=crop&crop=center") center/cover',
+  path: "/images/backgrounds/mountains.webp",
+  thumbnail: "/images/backgrounds/thumbs/mountains.webp",
   category: "images"
 }
 ```
+
+The `BackgroundLayer` component preloads the full-size image URL before applying it to avoid a flash of empty background. Crossfading between backgrounds is handled via CSS `opacity` transitions (GPU-composited, zero repaint cost) rather than `background` transitions on `document.body`.
 
 ### Adding New Backgrounds
 
@@ -136,23 +140,25 @@ To add new background options, modify the `BACKGROUND_OPTIONS` array in `src/com
 
 #### Adding Images
 
+1. Add the full-size WebP to `public/images/backgrounds/` and a thumbnail WebP to `public/images/backgrounds/thumbs/`
+2. Add the entry to `BackgroundSelector.jsx`:
+
 ```javascript
 {
   id: "image-custom",
   name: "Custom Image",
-  value: 'url("your-image-url-here") center/cover',
-  thumbnail: 'url("your-thumbnail-url-here") center/cover',
+  path: "/images/backgrounds/custom.webp",
+  thumbnail: "/images/backgrounds/thumbs/custom.webp",
   category: "images"
 }
 ```
 
 **Image Guidelines:**
 
-- Use high-resolution images (1920x1080 or higher)
-- Ensure images work well as backgrounds (not too busy)
-- Provide smaller thumbnail versions (100x100) for performance
-- Consider using Unsplash or similar services for quality images
-- Test contrast with clock text for readability
+- Use WebP format for best compression (full-size target: under 200 KB; thumbnail: under 20 KB)
+- Full-size: 1920×1080 or higher; thumbnail: 320×200
+- Ensure the image works as a full-screen background (not too busy in the center)
+- Test contrast with both light and dark clock text
 
 ## Font Customization
 

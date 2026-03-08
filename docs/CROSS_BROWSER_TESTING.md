@@ -71,19 +71,27 @@ const results = await window.runMobileCompatibilityTests();
 #### iPhone (Portrait Mode)
 
 - [ ] App loads without horizontal scrolling
-- [ ] Clock display is properly sized and centered
-- [ ] Timer controls are positioned below clock
+- [ ] Two flip cards are vertically stacked and fill the majority of screen height
+- [ ] Inspirational quote is NOT visible (hidden on all mobile)
+- [ ] MobileBottomBar is visible at the bottom with mode dots and utility buttons
+- [ ] Timer/Pomodoro controls row animates in when switching to those modes
+- [ ] Tap-to-focus: after 4 s inactivity, bottom bar fades out and clock centers in viewport
+- [ ] Any touch restores the chrome
+- [ ] Mode label toast appears briefly at top when changing modes
 - [ ] Mode selector buttons are touch-friendly (44px minimum)
 - [ ] Customization panel opens full-screen
 - [ ] Settings panels are accessible and usable
 - [ ] No zoom occurs when tapping input fields
 - [ ] Smooth transitions between modes
+- [ ] Swipe left/right on clock changes mode
 
 #### iPhone (Landscape Mode)
 
-- [ ] Layout adapts to landscape orientation
+- [ ] Layout adapts to landscape orientation (cards side-by-side)
+- [ ] Inspirational quote is NOT visible
+- [ ] MobileBottomBar is NOT visible; landscape-customize-btn appears at bottom-right
+- [ ] Timer/Pomodoro controls are visible when in those modes; fade after 4 s inactivity
 - [ ] Clock remains focal point
-- [ ] Controls reposition appropriately
 - [ ] No content is cut off or inaccessible
 - [ ] Orientation change is smooth (no layout jumps)
 

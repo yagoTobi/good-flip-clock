@@ -52,11 +52,12 @@ The Flip Clock App is built using modern React patterns with a focus on componen
 - **Responsibilities**:
   - Mode state management (Clock, Timer, Pomodoro)
   - Modal visibility state coordination (Customization, Timer Settings, Pomodoro Settings)
-  - Floating panel state ownership: `isMusicOpen`, `isTasksOpen`, `isMusicPlaying`
-  - Mutual exclusion between MusicPlayer and TaskList panels
+  - Floating panel state ownership: `isMusicOpen`, `isTasksOpen`, `isNotesOpen`, `isMusicPlaying`
+  - Mutual exclusion between MusicPlayer, TaskList, and Notes panels
   - Integration between timer hooks and display components
+  - Focus mode (desktop) and tap-to-focus (mobile) inactivity timers
 - **Key Features**:
-  - `handleMusicToggle` / `handleTasksToggle` — opening one panel automatically closes the other
+  - `handleMusicToggle` / `handleTasksToggle` / `handleNotesToggle` — opening one panel closes the others
   - Background theme application via BackgroundLayer
   - Timer instance management
 
@@ -108,8 +109,16 @@ Fixed-position components that sit above the main layout at `z-index: 100`. Thei
 
 - **MusicPlayer** (`bottom-left`): Streams study music via YouTube IFrame API; four curated stations
 - **TaskList** (`bottom-left`, offset right of MusicPlayer): Persistent to-do list panel; tasks saved to `localStorage`
-- **CoffeeButton** (`bottom-right`): Support link
-- **MobileBottomBar**: Mobile-only bottom navigation bar
+- **Notes** (`bottom-left`): Scratchpad panel with `maxLength={10000}` textarea; content persisted in `localStorage`
+- **CoffeeButton** (`bottom-right`): Support link (desktop only)
+- **MobileBottomBar**: Mobile-only (`max-width: 767px`) persistent bottom bar — mode dots, animated controls row, utility buttons. See [Mobile UX](MOBILE_UTILITIES.md) for full details.
+- **InspirationalQuote**: Fixed top-center quote. Visible on tablet and desktop only; hidden on all mobile via `display: none`.
+
+### BackgroundLayer
+
+A `position: fixed; z-index: 0` component rendered inside `ThemeProvider` but outside `AppContent`. It handles all background rendering via CSS `opacity` crossfades (GPU-composited) rather than applying `background` to `document.body`. Images are preloaded before the background switches to prevent flash-of-empty.
+
+`AppContent` renders at `position: relative; z-index: 1` so it always sits above BackgroundLayer.
 
 ### Customization System
 
@@ -501,5 +510,25 @@ Several fixed UI elements use `backdrop-filter` for a glassmorphic look (mode se
 2. Add timer-specific constants and types
 3. Create display components for new timer
 4. Integrate with existing control systems
+
+## Mobile UX Architecture
+
+See [Mobile UX](MOBILE_UTILITIES.md) for the full breakdown. Key architectural points:
+
+### Focus Mode (Desktop, `min-width: 768px`)
+
+After 20 s of no mouse movement, `.focus-mode` is added to `.app`. All chrome (quote, mode selector, controls, floating buttons) fades to `opacity: 0; pointer-events: none` over 2 s. Mouse movement removes the class and restores everything over 1 s.
+
+### Tap-to-Focus (Mobile Portrait)
+
+After 4 s of no touch activity, `.mobile-chrome-hidden` is added to `.app`. The MobileBottomBar fades out and `.app-main` padding collapses to zero so the clock floats at true viewport center. Any touch event restores chrome and resets the timer.
+
+### Tap-to-Hide Controls (Mobile Landscape)
+
+Same `.mobile-chrome-hidden` class in landscape hides timer/pomodoro controls and the landscape-customize-btn.
+
+### Card Sizing
+
+Desktop uses a width-driven system (`width: 22vw`, height auto via `aspect-ratio: 22/24`). Mobile portrait uses a height-driven system (`height: clamp(170px, calc((100dvh - 170px) / 2), 340px)`, width auto). Both produce the same 22:24 card shape.
 
 This architecture provides a solid foundation for the Flip Clock App while maintaining flexibility for future enhancements and modifications.

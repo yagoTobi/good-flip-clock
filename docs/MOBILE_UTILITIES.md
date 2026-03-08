@@ -1,311 +1,251 @@
-# Mobile Utilities Documentation
+# Mobile UX Documentation
 
-This document describes the mobile-specific CSS utilities and helper classes available in the flip clock application.
+This document describes the mobile-specific layout system, UX behaviours, and CSS patterns in the flip clock application.
 
 ## Overview
 
-The mobile utilities provide a comprehensive set of CSS classes and custom properties designed to enhance mobile user experience, improve touch interactions, and ensure consistent responsive design patterns.
+Mobile is split into two orientations with distinct layouts. Both use `100dvh` (dynamic viewport height) so the layout tightly tracks the browser's visible area as the address bar shows and hides.
 
-## CSS Custom Properties
+| Context | Breakpoint | Layout |
+|---|---|---|
+| Portrait | `max-width: 767px` + `orientation: portrait` | Two cards stacked vertically, MobileBottomBar fixed at bottom |
+| Landscape | `max-height: 500px` + `orientation: landscape` | Two cards side-by-side, controls hidden, landscape-customize-btn fixed |
+| Tablet / Desktop | `min-width: 768px` | Horizontal card pair, ModeSelector pill, floating panels |
 
-### Mobile Spacing Scale
+---
 
-```css
---mobile-space-xs: 0.25rem; /* 4px */
---mobile-space-sm: 0.5rem; /* 8px */
---mobile-space-md: 0.75rem; /* 12px */
---mobile-space-lg: 1rem; /* 16px */
---mobile-space-xl: 1.5rem; /* 24px */
---mobile-space-2xl: 2rem; /* 32px */
---mobile-space-3xl: 3rem; /* 48px */
-```
+## Card Sizing System
 
-### Touch Target Sizes
+### Unified aspect ratio
 
-```css
---touch-target-min: 44px; /* Minimum touch target */
---touch-target-comfortable: 48px; /* Comfortable touch target */
---touch-target-large: 56px; /* Large touch target */
-```
+All flip cards use `aspect-ratio: 22 / 24` as the single source of truth for card shape. This means cards always look the same proportion on every screen — the only difference is which dimension drives sizing.
 
-### Mobile Typography Scale
+- **Desktop / landscape** — width-driven: `width: 22vw`, height auto-computed from aspect-ratio
+- **Mobile portrait** — height-driven: explicit `height: clamp(...)`, width auto-computed from aspect-ratio
+
+### Portrait card formula
 
 ```css
---mobile-text-xs: 0.75rem; /* 12px */
---mobile-text-sm: 0.875rem; /* 14px */
---mobile-text-base: 1rem; /* 16px */
---mobile-text-lg: 1.125rem; /* 18px */
---mobile-text-xl: 1.25rem; /* 20px */
---mobile-text-2xl: 1.5rem; /* 24px */
---mobile-text-3xl: 1.875rem; /* 30px */
+/* FlipCard.css — mobile portrait */
+.flip-card:not(.mini) .flip-card-inner {
+  height: clamp(170px, calc((100dvh - 170px) / 2), 340px);
+  width: auto;         /* auto-computed = height × 22/24 */
+  max-width: none;
+  min-width: 0;
+}
 ```
 
-### Mobile Theme Variables
+**Overhead breakdown**: `170px = 8px top padding + 160px bottom padding (MobileBottomBar clearance) + 2px gap buffer`
+
+The font size is derived from the same 13:24 ratio as desktop:
 
 ```css
---mobile-bg-primary: #1a1a1a;
---mobile-bg-secondary: #2a2a2a;
---mobile-bg-tertiary: #3a3a3a;
---mobile-text-primary: rgba(255, 255, 255, 0.95);
---mobile-text-secondary: rgba(255, 255, 255, 0.8);
---mobile-text-tertiary: rgba(255, 255, 255, 0.6);
+font-size: clamp(92px, calc((100dvh - 170px) * 0.27), 184px);
+/* 0.27 ≈ 13/24 / 2 — halved because the formula is per-card, not total height */
 ```
 
-## Utility Classes
-
-### Layout Utilities
-
-#### Flexbox
+### app-main portrait padding
 
 ```css
-.mobile-flex          /* display: flex */
-/* display: flex */
-.mobile-flex-col      /* flex-direction: column */
-.mobile-flex-row      /* flex-direction: row */
-.mobile-flex-center   /* align-items: center; justify-content: center */
-.mobile-flex-between  /* justify-content: space-between */
-.mobile-flex-around; /* justify-content: space-around */
+@media (max-width: 767px) and (orientation: portrait) {
+  .app-main {
+    padding: 0.5rem 0.5rem 160px;  /* bottom clears MobileBottomBar */
+  }
+}
 ```
 
-#### Grid
+The `160px` bottom padding is sized for the tallest MobileBottomBar state (controls row visible). It matches the formula overhead so the two always stay in sync.
+
+---
+
+## MobileBottomBar
+
+**File**: `src/components/MobileBottomBar/MobileBottomBar.jsx` + `MobileBottomBar.css`
+
+A fixed bottom bar shown only on mobile (`max-width: 767px`). It has three rows:
+
+### Mode dots row
+
+Three dots corresponding to Clock / Timer / Pomodoro. The active dot is filled; the active dot pulses when a timer is running.
+
+### Controls row
+
+Animated height: hidden (max-height: 0) when in Clock mode, expanded when in Timer or Pomodoro mode.
+
+**Timer controls** (Settings → Play/Pause → Stop):
+```
+[ ⚙ ]  [ ▶ / ⏸ ]  [ ⏹ ]
+```
+
+**Pomodoro controls** (Settings → Play/Pause → Stop → Skip):
+```
+[ ⚙ ]  [ ▶ / ⏸ ]  [ ⏹ ]  [ ⏭ ]
+```
+
+Stop and Skip buttons are dimmed (`opacity: 0.4`) when the timer hasn't started yet.
+
+The React component keeps controls mounted for 250 ms after switching away from Timer/Pomodoro mode so the CSS height-collapse transition can animate cleanly before React removes the nodes.
+
+### Utility row
+
+```
+[ Customize ]  [ Music ]  [ Coffee ]
+```
+
+Music button pulses when music is playing and the panel is closed.
+
+---
+
+## Tap-to-Focus (Portrait)
+
+After **4 seconds of inactivity** on mobile portrait, the class `.mobile-chrome-hidden` is added to `.app`. This:
+
+- Fades out the MobileBottomBar (`opacity: 0; pointer-events: none`)
+- Collapses `.app-main` top and bottom padding to zero, so the clock floats in the true center of `100dvh`
+
+Any touch anywhere restores the chrome and resets the 4 s timer.
 
 ```css
-.mobile-grid          /* display: grid */
-/* display: grid */
-.mobile-grid-1        /* grid-template-columns: 1fr */
-.mobile-grid-2        /* grid-template-columns: repeat(2, 1fr) */
-.mobile-grid-auto; /* grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) */
+@media (max-width: 767px) and (orientation: portrait) {
+  .app.mobile-chrome-hidden .mobile-bottom-bar {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .app.mobile-chrome-hidden .app-main {
+    padding: 0 0.5rem;
+  }
+}
 ```
 
-### Spacing Utilities
+---
 
-#### Gap
+## Tap-to-Hide Controls (Landscape)
+
+In landscape orientation, after the same 4 s inactivity window, `.mobile-chrome-hidden` hides:
+
+- Timer/Pomodoro desktop controls
+- The `.landscape-customize-btn`
 
 ```css
-.mobile-gap-xs        /* gap: var(--mobile-space-xs) */
-/* gap: var(--mobile-space-xs) */
-.mobile-gap-sm        /* gap: var(--mobile-space-sm) */
-.mobile-gap-md        /* gap: var(--mobile-space-md) */
-.mobile-gap-lg        /* gap: var(--mobile-space-lg) */
-.mobile-gap-xl        /* gap: var(--mobile-space-xl) */
-.mobile-gap-2xl; /* gap: var(--mobile-space-2xl) */
+@media (max-height: 500px) and (orientation: landscape) {
+  .app.mobile-chrome-hidden .timer-controls,
+  .app.mobile-chrome-hidden .pomodoro-controls,
+  .app.mobile-chrome-hidden .landscape-customize-btn {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
 ```
 
-#### Padding
+---
+
+## Landscape Customization Button
+
+**Class**: `.landscape-customize-btn`
+
+In landscape the MobileBottomBar is hidden (too tall for the short viewport). A compact 48×48 px glassmorphic button is shown instead at `position: fixed; bottom: 0.75rem; right: 1rem` to keep customization accessible.
 
 ```css
-.mobile-p-xs          /* padding: var(--mobile-space-xs) */
-/* padding: var(--mobile-space-xs) */
-.mobile-p-sm          /* padding: var(--mobile-space-sm) */
-.mobile-p-md          /* padding: var(--mobile-space-md) */
-.mobile-p-lg          /* padding: var(--mobile-space-lg) */
-.mobile-px-sm         /* padding-left/right: var(--mobile-space-sm) */
-.mobile-py-md; /* padding-top/bottom: var(--mobile-space-md) */
+@media (max-height: 500px) and (orientation: landscape) {
+  .landscape-customize-btn {
+    display: flex;
+    position: fixed;
+    bottom: 0.75rem;
+    right: 1rem;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: rgba(20, 20, 20, 0.55);
+    backdrop-filter: blur(16px) saturate(160%);
+  }
+}
 ```
 
-### Touch Target Utilities
+---
+
+## Mode Label Toast
+
+**Class**: `.mobile-mode-label`
+
+A small uppercase label (e.g. "POMODORO", "TIMER") that appears for 3 s at the top of the screen whenever the user changes mode on mobile. It is `position: fixed` so it never affects layout.
 
 ```css
-.touch-target-min         /* min-width/height: 44px */
-/* min-width/height: 44px */
-.touch-target-comfortable /* min-width/height: 48px */
-.touch-target-large; /* min-width/height: 56px */
+/* portrait: top: 1rem */
+/* landscape: top: 0.5rem */
+animation: mobileModeLabel 3s ease forwards;
+
+@keyframes mobileModeLabel {
+  0%   { opacity: 0;   transform: translateX(-50%) translateY(-5px); }
+  12%  { opacity: 0.6; transform: translateX(-50%) translateY(0); }
+  70%  { opacity: 0.6; transform: translateX(-50%) translateY(0); }
+  100% { opacity: 0;   transform: translateX(-50%) translateY(3px); }
+}
 ```
 
-### Typography Utilities
+The component remounts (key prop changes) on every mode switch so the animation always replays from the beginning.
 
-#### Font Sizes
+---
+
+## Swipe to Change Mode
+
+Left/right swipe gestures on the clock card area cycle through Clock → Timer → Pomodoro (swipe left = next, swipe right = previous). Handled via `touchstart`/`touchend` listeners in the FlipClock component with a 50 px minimum swipe threshold.
+
+---
+
+## Inspirational Quote
+
+Hidden on all mobile (`max-width: 767px`). Visible on tablet and desktop only.
 
 ```css
-.mobile-text-xs       /* font-size: var(--mobile-text-xs) */
-/* font-size: var(--mobile-text-xs) */
-.mobile-text-sm       /* font-size: var(--mobile-text-sm) */
-.mobile-text-base     /* font-size: var(--mobile-text-base) */
-.mobile-text-lg       /* font-size: var(--mobile-text-lg) */
-.mobile-text-xl       /* font-size: var(--mobile-text-xl) */
-.mobile-text-2xl; /* font-size: var(--mobile-text-2xl) */
+@media (max-width: 767px) {
+  .inspirational-quote {
+    display: none;
+  }
+}
 ```
 
-#### Responsive Typography
+This frees the full visible area for the flip cards on mobile portrait.
+
+---
+
+## Pomodoro Session Indicator
+
+The session progress dots are hidden on mobile portrait (space too tight). They remain visible on landscape and desktop.
 
 ```css
-.responsive-heading-1 /* Mobile-optimized h1 styling */
-/* Mobile-optimized h1 styling */
-.responsive-heading-2 /* Mobile-optimized h2 styling */
-.responsive-heading-3 /* Mobile-optimized h3 styling */
-.responsive-body      /* Mobile-optimized body text */
-.responsive-caption; /* Mobile-optimized caption text */
+@media (max-width: 767px) and (orientation: portrait) {
+  .pomodoro-session-indicator {
+    display: none;
+  }
+}
 ```
 
-### Mobile Component Patterns
+---
 
-#### Mobile Button
+## Orientation Change Transitions
+
+Padding and gap changes are smoothed to avoid jarring layout jumps when the device rotates:
 
 ```css
-.mobile-button         /* Base mobile button styling */
-/* Base mobile button styling */
-.mobile-button-primary /* Primary button with blue background */
-.mobile-button-secondary; /* Secondary button with transparent background */
+@media (max-width: 767px) {
+  .app-main,
+  .clock-container {
+    transition: padding 0.3s ease, gap 0.3s ease, flex-direction 0.3s ease;
+  }
+}
 ```
 
-#### Mobile Card
+---
 
-```css
-.mobile-card/* Mobile-optimized card layout */;
-```
+## Viewport Height
 
-#### Mobile Panel
+`100dvh` (dynamic viewport height) is used throughout mobile so the layout tightly fits between the browser's own chrome — Chrome Mobile's address bar shrinks `dvh` from the top; Safari's toolbar shrinks it from the bottom. Older browsers that don't support `dvh` fall back to the globally-set `100vh`.
 
-```css
-.mobile-panel         /* Bottom slide-up panel */
-/* Bottom slide-up panel */
-.mobile-panel.open; /* Open state for panel */
-```
+---
 
-### Touch Interaction Utilities
+## Touch Interaction Notes
 
-```css
-.mobile-touch-feedback    /* Enhanced touch feedback with scale animation */
-/* Enhanced touch feedback with scale animation */
-.tap-highlight-none      /* Removes default mobile tap highlight */
-.touch-callout-none      /* Disables iOS callout menu */
-.user-select-none; /* Prevents text selection */
-```
-
-### Responsive Utilities
-
-#### Mobile-only Classes (max-width: 767px)
-
-```css
-.mobile-show          /* display: block !important on mobile */
-/* display: block !important on mobile */
-.mobile-hide          /* display: none !important on mobile */
-.mobile-full-width    /* width: 100% !important on mobile */
-.mobile-center        /* center content on mobile */
-.mobile-stack-force   /* force vertical stacking on mobile */
-.mobile-compact; /* reduce spacing on mobile */
-```
-
-#### Tablet-only Classes (min-width: 768px)
-
-```css
-.tablet-show          /* display: block !important on tablet+ */
-/* display: block !important on tablet+ */
-.tablet-hide; /* display: none !important on tablet+ */
-```
-
-### Orientation Utilities
-
-#### Portrait-specific (mobile portrait only)
-
-```css
-.portrait-only        /* display: block in portrait */
-/* display: block in portrait */
-.portrait-stack; /* flex-direction: column in portrait */
-```
-
-#### Landscape-specific (mobile landscape only)
-
-```css
-.landscape-only       /* display: block in landscape */
-/* display: block in landscape */
-.landscape-row        /* flex-direction: row in landscape */
-.landscape-compact; /* reduced spacing in landscape */
-```
-
-## Usage Examples
-
-### Basic Mobile Layout
-
-```html
-<div class="mobile-container mobile-stack mobile-gap-lg">
-  <div class="mobile-card mobile-p-lg">
-    <h2 class="responsive-heading-2 mobile-text-center">Settings</h2>
-    <div class="mobile-grid-1 mobile-gap-md">
-      <button
-        class="mobile-button mobile-button-primary touch-target-comfortable"
-      >
-        Save Changes
-      </button>
-    </div>
-  </div>
-</div>
-```
-
-### Touch-Friendly Controls
-
-```html
-<div class="mobile-flex mobile-flex-center mobile-gap-xl">
-  <button class="mobile-button touch-target-large mobile-touch-feedback">
-    Play
-  </button>
-  <button class="mobile-button touch-target-large mobile-touch-feedback">
-    Pause
-  </button>
-</div>
-```
-
-### Responsive Typography
-
-```html
-<div class="mobile-container">
-  <h1 class="responsive-heading-1 mobile-text-center">Flip Clock</h1>
-  <p class="responsive-body mobile-text-center mobile-mt-md">
-    A beautiful, customizable clock application
-  </p>
-</div>
-```
-
-### Mobile Panel
-
-```html
-<div class="mobile-panel" id="settings-panel">
-  <div class="mobile-p-lg">
-    <h3 class="responsive-heading-3 mobile-mb-lg">Timer Settings</h3>
-    <div class="mobile-stack mobile-gap-md">
-      <!-- Panel content -->
-    </div>
-  </div>
-</div>
-```
-
-## Performance Considerations
-
-### Hardware Acceleration
-
-```css
-.mobile-gpu-accelerated       /* transform: translateZ(0) */
-/* transform: translateZ(0) */
-.mobile-gpu-accelerated-scroll; /* optimized scrolling */
-```
-
-### CSS Containment
-
-```css
-.mobile-contain-layout        /* contain: layout */
-/* contain: layout */
-.mobile-contain-style         /* contain: style */
-.mobile-contain-paint         /* contain: paint */
-.mobile-contain-all; /* contain: layout style paint */
-```
-
-## Accessibility Features
-
-- All touch targets meet WCAG 2.1 AA minimum size requirements (44px)
-- High contrast mode support with `@media (prefers-contrast: high)`
-- Reduced motion support with `@media (prefers-reduced-motion: reduce)`
-- Screen reader utilities with `.mobile-sr-only`
-- Focus visible utilities with `.mobile-focus-visible`
-
-## Browser Support
-
-The mobile utilities are designed to work across all modern mobile browsers:
-
-- iOS Safari 12+
-- Chrome Mobile 70+
-- Firefox Mobile 68+
-- Samsung Internet 10+
-
-## Integration
-
-The mobile utilities are automatically imported in `src/main.jsx` and are available throughout the application. They work seamlessly with the existing theme system and responsive breakpoints.
+- `-webkit-tap-highlight-color: transparent` on all interactive buttons
+- `user-select: none` on the body; `user-select: text` restored on inputs and textareas
+- `overscroll-behavior: none` on body to prevent pull-to-refresh and elastic scrolling
+- Minimum touch target size 44–48 px on all buttons (WCAG 2.1 AA)
