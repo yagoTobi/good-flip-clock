@@ -2,6 +2,14 @@
 
 A full-screen, immersive flip clock app for focus sessions — built with React + Vite.
 
+## Preview
+
+<div align="center">
+  <img src="public/preview-image.png" alt="Desktop preview" width="520" />
+  &nbsp;&nbsp;
+  <img src="public/preview-mobile-image.png" alt="Mobile preview" width="180" />
+</div>
+
 ## Features
 
 ### Modes
