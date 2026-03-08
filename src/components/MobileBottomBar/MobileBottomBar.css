@@ -28,6 +28,20 @@
     gap: 10px;
   }
 
+  /* ── Controls row wrapper — height-animates when controls appear/disappear ── */
+  .mb-controls-row-wrapper {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    /* Fast per user request */
+    transition: max-height 0.2s ease, opacity 0.15s ease;
+  }
+
+  .mobile-bottom-bar.has-controls .mb-controls-row-wrapper {
+    max-height: 70px; /* 54px buttons + headroom */
+    opacity: 1;
+  }
+
   /* ── Controls row ──────────────────────────────────── */
   .mb-controls-row {
     gap: 12px;

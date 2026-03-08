@@ -9,8 +9,8 @@ export const FLIP_ANIMATION_DURATION = 600; // ms
 /** Midpoint timing for flip animation state changes (60% of total duration) */
 export const FLIP_ANIMATION_MIDPOINT = 360; // ~60% of duration for ease-in-out curve (90° point)
 
-/** Delay before clearing flip animation state to match CSS animation completion */
-export const FLIP_STATE_CLEAR_DELAY = 600; // ms - Match CSS animation duration exactly
+/** Delay before clearing flip animation state — 50ms buffer past CSS animation end */
+export const FLIP_STATE_CLEAR_DELAY = 650; // ms
 
 /**
  * Default timer values when the application starts or timer is reset

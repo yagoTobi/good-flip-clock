@@ -110,7 +110,10 @@ function FlipCard({ value, prevValue, isFlipping, size = "normal" }) {
     <div className={`flip-card ${size} ${isFlipping ? "flipping" : ""}`}>
       {/* flip-card-inner is transparent — the 4px gap between halves reveals the app background */}
       <div className="flip-card-inner" style={{ color: clockColor }}>
-        {/* Top half - always shows NEW value (gets revealed during flip) */}
+        {/* Top half - always shows the NEW value.
+            The animation front face covers it for the first half of the flip.
+            When the front face passes 90° it disappears, naturally revealing
+            the new top — no state management required. */}
         <div className="flip-card-top" style={panelStyle}>
           <span className="digit" style={{ color: clockColor }}>
             {value}

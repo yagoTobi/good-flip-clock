@@ -53,7 +53,7 @@ function MobileBottomBar({
     (selectedMode === MODES.POMODORO && pomodoroTimer?.isRunning);
 
   return (
-    <div className="mobile-bottom-bar">
+    <div className={`mobile-bottom-bar${hasControls ? " has-controls" : ""}`}>
       {/* Mode indicator — three dots; swipe left/right on the clock to change mode */}
       <div className="mb-mode-dots" aria-hidden="true">
         {MODE_ORDER.map((mode) => (
@@ -64,8 +64,8 @@ function MobileBottomBar({
         ))}
       </div>
 
-      {/* Controls row — only for timer / pomodoro modes */}
-      {hasControls && (
+      {/* Controls row — always in DOM; height animated by .has-controls CSS */}
+      <div className="mb-controls-row-wrapper">
         <div className="mb-row mb-controls-row">
           {isTimerMode && (
             <>
@@ -136,7 +136,7 @@ function MobileBottomBar({
             </>
           )}
         </div>
-      )}
+      </div>
 
       {/* Utility row */}
       <div className="mb-row mb-utils-row">

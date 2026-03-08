@@ -289,27 +289,83 @@ Component
 
 ### Flip Card Animations
 
-The application uses CSS-based flip animations for smooth time transitions:
+Each `FlipCard` renders four permanent layers plus one conditional animation element:
 
-```css
-/* Flip animation timing */
-.flip-card {
-  transition: transform 0.6s ease-in-out;
-}
+```
+┌─────────────────────────────────┐  ← .flip-card-inner (transparent bg, overflow:hidden)
+│  .flip-card-top    z-index:1    │  height: calc(50% - 2px)  shows NEW value always
+│                                 │
+│ ─ ─ ─ ─ 4px gap ─ ─ ─ ─ ─ ─ ─ │  ← transparent: app background shows through
+│                                 │
+│  .flip-card-bottom z-index:1    │  height: calc(50% - 2px)  shows displayedBottomValue
+└─────────────────────────────────┘
 
-/* Animation states */
-.flip-card.flipping {
-  transform: rotateX(90deg);
-}
+When isFlipping=true, additionally:
+┌─────────────────────────────────┐
+│  .flip-animation   z-index:22   │  height: calc(50% - 2px), rotates from top to bottom
+│    .flip-animation-front z:23   │  shows prevValue top half (backface-visibility:hidden)
+│    .flip-animation-back  z:23   │  shows value bottom half  (backface-visibility:hidden)
+└─────────────────────────────────┘
 ```
 
-**Animation Flow**:
+#### The Gap Split
 
-1. Previous value displayed on front of card
-2. Animation triggered by state change
-3. Card flips 90 degrees (edge-on view)
-4. New value updated during flip
-5. Card completes flip to show new value
+`.flip-card-inner` has a transparent background; each half-panel carries its own `backgroundColor: panelColor`. With both halves at `height: calc(50% - 2px)`, a real 4 px gap sits at the midpoint where the app background shows through — no drawn line, no overlay.
+
+#### The `rotateX` Animation
+
+```
+@keyframes flipDown { 0% → rotateX(0deg)   100% → rotateX(-180deg) }
+duration: 0.6s ease-in-out
+```
+
+The pivot must land at the **center of the gap** (50% of card height), not at the bottom of the animation element. Because the element is `calc(50% - 2px)` tall, its own bottom is 2 px above that center. The correct transform-origin is:
+
+```css
+transform-origin: center calc(100% + 2px);
+/* element bottom = calc(50% - 2px) from card top
+   + 2px offset   = 50%            from card top  ✓  */
+```
+
+This guarantees that after a full −180° rotation the element covers exactly `calc(50% + 2px) → 100%`, landing flush on `.flip-card-bottom`.
+
+#### State Timeline (e.g. value "46" → "47")
+
+| Time | `.flip-card-top` | `.flip-animation-front` | `.flip-card-bottom` | `.flip-animation-back` |
+|------|-----------------|------------------------|--------------------|-----------------------|
+| 0 ms | "47" (new, covered by front face) | "46" visible | "46" | "47" hidden |
+| ~300 ms | "47" revealed (front face passes 90°) | invisible | "46" | "47" becoming visible |
+| 360 ms (`FLIP_ANIMATION_MIDPOINT`) | "47" | — | **"47"** (displayedBottomValue switches) | "47" |
+| 600 ms | "47" | — | "47" | "47" (animation ends, forwards fill) |
+| 650 ms | "47" | unmounted | "47" | unmounted |
+
+#### The `backface-visibility` Bleed-Through Rule
+
+At the ~90° crossing (~300 ms) both faces are simultaneously hidden by `backface-visibility: hidden`, making `.flip-animation` momentarily transparent. Because `.flip-card-top` (z-index 1) was painted before `.flip-animation` (z-index 22), it shows through the transparent container. This is **intentional**: `.flip-card-top` always holds the **new** value, so its reveal at exactly the 90° point is the correct mechanical flip clock reveal — the new top half "was always there" behind the falling panel. No state change is needed.
+
+#### `displayedBottomValue` State
+
+The bottom half must show the **old** value for the first half of the animation and the **new** value for the second half, timed so the swap aligns with the back face becoming visible:
+
+```javascript
+useEffect(() => {
+  if (isFlipping) {
+    setDisplayedBottomValue(prevValue);           // old value at flip start
+    const t = setTimeout(() => {
+      setDisplayedBottomValue(value);             // new value at FLIP_ANIMATION_MIDPOINT
+    }, FLIP_ANIMATION_MIDPOINT);                  // 360 ms ≈ 60% of 600 ms
+    return () => clearTimeout(t);
+  } else {
+    setDisplayedBottomValue(value);
+  }
+}, [isFlipping, prevValue, value]);
+```
+
+`FLIP_ANIMATION_MIDPOINT = 360 ms` is set at 60% of the 600 ms duration. Because `ease-in-out` spends more time near the center, 60% of *time* corresponds to ~70–75% of *rotation progress* (≈126–135°), safely past the 90° reveal point and aligned with the back face becoming clearly visible.
+
+#### Mini (seconds) Cards
+
+The seconds badge uses `size="mini"`. It deliberately opts out of the gap split — overridden back to `height: 50%` and `transform-origin: bottom` — because it is too small for the split to be visible and the gap would look like a rendering artefact at that size.
 
 ### Mode Transition Animations
 

@@ -173,6 +173,36 @@ body {
   }
 }
 
+/* ── Mobile mode label — appears for 3s above the clock on mode change ──── */
+.mobile-mode-label {
+  display: none; /* desktop: never shown */
+}
+
+@media (max-width: 767px) and (orientation: portrait) {
+  .mobile-mode-label {
+    display: block;
+    position: absolute;
+    top: -2rem;
+    left: 50%;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-color, rgba(255, 255, 255, 0.9));
+    opacity: 0.6;
+    white-space: nowrap;
+    pointer-events: none;
+    animation: mobileModeLabel 3s ease forwards;
+  }
+}
+
+@keyframes mobileModeLabel {
+  0%   { opacity: 0;   transform: translateX(-50%) translateY(-5px); }
+  12%  { opacity: 0.6; transform: translateX(-50%) translateY(0);    }
+  70%  { opacity: 0.6; transform: translateX(-50%) translateY(0);    }
+  100% { opacity: 0;   transform: translateX(-50%) translateY(3px);  }
+}
+
 /* ── Mobile tap-to-focus: clock takes center stage ────────────────────────
    After 4s of inactivity the quote + bottom bar fade out and the app-main
    padding collapses to zero, gliding the clock to the true center of the

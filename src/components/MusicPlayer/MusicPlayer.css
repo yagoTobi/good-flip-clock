@@ -279,18 +279,18 @@
     display: none;
   }
 
-  /* Panel anchors just above the bottom bar (no controls row) */
+  /* Panel anchors just above the bottom bar (dots + utils rows only) */
   .music-panel {
     position: fixed;
-    bottom: 148px;
+    bottom: 100px;
     left: 16px;
     right: 16px;
     width: auto;
   }
 
-  /* When timer/pomodoro controls row is visible, bar is taller */
+  /* When timer/pomodoro controls row is also visible, bar is taller */
   .music-player-root.has-controls .music-panel {
-    bottom: 210px;
+    bottom: 162px;
   }
 }
 

@@ -236,14 +236,14 @@ function AppContent() {
     const deltaY = endY - startY;
     const duration = Date.now() - startTime;
 
-    // Swipe: horizontal dominant + at least 50px travel → change mode
+    // Swipe: horizontal dominant + at least 50px travel → change mode (bounded, no wrap)
     if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
       const modeOrder = [MODES.CLOCK, MODES.TIMER, MODES.POMODORO];
       const currentIndex = modeOrder.indexOf(selectedMode);
-      if (deltaX < 0) {
-        handleModeChange(modeOrder[(currentIndex + 1) % modeOrder.length]);
-      } else {
-        handleModeChange(modeOrder[(currentIndex - 1 + modeOrder.length) % modeOrder.length]);
+      if (deltaX < 0 && currentIndex < modeOrder.length - 1) {
+        handleModeChange(modeOrder[currentIndex + 1]);
+      } else if (deltaX > 0 && currentIndex > 0) {
+        handleModeChange(modeOrder[currentIndex - 1]);
       }
       return;
     }
@@ -411,6 +411,10 @@ function AppContent() {
           role="region"
           aria-label="Clock display and controls"
         >
+          {/* Mobile-only mode badge — fades out after 3s; key resets animation on every change */}
+          <div key={`ml-${selectedMode}`} className="mobile-mode-label" aria-hidden="true">
+            {{ [MODES.CLOCK]: "Clock", [MODES.TIMER]: "Timer", [MODES.POMODORO]: "Pomodoro" }[selectedMode]}
+          </div>
           <FlipClock
             mode={selectedMode}
             timer={timer}

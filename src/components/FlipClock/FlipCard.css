@@ -219,10 +219,11 @@
   transform: translateZ(0); /* Force hardware acceleration */
 }
 
-/* Keep the static top visible during animation to show new value */
+/* During animation the static top shows prevValue (old number), so if it bleeds
+   through the transparent animation container at the 90° backface-visibility gap
+   it matches the front face exactly — no visible flash. */
 .flip-card.flipping .flip-card-top {
-  visibility: visible;
-  z-index: 1; /* Lower than animation to prevent conflicts */
+  z-index: 1;
 }
 
 /* Light background: softer shadows and visible border */
@@ -304,32 +305,33 @@
   }
 }
 
-/* Mobile portrait: larger cards so the clock dominates the screen */
+/* Mobile portrait: full-bleed cards that dominate the screen like the reference design */
 @media (max-width: 767px) and (orientation: portrait) {
   .flip-card:not(.mini) .flip-card-inner {
-    width: 75vw;
-    max-width: 310px;
-    min-width: 200px;
-    /* Cap height so two cards + bottom bar fit on any screen ≥ 680px tall */
-    height: min(63vw, 230px);
-    min-height: 160px;
+    /* Near-full width with 16px margin each side */
+    width: calc(100vw - 32px);
+    max-width: 480px;
+    min-width: 280px;
+    /* Each card gets half the available vertical space.
+       320px overhead = 112px top padding + 170px bottom padding + ~16px card gap + ~22px buffer */
+    height: clamp(170px, calc((100dvh - 320px) / 2), 300px);
   }
 
   .flip-card-top .digit,
   .flip-card-bottom .digit,
   .flip-animation-front .digit,
   .flip-animation-back .digit {
-    font-size: clamp(5rem, 40vw, 12rem);
+    font-size: clamp(8rem, 58vw, 16rem);
   }
 
-  /* Mini seconds card: bigger corner badge to match the large portrait cards */
+  /* Mini seconds card: scaled up to sit well beside the larger portrait cards */
   .flip-card.mini .flip-card-inner {
-    width: 68px;
-    max-width: 68px;
-    min-width: 68px;
-    height: 42px;
-    max-height: 42px;
-    min-height: 42px;
+    width: 80px;
+    max-width: 80px;
+    min-width: 80px;
+    height: 50px;
+    max-height: 50px;
+    min-height: 50px;
     border-radius: 8px;
   }
 
@@ -337,6 +339,6 @@
   .flip-card.mini .flip-card-bottom .digit,
   .flip-card.mini .flip-animation-front .digit,
   .flip-card.mini .flip-animation-back .digit {
-    font-size: 1.4rem;
+    font-size: 1.6rem;
   }
 }
