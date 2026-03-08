@@ -15,11 +15,11 @@
 .flip-card-inner {
   position: relative;
   width: 22vw;
-  height: 24vw;
+  height: 20vw;
   max-width: 395px;
-  max-height: 426px;
+  max-height: 355px;
   min-width: 180px;
-  min-height: 182px;
+  min-height: 152px;
   border-radius: 14px;
   box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.45),
@@ -239,6 +239,15 @@
 :root.light-bg .flip-card.mini .flip-card-inner {
   box-shadow: none;
   border: none;
+}
+
+/* Desktop: 20% taller cards for more vertical breathing room */
+@media (min-width: 768px) {
+  .flip-card-inner {
+    height: 24vw;
+    max-height: 426px;
+    min-height: 182px;
+  }
 }
 
 /* Mini size for seconds */
