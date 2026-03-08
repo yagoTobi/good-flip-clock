@@ -186,7 +186,7 @@
   transform: translateY(0);
 }
 /* Landscape orientation optimizations for mobile */
-@media (max-width: 767px) and (orientation: landscape) {
+@media (max-height: 500px) and (orientation: landscape) {
   .timer-settings-overlay {
     align-items: center; /* Center modal in landscape */
     padding: 1rem;

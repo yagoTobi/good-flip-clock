@@ -53,7 +53,7 @@
 
 
 /* Landscape orientation optimizations for mobile */
-@media (max-width: 767px) and (orientation: landscape) {
+@media (max-height: 500px) and (orientation: landscape) {
   .flip-clock {
     gap: 0.5rem;
   }

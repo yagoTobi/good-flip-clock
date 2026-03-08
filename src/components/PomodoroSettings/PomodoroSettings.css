@@ -332,7 +332,7 @@
 }
 
 /* Landscape mobile */
-@media (max-width: 767px) and (orientation: landscape) {
+@media (max-height: 500px) and (orientation: landscape) {
   .pomodoro-settings-overlay {
     align-items: center;
     padding: 1rem;

@@ -317,7 +317,7 @@
   }
 }
 /* Landscape orientation — hidden; swipe gesture handles mode switching */
-@media (max-width: 767px) and (orientation: landscape) {
+@media (max-height: 500px) and (orientation: landscape) {
   .mode-selector-container {
     display: none;
   }

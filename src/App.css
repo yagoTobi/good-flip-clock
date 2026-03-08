@@ -132,7 +132,7 @@ body {
 }
 
 /* Landscape orientation optimizations for mobile devices */
-@media (max-width: 767px) and (orientation: landscape) {
+@media (max-height: 500px) and (orientation: landscape) {
   #root,
   .app {
     height: 100dvh;
@@ -175,7 +175,7 @@ body {
   display: none;
 }
 
-@media (max-width: 767px) and (orientation: landscape) {
+@media (max-height: 500px) and (orientation: landscape) {
   .landscape-customize-btn {
     display: flex;
     align-items: center;
@@ -236,7 +236,7 @@ body {
   }
 }
 
-@media (max-width: 767px) and (orientation: landscape) {
+@media (max-height: 500px) and (orientation: landscape) {
   .mobile-mode-label {
     display: block;
     position: fixed;

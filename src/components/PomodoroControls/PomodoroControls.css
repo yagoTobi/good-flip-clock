@@ -172,7 +172,7 @@
 }
 
 /* Landscape: fixed bottom row */
-@media (max-width: 767px) and (orientation: landscape) {
+@media (max-height: 500px) and (orientation: landscape) {
   .pomodoro-controls {
     position: fixed;
     bottom: 0.75rem;
