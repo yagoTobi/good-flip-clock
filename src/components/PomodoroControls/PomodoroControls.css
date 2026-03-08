@@ -177,6 +177,8 @@
     position: fixed;
     bottom: 0.75rem;
     left: 50%;
+    right: auto;
+    top: auto;
     transform: translateX(-50%);
     grid-template-columns: repeat(4, 48px);
     grid-template-rows: 48px;

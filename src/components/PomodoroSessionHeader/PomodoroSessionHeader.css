@@ -66,3 +66,9 @@
     display: none;
   }
 }
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .pomodoro-session-header {
+    display: none;
+  }
+}

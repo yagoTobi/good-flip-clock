@@ -8,7 +8,8 @@
   width: max-content;
   pointer-events: none;
   z-index: 10;
-  animation: quoteFadeIn 1s ease forwards;
+  opacity: 1;
+  animation: quoteFadeIn 1s ease;
 }
 
 .quote-text {
@@ -60,6 +61,12 @@
 }
 
 @media (max-width: 767px) {
+  .inspirational-quote {
+    display: none;
+  }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
   .inspirational-quote {
     display: none;
   }

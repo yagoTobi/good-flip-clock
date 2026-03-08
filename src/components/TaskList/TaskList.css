@@ -411,6 +411,12 @@
   }
 }
 
+@media (max-height: 500px) and (orientation: landscape) {
+  .task-list-root {
+    display: none;
+  }
+}
+
 /* ── Focus rings ────────────────────────────────────────── */
 .task-toggle:focus-visible,
 .task-panel-close:focus-visible,

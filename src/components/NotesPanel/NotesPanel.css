@@ -213,6 +213,12 @@
   }
 }
 
+@media (max-height: 500px) and (orientation: landscape) {
+  .notes-root {
+    display: none;
+  }
+}
+
 /* ── Focus rings ────────────────────────────────────────── */
 .notes-toggle:focus-visible,
 .notes-panel-close:focus-visible,

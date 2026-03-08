@@ -40,6 +40,12 @@
   }
 }
 
+@media (max-height: 500px) and (orientation: landscape) {
+  .pomodoro-session-indicator {
+    display: none;
+  }
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .pomodoro-session-indicator {

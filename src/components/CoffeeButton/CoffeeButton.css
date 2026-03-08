@@ -109,6 +109,12 @@
   }
 }
 
+@media (max-height: 500px) and (orientation: landscape) {
+  .coffee-button {
+    display: none;
+  }
+}
+
 /* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
   .coffee-button,
