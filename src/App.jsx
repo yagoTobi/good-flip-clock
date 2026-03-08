@@ -378,6 +378,30 @@ function AppContent() {
     selectedMode,
   ]);
 
+  // Dynamic document title — countdown when timer is active, default otherwise.
+  useEffect(() => {
+    if (selectedMode === MODES.TIMER && (timer.isRunning || timer.isPaused)) {
+      const h = String(timer.hours).padStart(2, "0");
+      const m = String(timer.minutes).padStart(2, "0");
+      const s = String(timer.seconds).padStart(2, "0");
+      document.title = timer.hours > 0 ? `${h}:${m}:${s}` : `${m}:${s}`;
+      return;
+    }
+
+    if (selectedMode === MODES.POMODORO && (pomodoroTimer.isRunning || pomodoroTimer.isPaused)) {
+      const m = String(pomodoroTimer.minutes).padStart(2, "0");
+      const s = String(pomodoroTimer.seconds).padStart(2, "0");
+      document.title = `${m}:${s}`;
+      return;
+    }
+
+    document.title = "Good Flip Clock";
+  }, [
+    selectedMode,
+    timer.isRunning, timer.isPaused, timer.hours, timer.minutes, timer.seconds,
+    pomodoroTimer.isRunning, pomodoroTimer.isPaused, pomodoroTimer.minutes, pomodoroTimer.seconds,
+  ]);
+
   const isLightBg = background !== "default" ? isLightColor(background) : false;
 
   return (

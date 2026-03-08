@@ -233,12 +233,12 @@
 /* Responsive design */
 @media (max-width: 768px) {
   .customization-overlay {
-    padding: 0.25rem;
+    padding: max(env(safe-area-inset-top), 0.25rem) 0.25rem 0.25rem;
   }
 
   .customization-panel {
-    height: 95vh;
-    max-height: 95vh;
+    height: min(95vh, calc(100vh - max(env(safe-area-inset-top), 0.25rem) - 0.25rem));
+    max-height: min(95vh, calc(100vh - max(env(safe-area-inset-top), 0.25rem) - 0.25rem));
     max-width: none;
     width: 100%;
     margin: 0;
@@ -295,12 +295,12 @@
 /* Extra small devices (phones in portrait) */
 @media (max-width: 480px) {
   .customization-overlay {
-    padding: 0;
+    padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
   }
 
   .customization-panel {
-    max-height: 100vh;
-    height: 100vh;
+    height: 100%;
+    max-height: 100%;
     border-radius: 0;
     max-width: none;
   }

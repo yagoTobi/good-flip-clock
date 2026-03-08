@@ -1,37 +1,12 @@
-# Good Flip Clock
+# React + Vite
 
-A beautiful, customizable flip clock for your browser — with a countdown timer and Pomodoro timer built in.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-**[goodflipclock.com](https://goodflipclock.com)**
+Currently, two official plugins are available:
 
-![Good Flip Clock preview](./public/preview-image.png)
-![Good Flip Clock mobile preview](./public/preview-mobile-image.png)
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Features
+## Expanding the ESLint configuration
 
-- **Flip Clock** — real-time clock with smooth flip card animations
-- **Timer** — countdown timer with custom durations
-- **Pomodoro** — focus sessions with configurable work/break intervals
-- **Personalise** — backgrounds (gradients, images, custom colors), fonts, and clock colors
-- **Music Player** — ambient sounds for focus
-- **Task List** — track what you're working on
-- **Notes** — quick scratchpad for thoughts and ideas
-- **Inspiring Quotes** — optional motivational display, togglable
-
-## Tech Stack
-
-React 19 + Vite, plain CSS, `react-icons`, deployed on Netlify.
-
-## Development
-
-```bash
-npm install
-npm run dev      # start dev server
-npm run build    # production build
-npm run preview  # preview production build locally
-npm run lint     # run ESLint
-```
-
----
-
-Made with care 🇪🇸 by [Yago Tobio](https://github.com/yagotobi)
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.

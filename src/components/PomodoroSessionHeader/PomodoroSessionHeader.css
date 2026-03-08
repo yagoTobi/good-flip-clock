@@ -59,3 +59,10 @@
     font-size: 1rem;
   }
 }
+
+/* Hidden on mobile portrait — session type shown via mode dots in MobileBottomBar */
+@media (max-width: 767px) and (orientation: portrait) {
+  .pomodoro-session-header {
+    display: none;
+  }
+}

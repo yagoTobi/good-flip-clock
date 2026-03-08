@@ -93,6 +93,7 @@
     pointer-events: none;
   }
 
+
   /* ── Mode dots — swipe left/right on the clock to change mode ── */
   .mb-mode-dots {
     display: flex;

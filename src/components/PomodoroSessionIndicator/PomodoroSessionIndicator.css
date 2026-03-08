@@ -33,6 +33,13 @@
   color: rgba(59, 130, 246, 0.9);
 }
 
+/* Mobile portrait: session dots are hidden — space is too tight */
+@media (max-width: 767px) and (orientation: portrait) {
+  .pomodoro-session-indicator {
+    display: none;
+  }
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .pomodoro-session-indicator {

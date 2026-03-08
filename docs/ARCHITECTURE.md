@@ -486,7 +486,6 @@ Several fixed UI elements use `backdrop-filter` for a glassmorphic look (mode se
 
 1. Add mode constant to `src/constants/index.js`
 2. Create display component in `src/components/FlipClock/displays/`
-3. Add mode handling to `FlipClock.jsx`
 4. Update `ModeSelector` with new mode option
 
 ### Adding New Themes

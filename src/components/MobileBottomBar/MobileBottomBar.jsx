@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from "react";
 import { FaPlay, FaPause, FaStop, FaCog, FaForward, FaMusic, FaMugHot } from "react-icons/fa";
 import { MODES, TIMER_STATES } from "../../constants";
 import "./MobileBottomBar.css";
@@ -22,6 +23,25 @@ function MobileBottomBar({
   const isTimerMode = selectedMode === MODES.TIMER;
   const isPomodoroMode = selectedMode === MODES.POMODORO;
   const hasControls = isTimerMode || isPomodoroMode;
+
+  // Keep controls content mounted briefly after mode changes away so the
+  // max-height CSS transition can animate closed before React removes the nodes.
+  const [controlsDisplayMode, setControlsDisplayMode] = useState(selectedMode);
+  const contentTimerRef = useRef(null);
+  useEffect(() => {
+    if (selectedMode === MODES.TIMER || selectedMode === MODES.POMODORO) {
+      clearTimeout(contentTimerRef.current);
+      setControlsDisplayMode(selectedMode);
+    } else {
+      contentTimerRef.current = setTimeout(
+        () => setControlsDisplayMode(selectedMode),
+        250
+      );
+    }
+    return () => clearTimeout(contentTimerRef.current);
+  }, [selectedMode]);
+  const showTimerControls = controlsDisplayMode === MODES.TIMER;
+  const showPomodoroControls = controlsDisplayMode === MODES.POMODORO;
 
   const showTimerStop = timer?.isRunning || timer?.isPaused;
   const showPomodoroStop = pomodoroTimer?.isRunning || pomodoroTimer?.isPaused;
@@ -67,8 +87,15 @@ function MobileBottomBar({
       {/* Controls row — always in DOM; height animated by .has-controls CSS */}
       <div className="mb-controls-row-wrapper">
         <div className="mb-row mb-controls-row">
-          {isTimerMode && (
+          {showTimerControls && (
             <>
+              <button
+                className="mb-btn"
+                onClick={onSettingsClick}
+                aria-label="Timer settings"
+              >
+                <FaCog aria-hidden="true" />
+              </button>
               <button
                 className="mb-btn"
                 onClick={handleTimerPlayPause}
@@ -88,17 +115,17 @@ function MobileBottomBar({
               >
                 <FaStop aria-hidden="true" />
               </button>
+            </>
+          )}
+          {showPomodoroControls && (
+            <>
               <button
                 className="mb-btn"
                 onClick={onSettingsClick}
-                aria-label="Timer settings"
+                aria-label="Pomodoro settings"
               >
                 <FaCog aria-hidden="true" />
               </button>
-            </>
-          )}
-          {isPomodoroMode && (
-            <>
               <button
                 className="mb-btn"
                 onClick={handlePomodoroPlayPause}
@@ -125,13 +152,6 @@ function MobileBottomBar({
                 aria-label="Skip to next session"
               >
                 <FaForward aria-hidden="true" />
-              </button>
-              <button
-                className="mb-btn"
-                onClick={onSettingsClick}
-                aria-label="Pomodoro settings"
-              >
-                <FaCog aria-hidden="true" />
               </button>
             </>
           )}

@@ -89,7 +89,7 @@ body {
    Bottom padding sized for the tallest case (controls row visible). */
 @media (max-width: 767px) and (orientation: portrait) {
   .app-main {
-    padding: 7rem 0.5rem 170px;
+    padding: 8rem 0.5rem 170px;
     gap: 0.5rem;
   }
 }
@@ -181,9 +181,10 @@ body {
 @media (max-width: 767px) and (orientation: portrait) {
   .mobile-mode-label {
     display: block;
-    position: absolute;
-    top: -2rem;
+    position: fixed;
+    top: 7rem;
     left: 50%;
+    z-index: 10;
     font-size: 0.68rem;
     font-weight: 600;
     letter-spacing: 0.16em;
@@ -223,16 +224,6 @@ body {
   .app .inspirational-quote,
   .app .mobile-bottom-bar {
     transition: opacity 0.4s ease;
-  }
-
-  /* Hidden state: invisible + non-interactive.
-     animation: none clears the quoteFadeIn forwards-fill so the opacity
-     transition can properly override it (animation fills cascade above
-     regular author rules). */
-  .app.mobile-chrome-hidden .inspirational-quote {
-    opacity: 0;
-    pointer-events: none;
-    animation: none;
   }
 
   .app.mobile-chrome-hidden .mobile-bottom-bar {

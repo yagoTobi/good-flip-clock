@@ -81,8 +81,7 @@ const CustomizationPanel = ({ isOpen, onClose }) => {
 
   const tabs = [
     { id: "background", label: "Background" },
-    { id: "display", label: "Display" },
-    { id: "colors", label: "Colors" },
+    { id: "clock", label: "Clock" },
   ];
 
   return (
@@ -156,27 +155,18 @@ const CustomizationPanel = ({ isOpen, onClose }) => {
                   <BackgroundSelector />
                 </div>
               )}
-              {activeTab === "display" && (
+              {activeTab === "clock" && (
                 <div
                   className="tab-content"
                   role="tabpanel"
-                  id="display-panel"
-                  aria-labelledby="display-tab"
+                  id="clock-panel"
+                  aria-labelledby="clock-tab"
                 >
-                  <h2 className="tab-section-heading">Display Options</h2>
                   <FontSelector />
                   <div className="section-divider" />
-                  <DisplaySettings />
-                </div>
-              )}
-              {activeTab === "colors" && (
-                <div
-                  className="tab-content"
-                  role="tabpanel"
-                  id="colors-panel"
-                  aria-labelledby="colors-tab"
-                >
                   <ColorSelector />
+                  <div className="section-divider" />
+                  <DisplaySettings />
                 </div>
               )}
             </div>
