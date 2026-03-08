@@ -41,6 +41,9 @@ import App from "./App";
 - `isCustomizationOpen`: Customization panel visibility
 - `isTimerSettingsOpen`: Timer settings modal visibility
 - `isPomodoroSettingsOpen`: Pomodoro settings modal visibility
+- `isMusicOpen`: Music player panel visibility (lifted from MusicPlayer to enable mutual exclusion with TaskList)
+- `isTasksOpen`: Task list panel visibility
+- `isMusicPlaying`: Whether music is currently playing (forwarded to MobileBottomBar for its pulse indicator)
 
 **Usage**:
 
@@ -702,7 +705,79 @@ import SessionProgress from "./components/SessionProgress";
 
 ---
 
-## Component Composition Patterns
+## Floating UI Components
+
+These components are `position: fixed` and render independently of the main layout. Their open state is managed by `AppContent` so panels can enforce mutual exclusion (opening one closes the other).
+
+### MusicPlayer
+
+**Purpose**: Floating bottom-left panel for streaming study music via YouTube IFrame API
+
+**Props**:
+
+```typescript
+interface MusicPlayerProps {
+  isOpen: boolean;                      // Controlled open state (owned by AppContent)
+  onToggle: () => void;                 // Toggle callback — used by both the icon button and the ✕ close button
+  onPlayingChange?: (playing: boolean) => void; // Optional — notifies parent of playback state (used by MobileBottomBar)
+}
+```
+
+**Usage**:
+
+```jsx
+import MusicPlayer from "./components/MusicPlayer";
+
+<MusicPlayer
+  isOpen={isMusicOpen}
+  onToggle={handleMusicToggle}
+  onPlayingChange={setIsMusicPlaying}
+/>;
+```
+
+**Features**:
+
+- Four curated study stations: Lofi, Jazz, House, Focus
+- YouTube IFrame player initialised lazily on first open; persists while mounted so music continues when panel is collapsed
+- Pulse animation on the toggle button when music is playing and panel is closed
+- Full light/dark background adaptation and reduced-motion support
+
+---
+
+### TaskList
+
+**Purpose**: Floating bottom-left to-do panel for tracking session tasks
+
+**Props**:
+
+```typescript
+interface TaskListProps {
+  isOpen: boolean;      // Controlled open state (owned by AppContent)
+  onToggle: () => void; // Toggle callback — used by both the icon button and the ✕ close button
+}
+```
+
+**Usage**:
+
+```jsx
+import TaskList from "./components/TaskList";
+
+<TaskList isOpen={isTasksOpen} onToggle={handleTasksToggle} />;
+```
+
+**Features**:
+
+- Fixed `224×300px` panel (same glassmorphic style as MusicPlayer)
+- Ships with 3 placeholder tasks; tasks persist across sessions via `localStorage`
+- Click a task's circle button to toggle completion (strikethrough + dimmed text)
+- Delete button appears on row hover
+- Scrollable task list — no upper limit on task count
+- Add tasks via the bottom input row; `Enter` key or the `+` button submits
+- Full light/dark background adaptation and reduced-motion support
+
+---
+
+
 
 ### Modal Pattern
 

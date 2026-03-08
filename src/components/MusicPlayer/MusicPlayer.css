@@ -1,0 +1,291 @@
+.music-player-root {
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+/* ── Toggle button ─────────────────────────────────────── */
+.music-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+
+  background: rgba(20, 20, 20, 0.55);
+  color: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+
+  font-family: inherit;
+  cursor: pointer;
+
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.25), 0 2px 12px rgba(0, 0, 0, 0.2);
+
+  transition: background-color 0.25s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.music-toggle:hover {
+  background: rgba(40, 40, 40, 0.7);
+  transform: translateY(-1px);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.25), 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.music-toggle:active {
+  transform: translateY(0);
+  transition: transform 0.1s ease;
+}
+
+/* Subtle pulse when music plays but panel is closed */
+.music-toggle.is-playing {
+  animation: music-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes music-pulse {
+  0%, 100% { box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.25), 0 2px 12px rgba(0, 0, 0, 0.2); }
+  50%       { box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.25), 0 4px 20px rgba(255, 255, 255, 0.1); }
+}
+
+/* ── Expanded panel ────────────────────────────────────── */
+.music-panel {
+  background: rgba(20, 20, 20, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 14px;
+  width: 224px;
+
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.25), 0 8px 32px rgba(0, 0, 0, 0.35);
+
+  animation: panel-in 0.18s ease forwards;
+}
+
+@keyframes panel-in {
+  from { opacity: 0; transform: translateY(6px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)  scale(1); }
+}
+
+.music-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.music-panel-label {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.music-panel-close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-family: inherit;
+  transition: color 0.15s ease, background 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.music-panel-close:hover {
+  color: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ── Station tabs ──────────────────────────────────────── */
+.music-stations {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 12px;
+}
+
+.station-btn {
+  flex: 1;
+  padding: 6px 0;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 12px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.station-btn:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.station-btn.active {
+  background: rgba(255, 255, 255, 0.13);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* ── Playback controls ─────────────────────────────────── */
+.music-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.ctrl-btn {
+  flex: 1;
+  padding: 9px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.85);
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ctrl-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.13);
+}
+
+.ctrl-btn:active:not(:disabled) {
+  transform: scale(0.93);
+}
+
+.ctrl-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.play-btn {
+  flex: 2;
+}
+
+/* ── Hidden YouTube container ──────────────────────────── */
+.yt-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  bottom: 0;
+  left: 0;
+}
+
+/* ── Light background adaptation ──────────────────────── */
+:root.light-bg .music-toggle {
+  background: rgba(255, 255, 255, 0.55);
+  color: #333;
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.06), 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+:root.light-bg .music-toggle:hover {
+  background: rgba(255, 255, 255, 0.75);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+:root.light-bg .music-panel {
+  background: rgba(255, 255, 255, 0.6);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.04), 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+:root.light-bg .music-panel-label {
+  color: rgba(0, 0, 0, 0.75);
+}
+
+:root.light-bg .music-panel-close {
+  color: rgba(0, 0, 0, 0.3);
+}
+
+:root.light-bg .music-panel-close:hover {
+  color: rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.06);
+}
+
+:root.light-bg .station-btn {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.07);
+  color: rgba(0, 0, 0, 0.45);
+}
+
+:root.light-bg .station-btn:hover {
+  background: rgba(0, 0, 0, 0.09);
+  color: rgba(0, 0, 0, 0.7);
+}
+
+:root.light-bg .station-btn.active {
+  background: rgba(0, 0, 0, 0.12);
+  border-color: rgba(0, 0, 0, 0.18);
+  color: rgba(0, 0, 0, 0.85);
+}
+
+:root.light-bg .ctrl-btn {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: rgba(0, 0, 0, 0.75);
+}
+
+:root.light-bg .ctrl-btn:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* ── Mobile ────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .music-player-root {
+    bottom: 20px;
+    left: 20px;
+  }
+
+  .music-toggle {
+    border-radius: 50%;
+  }
+
+  .music-panel {
+    width: 204px;
+  }
+}
+
+/* ── Focus rings ───────────────────────────────────────── */
+.music-toggle:focus-visible,
+.music-panel-close:focus-visible,
+.station-btn:focus-visible,
+.ctrl-btn:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 2px;
+}
+
+/* ── Reduced motion ────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .music-toggle.is-playing {
+    animation: none;
+  }
+
+  .music-panel {
+    animation: none;
+  }
+}

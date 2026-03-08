@@ -14,7 +14,16 @@
 }
 
 .customization-panel {
-  background: var(--panel-bg, #ffffff);
+  /* Always dark — prevents jarring light/dark switch when changing backgrounds */
+  --panel-bg: #1c1c1e;
+  --tabs-bg: #1c1c1e;
+  --footer-bg: #161618;
+  --text-color: rgba(255, 255, 255, 0.92);
+  --text-muted: rgba(255, 255, 255, 0.38);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --hover-bg: rgba(255, 255, 255, 0.07);
+  --active-bg: #1c1c1e;
+  background: var(--panel-bg);
   border-radius: 20px;
   box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
   width: 100%;
@@ -132,6 +141,19 @@
   animation: fadeIn 0.2s ease;
 }
 
+.tab-section-heading {
+  margin: 0 0 1.5rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-color, #333);
+}
+
+.section-divider {
+  height: 1px;
+  background: var(--border-color, rgba(0, 0, 0, 0.08));
+  margin: 1.75rem 0;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -191,17 +213,6 @@
   letter-spacing: 0.2px;
 }
 
-/* Dark theme */
-.app.dark-bg .customization-panel {
-  --panel-bg: #1c1c1e;
-  --tabs-bg: #1c1c1e;
-  --footer-bg: #161618;
-  --text-color: rgba(255, 255, 255, 0.92);
-  --text-muted: rgba(255, 255, 255, 0.38);
-  --border-color: rgba(255, 255, 255, 0.08);
-  --hover-bg: rgba(255, 255, 255, 0.07);
-  --active-bg: #1c1c1e;
-}
 
 /* Responsive design */
 @media (max-width: 768px) {

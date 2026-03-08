@@ -1,3 +1,4 @@
+import { FaMugHot } from "react-icons/fa";
 import "./CoffeeButton.css";
 
 /**
@@ -31,7 +32,7 @@ const CoffeeButton = () => {
       title="Buy me a coffee ☕"
       aria-label="Support the developer - Buy me a coffee"
     >
-      <span className="coffee-icon">☕</span>
+      <FaMugHot size={20} className="coffee-icon" aria-hidden="true" />
       <span className="coffee-text">Buy me a coffee</span>
     </button>
   );

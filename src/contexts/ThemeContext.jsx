@@ -10,6 +10,7 @@ const DEFAULT_THEME = {
   font: "default",
   clockColor: "#000000",
   panelColor: "#ffffff",
+  showQuote: false,
 };
 
 /**
@@ -55,6 +56,10 @@ export const ThemeProvider = ({ children }) => {
     readSaved("panelColor", DEFAULT_THEME.panelColor)
   );
 
+  const [showQuote, setShowQuote] = useState(() =>
+    readSaved("showQuote", DEFAULT_THEME.showQuote)
+  );
+
   // Keep font updated whenever it changes after init
   useFont(font);
 
@@ -70,18 +75,19 @@ export const ThemeProvider = ({ children }) => {
     try {
       localStorage.setItem(
         "clockThemeSettings",
-        JSON.stringify({ background, font, clockColor, panelColor })
+        JSON.stringify({ background, font, clockColor, panelColor, showQuote })
       );
     } catch (error) {
       console.warn("Failed to save theme settings:", error);
     }
-  }, [background, font, clockColor, panelColor]);
+  }, [background, font, clockColor, panelColor, showQuote]);
 
   const resetToDefaults = () => {
     setBackground(DEFAULT_THEME.background);
     setFont(DEFAULT_THEME.font);
     setClockColor(DEFAULT_THEME.clockColor);
     setPanelColor(DEFAULT_THEME.panelColor);
+    setShowQuote(DEFAULT_THEME.showQuote);
   };
 
   return (
@@ -95,6 +101,8 @@ export const ThemeProvider = ({ children }) => {
         setClockColor,
         panelColor,
         setPanelColor,
+        showQuote,
+        setShowQuote,
         resetToDefaults,
       }}
     >
