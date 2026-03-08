@@ -13,8 +13,8 @@
   align-items: center;
   gap: 1.5rem;
   /* Ensure consistent height for both 2-card and 3-card layouts */
-  min-height: 20vw;
-  max-height: 350px;
+  min-height: 24vw;
+  max-height: 430px;
   /* Smooth width transition when switching between 2 and 3 cards */
   transition: width 0.4s ease-in-out;
 }

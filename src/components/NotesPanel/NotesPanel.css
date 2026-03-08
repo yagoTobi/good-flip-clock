@@ -206,8 +206,8 @@
   }
 }
 
-/* ── Mobile portrait: hidden (bottom bar takes over) */
-@media (max-width: 767px) and (orientation: portrait) {
+/* ── Mobile: hidden (bottom bar takes over in portrait; not needed in landscape) */
+@media (max-width: 767px) {
   .notes-root {
     display: none;
   }

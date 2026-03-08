@@ -102,8 +102,8 @@
   }
 }
 
-/* Hidden on mobile portrait — shown in MobileBottomBar instead */
-@media (max-width: 767px) and (orientation: portrait) {
+/* Hidden on mobile — shown in MobileBottomBar in portrait; not needed in landscape */
+@media (max-width: 767px) {
   .coffee-button {
     display: none;
   }

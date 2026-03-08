@@ -171,6 +171,48 @@
   transform: rotate(45deg);
 }
 
+/* Landscape: fixed bottom row */
+@media (max-width: 767px) and (orientation: landscape) {
+  .pomodoro-controls {
+    position: fixed;
+    bottom: 0.75rem;
+    left: 50%;
+    transform: translateX(-50%);
+    grid-template-columns: repeat(4, 48px);
+    grid-template-rows: 48px;
+    gap: 0.6rem;
+    padding: 0;
+    z-index: 50;
+    transition: opacity 0.4s ease;
+  }
+
+  .pomodoro-controls .play-button { grid-column: 1; grid-row: 1; }
+  .pomodoro-controls .stop-button { grid-column: 2; grid-row: 1; }
+  .pomodoro-controls .skip-button { grid-column: 3; grid-row: 1; }
+  .pomodoro-controls .settings-button { grid-column: 4; grid-row: 1; }
+
+  .pomodoro-controls .control-button {
+    width: 48px;
+    height: 48px;
+    min-width: 44px;
+    min-height: 44px;
+    max-width: 48px;
+    max-height: 48px;
+  }
+
+  /* Always show stop button — dimmed when inactive */
+  .pomodoro-controls .stop-button {
+    opacity: 0.3;
+    pointer-events: none;
+    transform: none;
+  }
+
+  .pomodoro-controls .stop-button.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
 /* Hidden on mobile portrait — replaced by MobileBottomBar */
 @media (max-width: 767px) and (orientation: portrait) {
   .pomodoro-controls {

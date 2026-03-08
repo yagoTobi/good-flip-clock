@@ -294,6 +294,17 @@
   }
 }
 
+/* ── Mobile landscape: hidden entirely ───── */
+@media (max-width: 767px) and (orientation: landscape) {
+  .music-toggle {
+    display: none;
+  }
+
+  .music-panel {
+    display: none;
+  }
+}
+
 /* ── Focus rings ───────────────────────────────────────── */
 .music-toggle:focus-visible,
 .music-panel-close:focus-visible,

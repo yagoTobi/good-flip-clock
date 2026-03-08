@@ -85,11 +85,11 @@ body {
   gap: 0.75rem;
 }
 
-/* Mobile portrait: clear the bottom bar + leave room for the quote at top.
+/* Mobile portrait: clear the bottom bar only — quote is hidden on mobile.
    Bottom padding sized for the tallest case (controls row visible). */
 @media (max-width: 767px) and (orientation: portrait) {
   .app-main {
-    padding: 8rem 0.5rem 170px;
+    padding: 0.5rem 0.5rem 160px;
     gap: 0.5rem;
   }
 }
@@ -133,36 +133,75 @@ body {
 
 /* Landscape orientation optimizations for mobile devices */
 @media (max-width: 767px) and (orientation: landscape) {
+  #root,
   .app {
-    transition: padding 0.3s ease;
-  }
-
-  .app-header {
-    padding: 0.25rem 0;
-  }
-
-  .app-header h1 {
-    font-size: 1.25rem;
-    margin: 0;
+    height: 100dvh;
   }
 
   .app-main {
     padding: 0 1rem;
     gap: 0.5rem;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
   }
 
   .clock-container {
     flex-direction: row;
-    padding: 1rem;
+    padding: 0;
     margin: 0;
     flex-shrink: 0;
     max-width: none;
     width: auto;
   }
 
+  /* Tap-to-hide: fade out controls + customize button */
+  .app .timer-controls,
+  .app .pomodoro-controls,
+  .app .landscape-customize-btn {
+    transition: opacity 0.4s ease;
+  }
+
+  .app.mobile-chrome-hidden .timer-controls,
+  .app.mobile-chrome-hidden .pomodoro-controls,
+  .app.mobile-chrome-hidden .landscape-customize-btn {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+/* ── Landscape-only customization button ───────────────────────────────── */
+.landscape-customize-btn {
+  display: none;
+}
+
+@media (max-width: 767px) and (orientation: landscape) {
+  .landscape-customize-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    bottom: 0.75rem;
+    right: 1rem;
+    z-index: 50;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(20, 20, 20, 0.55);
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+    color: rgba(255, 255, 255, 0.92);
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    -webkit-tap-highlight-color: transparent;
+    padding: 0;
+  }
+
+  .landscape-customize-btn:active {
+    background: rgba(40, 40, 40, 0.7);
+    transform: scale(0.95);
+  }
 }
 
 /* Smooth transitions for orientation changes */
@@ -182,10 +221,29 @@ body {
   .mobile-mode-label {
     display: block;
     position: fixed;
-    top: 7rem;
+    top: 1rem;
     left: 50%;
     z-index: 10;
     font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-color, rgba(255, 255, 255, 0.9));
+    opacity: 0.6;
+    white-space: nowrap;
+    pointer-events: none;
+    animation: mobileModeLabel 3s ease forwards;
+  }
+}
+
+@media (max-width: 767px) and (orientation: landscape) {
+  .mobile-mode-label {
+    display: block;
+    position: fixed;
+    top: 0.5rem;
+    left: 50%;
+    z-index: 10;
+    font-size: 0.62rem;
     font-weight: 600;
     letter-spacing: 0.16em;
     text-transform: uppercase;

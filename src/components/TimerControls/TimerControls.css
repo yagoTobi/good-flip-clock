@@ -163,30 +163,49 @@
 .timer-controls .settings-button:hover svg {
   transform: rotate(45deg);
 }
-/* Landscape orientation optimizations for mobile */
+/* Landscape: fixed bottom row */
 @media (max-width: 767px) and (orientation: landscape) {
   .timer-controls {
-    grid-template-columns: 50px 50px;
-    position: absolute;
-    right: -115px;
-    top: 50%;
-    transform: translateY(-50%);
-    gap: 0.5rem;
+    position: fixed;
+    bottom: 0.75rem;
+    left: 50%;
+    transform: translateX(-50%);
+    grid-template-columns: repeat(3, 48px);
+    grid-template-rows: 48px;
+    gap: 0.6rem;
     padding: 0;
+    z-index: 50;
+    transition: opacity 0.4s ease;
   }
 
+  .timer-controls .play-button { grid-column: 1; grid-row: 1; }
+  .timer-controls .stop-button { grid-column: 2; grid-row: 1; }
+  .timer-controls .settings-button { grid-column: 3; grid-row: 1; }
+
   .control-button {
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
     min-width: 44px;
     min-height: 44px;
   }
 
   .timer-controls .settings-button {
-    width: 50px !important;
-    height: 50px !important;
+    width: 48px !important;
+    height: 48px !important;
     min-width: 44px !important;
     min-height: 44px !important;
+  }
+
+  /* Always show stop button — dimmed when inactive */
+  .timer-controls .stop-button {
+    opacity: 0.3;
+    pointer-events: none;
+    transform: none;
+  }
+
+  .timer-controls .stop-button.visible {
+    opacity: 1;
+    pointer-events: auto;
   }
 }
 

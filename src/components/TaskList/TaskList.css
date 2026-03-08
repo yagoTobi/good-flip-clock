@@ -404,8 +404,8 @@
   }
 }
 
-/* Hidden on mobile portrait — no equivalent in the mobile bottom bar */
-@media (max-width: 767px) and (orientation: portrait) {
+/* Hidden on mobile — no equivalent in the mobile bottom bar */
+@media (max-width: 767px) {
   .task-list-root {
     display: none;
   }

@@ -14,10 +14,13 @@
 
 .flip-card-inner {
   position: relative;
+  /* Unified aspect ratio — same shape on every screen size.
+     Width-driven on desktop (height auto); height-driven on mobile portrait (width auto). */
+  aspect-ratio: 22 / 24;
   width: 22vw;
-  height: 20vw;
+  /* height intentionally omitted — auto-computed from aspect-ratio on desktop */
   max-width: 395px;
-  max-height: 355px;
+  max-height: 430px; /* = 395 × 24/22, prevents runaway at very wide viewports */
   min-width: 180px;
   min-height: 152px;
   border-radius: 14px;
@@ -241,15 +244,6 @@
   border: none;
 }
 
-/* Desktop: 20% taller cards for more vertical breathing room */
-@media (min-width: 768px) {
-  .flip-card-inner {
-    height: 24vw;
-    max-height: 426px;
-    min-height: 182px;
-  }
-}
-
 /* Mini size for seconds */
 .flip-card.mini .flip-card-inner {
   width: 4vw;
@@ -323,21 +317,24 @@
 /* Mobile portrait: full-bleed cards that dominate the screen like the reference design */
 @media (max-width: 767px) and (orientation: portrait) {
   .flip-card:not(.mini) .flip-card-inner {
-    /* Width is full-bleed but capped at 1.6× card height to keep proportions on
-       wider/shorter phones (e.g. Pixel 2 at 411×731 would otherwise look too flat). */
-    width: min(calc(100vw - 32px), calc(1.6 * clamp(170px, calc((100dvh - 320px) / 2), 300px)));
-    max-width: 480px;
-    min-width: 280px;
-    /* Each card gets half the available vertical space.
-       320px overhead = 112px top padding + 170px bottom padding + ~16px card gap + ~22px buffer */
-    height: clamp(170px, calc((100dvh - 320px) / 2), 300px);
+    /* Height-driven: aspect-ratio computes width automatically (= height × 22/24).
+       This keeps the same 22:24 shape as desktop — no more squashed landscape-ratio cards.
+       170px overhead = 8px top padding + 160px bottom padding + ~2px gap buffer */
+    height: clamp(170px, calc((100dvh - 170px) / 2), 340px);
+    width: auto;
+    /* Reset base rule bounds so aspect-ratio width computation isn't clamped */
+    max-width: none;
+    min-width: 0;
   }
 
   .flip-card-top .digit,
   .flip-card-bottom .digit,
   .flip-animation-front .digit,
   .flip-animation-back .digit {
-    font-size: clamp(8rem, 58vw, 16rem);
+    /* font = card_height × 13/24 (same ratio as desktop 13vw / 24vw).
+       Derived: height = clamp(170, (dvh-170)/2, 340) → font = height × 0.5417
+       formula term: (dvh-170)/2 × 13/24 = (dvh-170) × 0.2708 */
+    font-size: clamp(92px, calc((100dvh - 170px) * 0.27), 184px);
   }
 
   /* Mini seconds card: scaled up to sit well beside the larger portrait cards */
