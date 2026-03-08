@@ -41,7 +41,8 @@ function NotesPanel({ isOpen, onToggle, notes, onNotesChange }) {
             value={notes}
             onChange={(e) => onNotesChange(e.target.value)}
             placeholder="Write your thoughts…"
-            spellCheck={false}
+            maxLength={10000}
+          spellCheck={false}
             aria-label="Notes"
           />
         </div>

@@ -126,14 +126,14 @@
     flex-direction: column; /* Stack buttons vertically on mobile */
   }
 
-  .settings-button {
+  .timer-settings-button {
     width: 100%; /* Full width buttons on mobile */
     padding: 1rem 2rem; /* Larger padding for better touch targets */
     font-size: 1.1rem; /* Slightly larger text */
     min-height: 48px; /* Larger minimum touch target */
   }
 
-  .settings-button:active {
+  .timer-settings-button:active {
     transform: scale(0.95);
     transition: transform 0.1s ease;
   }
@@ -147,7 +147,7 @@
   }
 }
 
-.settings-button {
+.timer-settings-button {
   padding: 0.625rem 1.5rem;
   border: 1px solid transparent;
   border-radius: 10px;
@@ -182,7 +182,7 @@
   transform: translateY(-1px);
 }
 
-.settings-button:active {
+.timer-settings-button:active {
   transform: translateY(0);
 }
 /* Landscape orientation optimizations for mobile */
@@ -227,7 +227,7 @@
     margin-top: 1rem;
   }
 
-  .settings-button {
+  .timer-settings-button {
     width: auto;
     min-width: 100px;
     padding: 0.75rem 1.5rem;

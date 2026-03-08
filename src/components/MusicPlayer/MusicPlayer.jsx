@@ -18,7 +18,7 @@ function loadYTScript() {
   document.head.appendChild(tag);
 }
 
-function MusicPlayer({ isOpen, onToggle, onPlayingChange }) {
+function MusicPlayer({ isOpen, onToggle, onPlayingChange, hasControls }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [stationIdx, setStationIdx] = useState(0);
@@ -104,7 +104,7 @@ function MusicPlayer({ isOpen, onToggle, onPlayingChange }) {
   };
 
   return (
-    <div className="music-player-root">
+    <div className={`music-player-root${hasControls ? " has-controls" : ""}`}>
       {/* Always-mounted hidden YouTube player container */}
       <div className="yt-hidden">
         <div ref={containerRef} />

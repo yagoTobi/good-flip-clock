@@ -126,14 +126,14 @@ function TimerSettings({ isOpen, onClose, onSave }) {
 
         <div className="timer-settings-actions">
           <button
-            className="settings-button cancel-button"
+            className="timer-settings-button cancel-button"
             onClick={handleCancel}
             aria-label="Cancel timer settings without saving"
           >
             Cancel
           </button>
           <button
-            className="settings-button save-button"
+            className="timer-settings-button save-button"
             onClick={handleSave}
             aria-label="Save timer settings and close dialog"
           >

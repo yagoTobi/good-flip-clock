@@ -59,9 +59,18 @@
   }
 }
 
-/* Desktop only — hide on mobile */
 @media (max-width: 767px) {
   .inspirational-quote {
-    display: none;
+    top: 2rem;
+    max-width: min(340px, 88vw);
+  }
+
+  .quote-text {
+    font-size: 0.875rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .quote-author {
+    font-size: 0.72rem;
   }
 }

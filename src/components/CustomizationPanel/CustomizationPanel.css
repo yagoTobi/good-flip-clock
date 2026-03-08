@@ -241,7 +241,7 @@
   }
 
   .panel-content {
-    padding: 1rem;
+    padding: 0 1rem 1rem; /* No top padding — sticky preview covers that edge */
   }
 
   .panel-actions {
@@ -259,9 +259,9 @@
     order: -1; /* Show preview at top on mobile */
     position: sticky;
     top: 0;
-    z-index: 5;
+    z-index: 20; /* must beat grid-item z-index:15 on selected swatches */
     background: var(--panel-bg);
-    padding-bottom: 0.75rem;
+    padding: 1rem 0 0.75rem; /* top matches the removed panel-content padding-top */
     margin-bottom: 0;
   }
 
@@ -300,7 +300,11 @@
   }
 
   .panel-content {
-    padding: 0.75rem;
+    padding: 0 0.75rem 0.75rem; /* No top padding — sticky preview covers that edge */
+  }
+
+  .preview-section {
+    padding-top: 0.75rem; /* matches the removed panel-content padding-top at 480px */
   }
 
   .panel-actions {

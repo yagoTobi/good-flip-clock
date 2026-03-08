@@ -132,6 +132,12 @@ function MobileBottomBar({
 
       {/* Mode selector row */}
       <div className="mb-row mb-mode-row">
+        {/* Sliding background pill — same approach as desktop ModeSelector */}
+        <span
+          className="mb-mode-slider"
+          style={{ transform: `translateX(${modes.findIndex(m => m.key === selectedMode) * 100}%)` }}
+          aria-hidden="true"
+        />
         {modes.map(({ key, icon: Icon, label }) => {
           const isActive = selectedMode === key;
           const isRunning =

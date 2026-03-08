@@ -24,14 +24,7 @@ import {
   logCompatibilityInfo,
   checkCompatibilityIssues,
 } from "./utils/browserDetection";
-import {
-  runMobileCompatibilityTests,
-  exportTestResults,
-} from "./utils/mobileCompatibilityTest";
-import {
-  runAccessibilityTests,
-  exportAccessibilityResults,
-} from "./utils/accessibilityTest";
+
 
 /**
  * BackgroundLayer - Smooth background transitions via GPU-accelerated opacity crossfade.
@@ -156,6 +149,8 @@ function AppContent() {
   const [isTasksOpen, setIsTasksOpen] = useState(false);
   const [isNotesOpen, setIsNotesOpen] = useState(false);
   const [notes, setNotes] = useState(loadNotes);
+  const [isIdle, setIsIdle] = useState(false);
+  const idleTimerRef = useRef(null);
 
   const handleMusicToggle = () => {
     const next = !isMusicOpen;
@@ -207,6 +202,39 @@ function AppContent() {
     setLiveMessage(`Switched to ${modeNames[newMode]} mode`);
   };
 
+  // Idle / focus-mode detection — desktop only
+  useEffect(() => {
+    if (!window.matchMedia("(min-width: 768px)").matches) return;
+
+    const enterFocusMode = () => {
+      setIsIdle(true);
+      setIsCustomizationOpen(false);
+      setIsTimerSettingsOpen(false);
+      setIsPomodoroSettingsOpen(false);
+      setIsMusicOpen(false);
+      setIsTasksOpen(false);
+      setIsNotesOpen(false);
+    };
+
+    const resetIdle = () => {
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+      setIsIdle(false);
+      idleTimerRef.current = setTimeout(enterFocusMode, 10000);
+    };
+
+    resetIdle();
+    window.addEventListener("mousemove", resetIdle);
+    window.addEventListener("mousedown", resetIdle);
+    window.addEventListener("keydown", resetIdle);
+
+    return () => {
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+      window.removeEventListener("mousemove", resetIdle);
+      window.removeEventListener("mousedown", resetIdle);
+      window.removeEventListener("keydown", resetIdle);
+    };
+  }, []);
+
   useEffect(() => {
     applyBrowserFixes();
     applyPerformanceOptimizations();
@@ -245,12 +273,14 @@ function AppContent() {
       }
 
       window.runMobileCompatibilityTests = async () => {
+        const { runMobileCompatibilityTests, exportTestResults } = await import("./utils/mobileCompatibilityTest");
         const results = await runMobileCompatibilityTests();
         exportTestResults(results);
         return results;
       };
 
-      window.runAccessibilityTests = () => {
+      window.runAccessibilityTests = async () => {
+        const { runAccessibilityTests, exportAccessibilityResults } = await import("./utils/accessibilityTest");
         const results = runAccessibilityTests();
         exportAccessibilityResults(results);
         return results;
@@ -298,13 +328,14 @@ function AppContent() {
   const isLightBg = background !== "default" ? isLightColor(background) : false;
 
   return (
-    <div className={`app ${isLightBg ? "light-bg" : "dark-bg"}`}>
+    <div className={`app ${isLightBg ? "light-bg" : "dark-bg"}${isIdle ? " focus-mode" : ""}`}>
       <InspirationalQuote />
       <CoffeeButton />
       <MusicPlayer
         isOpen={isMusicOpen}
         onToggle={handleMusicToggle}
         onPlayingChange={setIsMusicPlaying}
+        hasControls={selectedMode === MODES.TIMER || selectedMode === MODES.POMODORO}
       />
       <TaskList isOpen={isTasksOpen} onToggle={handleTasksToggle} />
       <NotesPanel

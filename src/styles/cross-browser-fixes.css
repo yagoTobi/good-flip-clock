@@ -62,17 +62,6 @@ textarea {
    FIREFOX MOBILE SPECIFIC FIXES
    ============================================================================= */
 
-/* Fix Firefox mobile button styling */
-@-moz-document url-prefix() {
-  .control-button,
-  .selector-option,
-  .customization-button,
-  .action-button {
-    -moz-appearance: none;
-    background-clip: padding-box;
-  }
-}
-
 /* Fix Firefox mobile flexbox issues */
 @supports (-moz-appearance: none) {
   .app-main,
@@ -117,9 +106,7 @@ textarea {
 /* Force hardware acceleration for animations */
 .flip-animation,
 .flip-card-inner,
-.selector-slider,
-.control-button,
-.customization-button {
+.selector-slider {
   -webkit-transform: translateZ(0);
   -moz-transform: translateZ(0);
   -ms-transform: translateZ(0);
@@ -278,19 +265,6 @@ textarea {
    ORIENTATION CHANGE FIXES
    ============================================================================= */
 
-/* Fix layout shifts during orientation changes */
-@media screen and (max-width: 767px) {
-  .app,
-  .app-main,
-  .clock-container {
-    -webkit-transition: all 0.3s ease;
-    -moz-transition: all 0.3s ease;
-    -ms-transition: all 0.3s ease;
-    -o-transition: all 0.3s ease;
-    transition: all 0.3s ease;
-  }
-}
-
 /* Prevent zoom on orientation change */
 @media screen and (orientation: landscape) {
   html {
@@ -364,11 +338,6 @@ textarea {
   overflow-scrolling: touch;
 }
 
-/* Prevent overscroll bounce on mobile */
-body {
-  overscroll-behavior: none;
-  -webkit-overscroll-behavior: none;
-}
 
 /* =============================================================================
    SAFE AREA FIXES FOR NOTCHED DEVICES
@@ -471,11 +440,6 @@ body {
 
 /* Backdrop filter fallback */
 @supports not (backdrop-filter: blur(10px)) {
-  .clock-container {
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: none;
-  }
-
   .customization-overlay {
     background: rgba(0, 0, 0, 0.9);
     backdrop-filter: none;

@@ -1,5 +1,6 @@
 body {
   overflow: hidden;
+  overscroll-behavior: none;
 }
 
 @keyframes bgCrossfade {
@@ -20,42 +21,6 @@ body {
   #root {
     max-width: 1280px;
   }
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }
 
 .app {
@@ -120,10 +85,10 @@ body {
   gap: 0.75rem;
 }
 
-/* Mobile portrait: clear the bottom bar */
+/* Mobile portrait: clear the bottom bar + leave room for the quote at top */
 @media (max-width: 767px) and (orientation: portrait) {
   .app-main {
-    padding: 0 0.5rem 210px;
+    padding: 5.5rem 0.5rem 210px;
     gap: 0.5rem;
   }
 }
@@ -204,5 +169,26 @@ body {
   .app-main,
   .clock-container {
     transition: padding 0.3s ease, gap 0.3s ease, flex-direction 0.3s ease;
+  }
+}
+
+/* Focus mode — desktop only. Fades all UI chrome after 20s of inactivity,
+   leaving only the clock cards visible. Mouse movement restores everything. */
+@media (min-width: 768px) {
+  .app.focus-mode {
+    cursor: none;
+  }
+
+  .app.focus-mode .coffee-button,
+  .app.focus-mode .music-player-root,
+  .app.focus-mode .task-list-root,
+  .app.focus-mode .notes-root,
+  .app.focus-mode .inspirational-quote,
+  .app.focus-mode .mode-selector-container,
+  .app.focus-mode .timer-controls,
+  .app.focus-mode .pomodoro-controls {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 2s ease;
   }
 }
