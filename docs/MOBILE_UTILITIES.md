@@ -103,7 +103,7 @@ After **4 seconds of inactivity** on mobile portrait, the class `.mobile-chrome-
 - Fades out the MobileBottomBar (`opacity: 0; pointer-events: none`)
 - Collapses `.app-main` top and bottom padding to zero, so the clock floats in the true center of `100dvh`
 
-Any touch anywhere restores the chrome and resets the 4 s timer.
+Any touch anywhere restores the chrome and resets the 4 s timer. Tapping the clock/background area also manually toggles chrome visibility.
 
 ```css
 @media (max-width: 767px) and (orientation: portrait) {
@@ -121,45 +121,39 @@ Any touch anywhere restores the chrome and resets the 4 s timer.
 
 ## Tap-to-Hide Controls (Landscape)
 
-In landscape orientation, after the same 4 s inactivity window, `.mobile-chrome-hidden` hides:
+In landscape orientation, the same 4 s inactivity auto-hide applies. `.mobile-chrome-hidden` hides:
 
 - Timer/Pomodoro desktop controls
-- The `.landscape-customize-btn`
+- The LandscapeBar (mode dots + utility buttons)
+- `.app-main` padding collapses to zero so the clock centers in the full viewport
 
 ```css
 @media (max-height: 500px) and (orientation: landscape) {
   .app.mobile-chrome-hidden .timer-controls,
   .app.mobile-chrome-hidden .pomodoro-controls,
-  .app.mobile-chrome-hidden .landscape-customize-btn {
+  .app.mobile-chrome-hidden .lb-dots,
+  .app.mobile-chrome-hidden .lb-utils {
     opacity: 0;
     pointer-events: none;
+  }
+  .app.mobile-chrome-hidden .app-main {
+    padding: 0;
   }
 }
 ```
 
 ---
 
-## Landscape Customization Button
+## LandscapeBar
 
-**Class**: `.landscape-customize-btn`
+**Component**: `src/components/LandscapeBar/LandscapeBar.jsx` + `LandscapeBar.css`
 
-In landscape the MobileBottomBar is hidden (too tall for the short viewport). A compact 48×48 px glassmorphic button is shown instead at `position: fixed; bottom: 0.75rem; right: 1rem` to keep customization accessible.
+In landscape the MobileBottomBar is hidden (too tall for the short viewport). The LandscapeBar provides equivalent navigation and utility access via two compact glassmorphic pills:
 
-```css
-@media (max-height: 500px) and (orientation: landscape) {
-  .landscape-customize-btn {
-    display: flex;
-    position: fixed;
-    bottom: 0.75rem;
-    right: 1rem;
-    width: 48px;
-    height: 48px;
-    border-radius: 14px;
-    background: rgba(20, 20, 20, 0.55);
-    backdrop-filter: blur(16px) saturate(160%);
-  }
-}
-```
+- **Left pill** (`.lb-dots`): Three mode indicator dots — active dot highlighted, pulses green when a timer is running. `position: fixed; bottom: 0.75rem; left: 1rem`.
+- **Right pill** (`.lb-utils`): Customize and Coffee buttons. `position: fixed; bottom: 0.75rem; right: 1rem`.
+
+Both pills are hidden by `.mobile-chrome-hidden` alongside the timer controls. The center area remains clear for the timer/pomodoro control buttons.
 
 ---
 

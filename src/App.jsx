@@ -12,6 +12,7 @@ import TaskList from "./components/TaskList";
 import NotesPanel, { loadNotes } from "./components/NotesPanel";
 import MobileBottomBar from "./components/MobileBottomBar/MobileBottomBar";
 import InspirationalQuote from "./components/InspirationalQuote/InspirationalQuote";
+import LandscapeBar from "./components/LandscapeBar/LandscapeBar";
 import LiveRegion from "./components/LiveRegion";
 import { useTimer } from "./hooks/useTimer";
 import { usePomodoroTimer } from "./hooks/usePomodoroTimer";
@@ -257,7 +258,8 @@ function AppContent() {
 
   // Idle / focus-mode detection — desktop only
   useEffect(() => {
-    if (!window.matchMedia("(min-width: 768px)").matches) return;
+    const isLandscapeMobile = window.matchMedia("(max-height: 500px) and (orientation: landscape)").matches;
+    if (!window.matchMedia("(min-width: 768px)").matches || isLandscapeMobile) return;
 
     const enterFocusMode = () => {
       setIsIdle(true);
@@ -287,6 +289,32 @@ function AppContent() {
       window.removeEventListener("keydown", resetIdle);
     };
   }, []);
+
+  // Mobile auto-hide: fade out chrome after 4s of inactivity
+  useEffect(() => {
+    if (!mobileChromeVisible) return;
+    if (isCustomizationOpen || isTimerSettingsOpen || isPomodoroSettingsOpen) return;
+    if (isMusicOpen || isTasksOpen || isNotesOpen) return;
+
+    const mq = window.matchMedia(
+      "(max-width: 767px), (max-height: 500px) and (orientation: landscape)"
+    );
+    if (!mq.matches) return;
+
+    let hideTimer = setTimeout(() => setMobileChromeVisible(false), 4000);
+
+    const resetTimer = () => {
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(() => setMobileChromeVisible(false), 4000);
+    };
+
+    document.addEventListener("touchstart", resetTimer, { passive: true });
+
+    return () => {
+      clearTimeout(hideTimer);
+      document.removeEventListener("touchstart", resetTimer);
+    };
+  }, [mobileChromeVisible, isCustomizationOpen, isTimerSettingsOpen, isPomodoroSettingsOpen, isMusicOpen, isTasksOpen, isNotesOpen]);
 
   useEffect(() => {
     applyBrowserFixes();
@@ -494,16 +522,12 @@ function AppContent() {
           currentSettings={pomodoroTimer.pomodoroSettings}
         />
 
-        {/* Landscape-only customization button — mode selector is hidden in landscape */}
-        <button
-          className="landscape-customize-btn"
-          onClick={() => setIsCustomizationOpen(true)}
-          aria-label="Customize appearance"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M20.71,4.63L19.37,3.29C19,2.9 18.35,2.9 17.96,3.29L9,12.25L11.75,15L20.71,6.04C21.1,5.65 21.1,5 20.71,4.63M7,14A3,3 0 0,0 4,17C4,18.31 2.84,19 2,19C2.92,20.22 4.5,21 6,21A4,4 0 0,0 10,17A3,3 0 0,0 7,14Z" />
-          </svg>
-        </button>
+        <LandscapeBar
+          selectedMode={selectedMode}
+          timer={timer}
+          pomodoroTimer={pomodoroTimer}
+          onCustomizationClick={() => setIsCustomizationOpen(true)}
+        />
 
         <MobileBottomBar
           selectedMode={selectedMode}
