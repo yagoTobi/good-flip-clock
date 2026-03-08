@@ -151,6 +151,8 @@ function AppContent() {
   const [notes, setNotes] = useState(loadNotes);
   const [isIdle, setIsIdle] = useState(false);
   const idleTimerRef = useRef(null);
+  const [mobileChromeVisible, setMobileChromeVisible] = useState(true);
+  const touchStartRef = useRef(null);
 
   const handleMusicToggle = () => {
     const next = !isMusicOpen;
@@ -200,6 +202,57 @@ function AppContent() {
       [MODES.POMODORO]: "Pomodoro",
     };
     setLiveMessage(`Switched to ${modeNames[newMode]} mode`);
+  };
+
+  // Mobile gesture handlers — tap toggles chrome; swipe changes mode.
+  // These are attached via JSX onTouchStart/onTouchEnd on <main> so they
+  // only fire when touching the clock / background area, not desktop.
+  const handleMobileTouchStart = (e) => {
+    // Large modal panels are open — let them handle touches exclusively
+    if (isCustomizationOpen || isTimerSettingsOpen || isPomodoroSettingsOpen) {
+      touchStartRef.current = null;
+      return;
+    }
+    // Touches that begin on an interactive element drive that element, not our gesture
+    if (e.target.closest('button, a, input, select, [role="button"]')) {
+      touchStartRef.current = null;
+      return;
+    }
+    touchStartRef.current = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+      time: Date.now(),
+    };
+  };
+
+  const handleMobileTouchEnd = (e) => {
+    if (!touchStartRef.current) return;
+    const { x: startX, y: startY, time: startTime } = touchStartRef.current;
+    touchStartRef.current = null;
+
+    const endX = e.changedTouches[0].clientX;
+    const endY = e.changedTouches[0].clientY;
+    const deltaX = endX - startX;
+    const deltaY = endY - startY;
+    const duration = Date.now() - startTime;
+
+    // Swipe: horizontal dominant + at least 50px travel → change mode
+    if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
+      const modeOrder = [MODES.CLOCK, MODES.TIMER, MODES.POMODORO];
+      const currentIndex = modeOrder.indexOf(selectedMode);
+      if (deltaX < 0) {
+        handleModeChange(modeOrder[(currentIndex + 1) % modeOrder.length]);
+      } else {
+        handleModeChange(modeOrder[(currentIndex - 1 + modeOrder.length) % modeOrder.length]);
+      }
+      return;
+    }
+
+    // Tap: small movement + short duration → toggle chrome
+    if (Math.abs(deltaX) < 15 && Math.abs(deltaY) < 15 && duration < 400) {
+      if (mobileChromeVisible) setIsMusicOpen(false);
+      setMobileChromeVisible(v => !v);
+    }
   };
 
   // Idle / focus-mode detection — desktop only
@@ -328,7 +381,7 @@ function AppContent() {
   const isLightBg = background !== "default" ? isLightColor(background) : false;
 
   return (
-    <div className={`app ${isLightBg ? "light-bg" : "dark-bg"}${isIdle ? " focus-mode" : ""}`}>
+    <div className={`app ${isLightBg ? "light-bg" : "dark-bg"}${isIdle ? " focus-mode" : ""}${!mobileChromeVisible ? " mobile-chrome-hidden" : ""}`}>
       <InspirationalQuote />
       <CoffeeButton />
       <MusicPlayer
@@ -350,6 +403,8 @@ function AppContent() {
         className="app-main"
         role="main"
         aria-label="Flip clock application"
+        onTouchStart={handleMobileTouchStart}
+        onTouchEnd={handleMobileTouchEnd}
       >
         <div
           className="clock-container"

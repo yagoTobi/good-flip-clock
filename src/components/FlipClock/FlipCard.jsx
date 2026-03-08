@@ -40,12 +40,19 @@ function FlipCard({ value, prevValue, isFlipping, size = "normal" }) {
   );
 
   /**
-   * Create style object for theme colors applied to card elements
+   * Style for elements that need the full card appearance (animation faces)
    */
   const cardStyle = {
     color: clockColor,
     backgroundColor: panelColor,
   };
+
+  /**
+   * Background-only style applied to the static top/bottom halves.
+   * The inner container is transparent so the app background shows
+   * through the 4px gap between the two halves.
+   */
+  const panelStyle = { backgroundColor: panelColor };
 
   /**
    * Get appropriate background style for the central divider line
@@ -101,23 +108,21 @@ function FlipCard({ value, prevValue, isFlipping, size = "normal" }) {
 
   return (
     <div className={`flip-card ${size} ${isFlipping ? "flipping" : ""}`}>
-      <div className="flip-card-inner" style={cardStyle}>
+      {/* flip-card-inner is transparent — the 4px gap between halves reveals the app background */}
+      <div className="flip-card-inner" style={{ color: clockColor }}>
         {/* Top half - always shows NEW value (gets revealed during flip) */}
-        <div className="flip-card-top">
+        <div className="flip-card-top" style={panelStyle}>
           <span className="digit" style={{ color: clockColor }}>
             {value}
           </span>
         </div>
 
         {/* Bottom half - shows OLD value until animation completes */}
-        <div className="flip-card-bottom">
+        <div className="flip-card-bottom" style={panelStyle}>
           <span className="digit" style={{ color: clockColor }}>
             {displayedBottomValue}
           </span>
         </div>
-
-        {/* Central divider line */}
-        <div className="flip-card-divider"></div>
 
         {/* Animated flip card - only visible during animation */}
         {isFlipping && (

@@ -37,7 +37,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 50%;
+  height: calc(50% - 2px);
   overflow: hidden;
   z-index: 1;
   border-top-left-radius: 12px;
@@ -50,23 +50,11 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 50%;
+  height: calc(50% - 2px);
   overflow: hidden;
   z-index: 1;
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
-}
-
-/* Central divider line for flip clock appearance */
-.flip-card-divider {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 2px;
-  z-index: 30;
-  transform: translateY(-50%);
-  pointer-events: none;
 }
 
 /* Digit positioning - shows top half of number */
@@ -121,9 +109,11 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 50%;
+  height: calc(50% - 2px);
   z-index: 22; /* Higher than static elements but lower than top during flip */
-  transform-origin: bottom;
+  /* Pivot at the center of the card (2px below this element's bottom edge),
+     so the back face lands exactly on the bottom half after rotation */
+  transform-origin: center calc(100% + 2px);
   transform-style: preserve-3d;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -277,6 +267,17 @@
 /* Mini divider line - hidden for seconds */
 .flip-card.mini .flip-card-divider {
   display: none;
+}
+
+/* Mini cards: restore full-height halves (no gap split for seconds) */
+.flip-card.mini .flip-card-top,
+.flip-card.mini .flip-card-bottom {
+  height: 50%;
+}
+
+.flip-card.mini .flip-animation {
+  height: 50%;
+  transform-origin: bottom;
 }
 
 /* Remove flip animation shadow for mini cards */

@@ -404,6 +404,13 @@
   }
 }
 
+/* Hidden on mobile portrait — no equivalent in the mobile bottom bar */
+@media (max-width: 767px) and (orientation: portrait) {
+  .task-list-root {
+    display: none;
+  }
+}
+
 /* ── Focus rings ────────────────────────────────────────── */
 .task-toggle:focus-visible,
 .task-panel-close:focus-visible,

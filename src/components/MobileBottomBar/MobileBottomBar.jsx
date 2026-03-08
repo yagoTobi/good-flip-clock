@@ -1,12 +1,11 @@
 import { FaPlay, FaPause, FaStop, FaCog, FaForward, FaMusic, FaMugHot } from "react-icons/fa";
-import { FaClock, FaStopwatch } from "react-icons/fa";
-import { GiTomato } from "react-icons/gi";
 import { MODES, TIMER_STATES } from "../../constants";
 import "./MobileBottomBar.css";
 
+const MODE_ORDER = [MODES.CLOCK, MODES.TIMER, MODES.POMODORO];
+
 function MobileBottomBar({
   selectedMode,
-  onModeChange,
   timer,
   pomodoroTimer,
   onSettingsClick,
@@ -15,11 +14,6 @@ function MobileBottomBar({
   onMusicToggle,
   isMusicPlaying,
 }) {
-  const modes = [
-    { key: MODES.CLOCK, icon: FaClock, label: "Clock" },
-    { key: MODES.TIMER, icon: FaStopwatch, label: "Timer" },
-    { key: MODES.POMODORO, icon: GiTomato, label: "Pomodoro" },
-  ];
 
   const handleCoffeeClick = () => {
     window.open("https://buymeacoffee.com/yagotobi", "_blank", "noopener,noreferrer");
@@ -54,8 +48,22 @@ function MobileBottomBar({
     }
   };
 
+  const isAnyRunning =
+    (selectedMode === MODES.TIMER && timer?.isRunning) ||
+    (selectedMode === MODES.POMODORO && pomodoroTimer?.isRunning);
+
   return (
     <div className="mobile-bottom-bar">
+      {/* Mode indicator — three dots; swipe left/right on the clock to change mode */}
+      <div className="mb-mode-dots" aria-hidden="true">
+        {MODE_ORDER.map((mode) => (
+          <span
+            key={mode}
+            className={`mb-mode-dot${selectedMode === mode ? " active" : ""}${selectedMode === mode && isAnyRunning ? " running" : ""}`}
+          />
+        ))}
+      </div>
+
       {/* Controls row — only for timer / pomodoro modes */}
       {hasControls && (
         <div className="mb-row mb-controls-row">
@@ -129,34 +137,6 @@ function MobileBottomBar({
           )}
         </div>
       )}
-
-      {/* Mode selector row */}
-      <div className="mb-row mb-mode-row">
-        {/* Sliding background pill — same approach as desktop ModeSelector */}
-        <span
-          className="mb-mode-slider"
-          style={{ transform: `translateX(${modes.findIndex(m => m.key === selectedMode) * 100}%)` }}
-          aria-hidden="true"
-        />
-        {modes.map(({ key, icon: Icon, label }) => {
-          const isActive = selectedMode === key;
-          const isRunning =
-            (key === MODES.TIMER && timer?.isRunning) ||
-            (key === MODES.POMODORO && pomodoroTimer?.isRunning);
-          return (
-            <button
-              key={key}
-              className={`mb-mode-btn${isActive ? " active" : ""}`}
-              onClick={() => onModeChange(key)}
-              aria-label={`${label} mode`}
-              aria-pressed={isActive}
-            >
-              <Icon size={20} aria-hidden="true" />
-              {isRunning && <span className="mb-running-dot" aria-hidden="true" />}
-            </button>
-          );
-        })}
-      </div>
 
       {/* Utility row */}
       <div className="mb-row mb-utils-row">

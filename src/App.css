@@ -85,10 +85,11 @@ body {
   gap: 0.75rem;
 }
 
-/* Mobile portrait: clear the bottom bar + leave room for the quote at top */
+/* Mobile portrait: clear the bottom bar + leave room for the quote at top.
+   Bottom padding sized for the tallest case (controls row visible). */
 @media (max-width: 767px) and (orientation: portrait) {
   .app-main {
-    padding: 7rem 0.5rem 210px;
+    padding: 7rem 0.5rem 170px;
     gap: 0.5rem;
   }
 }
@@ -169,6 +170,49 @@ body {
   .app-main,
   .clock-container {
     transition: padding 0.3s ease, gap 0.3s ease, flex-direction 0.3s ease;
+  }
+}
+
+/* ── Mobile tap-to-focus: clock takes center stage ────────────────────────
+   After 4s of inactivity the quote + bottom bar fade out and the app-main
+   padding collapses to zero, gliding the clock to the true center of the
+   visible viewport. Any touch restores the chrome for another 4s.
+
+   dvh (dynamic viewport height) is used so the layout tightly fits between
+   the browser's own chrome — Chrome Mobile puts its address bar at the top,
+   Safari Mobile puts its toolbar at the bottom. Both shrink the visible area
+   and dvh accounts for whichever is visible at any given moment.
+   Older browsers that don't support dvh fall back to the globally-set 100vh. */
+@media (max-width: 767px) and (orientation: portrait) {
+  #root,
+  .app {
+    height: 100dvh;
+  }
+
+  /* Fade transitions for quote and bottom bar */
+  .app .inspirational-quote,
+  .app .mobile-bottom-bar {
+    transition: opacity 0.4s ease;
+  }
+
+  /* Hidden state: invisible + non-interactive.
+     animation: none clears the quoteFadeIn forwards-fill so the opacity
+     transition can properly override it (animation fills cascade above
+     regular author rules). */
+  .app.mobile-chrome-hidden .inspirational-quote {
+    opacity: 0;
+    pointer-events: none;
+    animation: none;
+  }
+
+  .app.mobile-chrome-hidden .mobile-bottom-bar {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Padding collapses so the clock floats in the full visible viewport */
+  .app.mobile-chrome-hidden .app-main {
+    padding: 0 0.5rem;
   }
 }
 

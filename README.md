@@ -5,6 +5,7 @@ A beautiful, customizable flip clock for your browser — with a countdown timer
 **[goodflipclock.com](https://goodflipclock.com)**
 
 ![Good Flip Clock preview](./public/preview-image.png)
+![Good Flip Clock mobile preview](./public/preview-mobile-image.png)
 
 ## Features
 
@@ -14,23 +15,21 @@ A beautiful, customizable flip clock for your browser — with a countdown timer
 - **Personalise** — backgrounds (gradients, images, custom colors), fonts, and clock colors
 - **Music Player** — ambient sounds for focus
 - **Task List** — track what you're working on
-- **Inspiring Quotes** — optional motivational display
+- **Notes** — quick scratchpad for thoughts and ideas
+- **Inspiring Quotes** — optional motivational display, togglable
 
 ## Tech Stack
 
-React + Vite, plain CSS, deployed on Vercel.
+React 19 + Vite, plain CSS, `react-icons`, deployed on Netlify.
 
 ## Development
 
 ```bash
 npm install
-npm run dev
-```
-
-## Build
-
-```bash
-npm run build
+npm run dev      # start dev server
+npm run build    # production build
+npm run preview  # preview production build locally
+npm run lint     # run ESLint
 ```
 
 ---
