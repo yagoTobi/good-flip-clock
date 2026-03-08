@@ -211,6 +211,22 @@
   color: var(--text-muted, rgba(0, 0, 0, 0.4));
   font-weight: 400;
   letter-spacing: 0.2px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.github-link {
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: color 0.15s ease;
+}
+
+.github-link:hover {
+  color: var(--text-color);
 }
 
 

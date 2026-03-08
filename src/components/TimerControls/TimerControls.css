@@ -1,40 +1,27 @@
 .timer-controls {
-  /* Mobile-first: static positioning, horizontal layout */
   position: static;
-  display: flex;
-  flex-direction: row;
-  gap: var(--mobile-space-lg);
-  align-items: center;
-  justify-content: center;
-  padding: var(--mobile-space-xs) 0;
-  width: 100%;
+  display: grid;
+  grid-template-columns: 60px 60px;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
   contain: layout;
 }
 
-/* Mobile: increase spacing between controls to prevent accidental touches */
-@media (max-width: 767px) {
-  .timer-controls {
-    gap: var(
-      --mobile-space-xl
-    ); /* Increased spacing for better touch accessibility */
-  }
-}
-
-/* Tablet and up: restore desktop layout */
+/* Tablet and up: absolute desktop positioning */
 @media (min-width: 768px) {
   .timer-controls {
     position: absolute;
-    right: -120px;
+    right: -150px;
     top: 50%;
     transform: translateY(-50%);
-    flex-direction: column;
-    width: auto;
-    justify-content: flex-start;
+    padding: 0;
   }
 }
 
 /* More specific selector for settings button */
 .timer-controls .settings-button {
+  grid-column: 1;
+  grid-row: 2;
   width: 60px !important;
   height: 60px !important;
   padding: 0 !important;
@@ -43,33 +30,6 @@
   box-sizing: border-box !important;
   flex-shrink: 0 !important;
   border-radius: 14px !important;
-}
-
-/* Mobile: ensure settings button works in horizontal layout */
-@media (max-width: 767px) {
-  .timer-controls .settings-button {
-    /* Ensure touch-friendly size on mobile */
-    min-width: var(--touch-target-min) !important;
-    min-height: var(--touch-target-min) !important;
-  }
-}
-
-.play-stop-container {
-  display: flex;
-  flex-direction: row;
-  gap: var(--mobile-space-sm);
-  position: relative;
-  width: 130px; /* Fixed width to prevent layout shifts */
-  height: 60px;
-  justify-content: center; /* Center the play button to align with settings button */
-}
-
-/* Mobile: adjust container for horizontal layout */
-@media (max-width: 767px) {
-  .play-stop-container {
-    width: auto;
-    flex: 0 0 auto;
-  }
 }
 
 .control-button {
@@ -89,8 +49,8 @@
   padding: 0;
   box-sizing: border-box;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-  min-width: var(--touch-target-min);
-  min-height: var(--touch-target-min);
+  min-width: 44px;
+  min-height: 44px;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -110,8 +70,10 @@
 }
 
 .play-button {
+  grid-column: 1;
+  grid-row: 1;
   position: relative;
-  z-index: 2; /* Keep play button on top */
+  z-index: 2;
 }
 
 .play-button svg {
@@ -163,18 +125,20 @@
 }
 
 .stop-button {
+  grid-column: 2;
+  grid-row: 1;
   background: rgba(185, 28, 28, 0.75) !important;
   border-color: rgba(255, 100, 100, 0.2) !important;
-  animation: slideInRight 0.3s ease-out;
-  position: absolute;
-  right: -35px;
-  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-8px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-@media (max-width: 767px) {
-  .stop-button {
-    right: -35px;
-  }
+.stop-button.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
 }
 
 .stop-button:hover {
@@ -184,33 +148,6 @@
 .stop-button svg {
   width: 20px;
   height: 20px;
-}
-
-/* Stop button slide animations - horizontal from play button */
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(-35px) translateZ(0); /* Start from centered play button position */
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0) translateZ(0);
-  }
-}
-
-@keyframes slideOutLeft {
-  from {
-    opacity: 1;
-    transform: translateX(0) translateZ(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateX(-35px) translateZ(0); /* Exit back to centered play button position */
-  }
-}
-
-.stop-button.exiting {
-  animation: slideOutLeft 0.3s ease-in forwards;
 }
 
 .timer-controls .settings-button:hover {
@@ -229,48 +166,27 @@
 /* Landscape orientation optimizations for mobile */
 @media (max-width: 767px) and (orientation: landscape) {
   .timer-controls {
+    grid-template-columns: 50px 50px;
     position: absolute;
-    right: -100px;
+    right: -115px;
     top: 50%;
     transform: translateY(-50%);
-    flex-direction: column;
-    gap: var(--mobile-space-md);
-    width: auto;
-    justify-content: center;
-  }
-
-  .play-stop-container {
-    width: 60px;
-    height: auto;
-    flex-direction: column;
-    gap: var(--mobile-space-sm);
-  }
-
-  .stop-button {
-    position: relative;
-    right: 0;
-    top: 0;
+    gap: 0.5rem;
+    padding: 0;
   }
 
   .control-button {
     width: 50px;
     height: 50px;
-    min-width: var(--touch-target-min);
-    min-height: var(--touch-target-min);
+    min-width: 44px;
+    min-height: 44px;
   }
 
   .timer-controls .settings-button {
     width: 50px !important;
     height: 50px !important;
-    min-width: var(--touch-target-min) !important;
-    min-height: var(--touch-target-min) !important;
-  }
-}
-
-/* Enhanced transitions for orientation changes */
-@media (max-width: 767px) {
-  .timer-controls {
-    transition: position 0s, right 0.3s ease, top 0.3s ease;
+    min-width: 44px !important;
+    min-height: 44px !important;
   }
 }
 

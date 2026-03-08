@@ -88,7 +88,7 @@ body {
 /* Mobile portrait: clear the bottom bar + leave room for the quote at top */
 @media (max-width: 767px) and (orientation: portrait) {
   .app-main {
-    padding: 5.5rem 0.5rem 210px;
+    padding: 7rem 0.5rem 210px;
     gap: 0.5rem;
   }
 }
@@ -175,6 +175,18 @@ body {
 /* Focus mode — desktop only. Fades all UI chrome after 20s of inactivity,
    leaving only the clock cards visible. Mouse movement restores everything. */
 @media (min-width: 768px) {
+  /* Fade-in when focus mode is restored (class removed) */
+  .app .coffee-button,
+  .app .music-player-root,
+  .app .task-list-root,
+  .app .notes-root,
+  .app .inspirational-quote,
+  .app .mode-selector-container,
+  .app .timer-controls,
+  .app .pomodoro-controls {
+    transition: opacity 1s ease;
+  }
+
   .app.focus-mode {
     cursor: none;
   }
