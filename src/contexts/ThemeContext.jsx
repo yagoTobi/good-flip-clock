@@ -14,6 +14,19 @@ const DEFAULT_THEME = {
 };
 
 /**
+ * Validate that a background value loaded from storage is a safe, known format.
+ * Prevents a tampered localStorage entry from loading an external resource.
+ */
+const isValidBackground = (bg) => {
+  if (!bg || bg === "default") return true;
+  if (bg.startsWith("#")) return true;
+  if (bg.startsWith("hsl(")) return true;
+  if (bg.startsWith("linear-gradient(")) return true;
+  if (/^url\(\"\/images\/[^"]+\"\)$/.test(bg)) return true;
+  return false;
+};
+
+/**
  * Read a single key from the persisted theme settings.
  * Called synchronously inside useState initializers so the very first render
  * already has the correct values — no flash of wrong state.
@@ -23,7 +36,9 @@ const readSaved = (key, fallback) => {
     const raw = localStorage.getItem("clockThemeSettings");
     if (raw) {
       const settings = JSON.parse(raw);
-      return settings[key] !== undefined ? settings[key] : fallback;
+      if (settings[key] === undefined) return fallback;
+      if (key === "background" && !isValidBackground(settings[key])) return fallback;
+      return settings[key];
     }
   } catch {
     // localStorage unavailable or corrupt — use fallback

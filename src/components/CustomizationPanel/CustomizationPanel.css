@@ -211,6 +211,22 @@
   color: var(--text-muted, rgba(0, 0, 0, 0.4));
   font-weight: 400;
   letter-spacing: 0.2px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.github-link {
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: color 0.15s ease;
+}
+
+.github-link:hover {
+  color: var(--text-color);
 }
 
 
@@ -241,7 +257,7 @@
   }
 
   .panel-content {
-    padding: 1rem;
+    padding: 0 1rem 1rem; /* No top padding — sticky preview covers that edge */
   }
 
   .panel-actions {
@@ -257,6 +273,12 @@
 
   .preview-section {
     order: -1; /* Show preview at top on mobile */
+    position: sticky;
+    top: 0;
+    z-index: 20; /* must beat grid-item z-index:15 on selected swatches */
+    background: var(--panel-bg);
+    padding: 1rem 0 0.75rem; /* top matches the removed panel-content padding-top */
+    margin-bottom: 0;
   }
 
   .panel-signature {
@@ -294,7 +316,11 @@
   }
 
   .panel-content {
-    padding: 0.75rem;
+    padding: 0 0.75rem 0.75rem; /* No top padding — sticky preview covers that edge */
+  }
+
+  .preview-section {
+    padding-top: 0.75rem; /* matches the removed panel-content padding-top at 480px */
   }
 
   .panel-actions {

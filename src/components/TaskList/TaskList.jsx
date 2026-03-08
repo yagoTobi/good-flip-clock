@@ -11,7 +11,11 @@ const DEFAULT_TASKS = [
 function loadTasks() {
   try {
     const saved = localStorage.getItem("flip-clock-tasks");
-    return saved ? JSON.parse(saved) : DEFAULT_TASKS;
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      return Array.isArray(parsed) ? parsed : DEFAULT_TASKS;
+    }
+    return DEFAULT_TASKS;
   } catch {
     return DEFAULT_TASKS;
   }

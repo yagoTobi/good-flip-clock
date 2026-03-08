@@ -325,11 +325,24 @@ const getFlipDirection = (fromMode, toMode) => {
 };
 ```
 
+The mode transition animation uses `scaleX` (a 2D transform) rather than `rotateY`:
+
+```css
+@keyframes flipLeft {
+  0%   { transform: scaleX(1); opacity: 1; }
+  50%  { transform: scaleX(0); opacity: 0.6; }
+  100% { transform: scaleX(1); opacity: 1; }
+}
+```
+
+**Why `scaleX` and not `rotateY`**: `rotateY` is a 3D transform. Even without `transform-style: preserve-3d`, it triggers a 3D compositing pass on the element for the duration of the animation. That pass temporarily disrupts `backdrop-filter` sampling on unrelated `position: fixed` elements elsewhere on the page (the mode selector pill, music player, and coffee button all briefly lose their glass blur). `scaleX` is purely 2D, runs on the GPU compositor without a 3D context, and produces an identical visual result since the content swap happens at the 150ms midpoint when the element is squished to zero width.
+
 **Features**:
 
 - Directional animations based on mode order
 - Smooth transitions with proper timing
 - State synchronization during animation
+- GPU-safe: no 3D compositing context created
 
 ## File Organization
 
@@ -380,6 +393,16 @@ src/contexts/
 1. **CSS Transforms**: Use transform properties for hardware acceleration
 2. **Animation Timing**: Carefully tuned timing to balance smoothness and performance
 3. **State Batching**: Use flushSync for critical animation state updates
+
+### `backdrop-filter` Compositor Safety
+
+Several fixed UI elements use `backdrop-filter` for a glassmorphic look (mode selector, music player, coffee button). This property is sensitive to how other elements on the page interact with the GPU compositor. The following rules keep it stable:
+
+- **No `rotateY` on ancestors**: 3D transforms create a 3D compositing context that invalidates `backdrop-filter` on unrelated elements. Use `scaleX`/`scaleY` or 2D transforms instead for any animation that wraps backdrop-filter siblings.
+- **No `backdrop-filter` on `.clock-container`**: The container has no visible background — applying blur to it creates an unnecessary compositor layer that child controls' blur effects nest inside, causing cascade invalidations. `backdrop-filter` belongs only on elements with a visible glass background.
+- **No `backdrop-filter` on elements inside a promoted compositor layer**: E.g., `PomodoroSessionHeader.session-type` originally had `backdrop-filter: blur(10px)` while being a child of `.flip-clock` (which has `transform: translateZ(0)`). A backdrop-filter inside a promoted layer creates an ambiguous sampling dependency. Removed; the element's near-opaque background (`rgba(..., 0.9)`) makes the blur invisible anyway.
+- **`contain: layout` on absolutely-positioned control panels**: `PomodoroControls` and `TimerControls` are `position: absolute` with `transform: translateY(-50%)`. Adding `contain: layout` isolates their compositor subtree, preventing their backdrop-filter buttons from interfering with the global compositing tree.
+- **Avoid `transition: all`**: Broad transitions on elements inside compositor layers cause continuous repaints. Use specific property lists (`background`, `transform`, `opacity`) instead.
 
 ## Error Handling
 

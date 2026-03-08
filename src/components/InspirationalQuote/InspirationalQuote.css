@@ -35,6 +35,19 @@
   text-transform: uppercase;
 }
 
+/* Light background adaptation — override element opacity so color alpha controls the look */
+:root.light-bg .quote-text {
+  color: rgba(20, 20, 20, 0.82);
+  opacity: 1;
+  text-shadow: none;
+}
+
+:root.light-bg .quote-author {
+  color: rgba(20, 20, 20, 0.5);
+  opacity: 1;
+  text-shadow: none;
+}
+
 @keyframes quoteFadeIn {
   from {
     opacity: 0;
@@ -46,9 +59,18 @@
   }
 }
 
-/* Desktop only — hide on mobile */
 @media (max-width: 767px) {
   .inspirational-quote {
-    display: none;
+    top: 2rem;
+    max-width: min(340px, 88vw);
+  }
+
+  .quote-text {
+    font-size: 0.875rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .quote-author {
+    font-size: 0.72rem;
   }
 }

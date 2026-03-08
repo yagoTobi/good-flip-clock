@@ -5,32 +5,11 @@ import PomodoroControls from "../PomodoroControls/PomodoroControls";
 import "./TimerControls.css";
 
 function TimerControls({ mode, timer, pomodoroTimer, onSettingsClick }) {
-  const [showStopButton, setShowStopButton] = useState(false);
-  const [isStopButtonExiting, setIsStopButtonExiting] = useState(false);
+  const [showStopButton, setShowStopButton] = useState(() => timer.isRunning || timer.isPaused);
 
-  // Initialize stop button state on mount without animation
   useEffect(() => {
     setShowStopButton(timer.isRunning || timer.isPaused);
-    setIsStopButtonExiting(false);
-  }, []); // Only run on mount
-
-  // Handle stop button visibility - show when running OR paused, hide only when stopped
-  useEffect(() => {
-    const shouldShowStop = timer.isRunning || timer.isPaused;
-
-    if (shouldShowStop && !showStopButton) {
-      // Timer started or paused - show stop button with animation
-      setShowStopButton(true);
-      setIsStopButtonExiting(false);
-    } else if (!shouldShowStop && showStopButton) {
-      // Timer completely stopped - hide stop button with exit animation
-      setIsStopButtonExiting(true);
-      setTimeout(() => {
-        setShowStopButton(false);
-        setIsStopButtonExiting(false);
-      }, 300); // Match animation duration
-    }
-  }, [timer.isRunning, timer.isPaused, showStopButton]);
+  }, [timer.isRunning, timer.isPaused]);
 
   const handlePlayPause = () => {
     if (
@@ -44,7 +23,6 @@ function TimerControls({ mode, timer, pomodoroTimer, onSettingsClick }) {
   };
 
   const handleStop = () => {
-    // Revert to the original time set by the user (most user-friendly)
     timer.revertToOriginalTime();
   };
 
@@ -52,7 +30,6 @@ function TimerControls({ mode, timer, pomodoroTimer, onSettingsClick }) {
     onSettingsClick();
   };
 
-  // Render Pomodoro controls if in Pomodoro mode
   if (mode === MODES.POMODORO) {
     return (
       <PomodoroControls
@@ -68,40 +45,33 @@ function TimerControls({ mode, timer, pomodoroTimer, onSettingsClick }) {
   return (
     <>
       <div className="timer-controls" role="group" aria-label="Timer controls">
-        {/* Play/Stop buttons in horizontal container */}
-        <div className="play-stop-container">
-          <button
-            className={`control-button play-button ${timer.timerState}`}
-            onClick={handlePlayPause}
-            aria-label={timer.isRunning ? "Pause timer" : "Start timer"}
-            aria-pressed={timer.isRunning}
-          >
-            {timer.isRunning ? (
-              <FaPause aria-hidden="true" />
-            ) : (
-              <FaPlay aria-hidden="true" />
-            )}
-            <span className="sr-only">
-              {timer.isRunning ? "Pause timer" : "Start timer"}
-            </span>
-          </button>
-
-          {/* Show stop button with smooth horizontal animation */}
-          {showStopButton && (
-            <button
-              className={`control-button stop-button ${
-                isStopButtonExiting ? "exiting" : ""
-              }`}
-              onClick={handleStop}
-              aria-label="Stop timer and reset to original time"
-            >
-              <FaStop aria-hidden="true" />
-              <span className="sr-only">Stop timer and reset</span>
-            </button>
+        <button
+          className={`control-button play-button ${timer.timerState}`}
+          onClick={handlePlayPause}
+          aria-label={timer.isRunning ? "Pause timer" : "Start timer"}
+          aria-pressed={timer.isRunning}
+        >
+          {timer.isRunning ? (
+            <FaPause aria-hidden="true" />
+          ) : (
+            <FaPlay aria-hidden="true" />
           )}
-        </div>
+          <span className="sr-only">
+            {timer.isRunning ? "Pause timer" : "Start timer"}
+          </span>
+        </button>
 
-        {/* Settings button below */}
+        <button
+          className={`control-button stop-button${showStopButton ? " visible" : ""}`}
+          onClick={handleStop}
+          aria-label="Stop timer and reset to original time"
+          aria-hidden={!showStopButton}
+          tabIndex={showStopButton ? 0 : -1}
+        >
+          <FaStop aria-hidden="true" />
+          <span className="sr-only">Stop timer and reset</span>
+        </button>
+
         <button
           className="control-button settings-button"
           onClick={handleSettings}

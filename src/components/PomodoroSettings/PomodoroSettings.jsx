@@ -294,7 +294,7 @@ function PomodoroSettings({ isOpen, onClose, onSave, currentSettings }) {
           <button
             className="settings-button save-button"
             onClick={handleSave}
-            disabled={Object.keys(errors).length > 0}
+            disabled={Object.values(errors).some(Boolean)}
           >
             Save Settings
           </button>

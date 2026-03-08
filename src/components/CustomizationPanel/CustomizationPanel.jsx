@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FaTimes } from "react-icons/fa";
+import { FaTimes, FaGithub } from "react-icons/fa";
 import BackgroundSelector from "../BackgroundSelector/BackgroundSelector";
 import FontSelector from "../FontSelector/FontSelector";
 import ColorSelector from "../ColorSelector/ColorSelector";
@@ -191,7 +191,18 @@ const CustomizationPanel = ({ isOpen, onClose }) => {
         </div>
 
         <div className="panel-actions">
-          <div className="panel-signature">Made with care 🇪🇸 - Yago Tobio</div>
+          <div className="panel-signature">
+            Made with care 🇪🇸 - Yago Tobio
+            <a
+              href="https://github.com/yagotobi"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="github-link"
+              aria-label="Yago Tobio on GitHub"
+            >
+              <FaGithub aria-hidden="true" />
+            </a>
+          </div>
           <button
             className="action-button secondary"
             onClick={onClose}

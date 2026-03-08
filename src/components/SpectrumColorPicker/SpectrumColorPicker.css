@@ -76,6 +76,44 @@
   }
 }
 
+/* Mobile: replace scale-based hover/selected with outline to avoid overflow clipping on column edges */
+@media (max-width: 767px) {
+  .spectrum-color:hover {
+    transform: none;
+    box-shadow: none;
+    outline: 2px solid rgba(255, 255, 255, 0.55);
+    outline-offset: -1px;
+    z-index: 1;
+  }
+
+  .spectrum-color.selected {
+    transform: none;
+    box-shadow: none;
+    outline: 3px solid #fff;
+    outline-offset: -2px;
+    z-index: 1;
+  }
+}
+
+/* Mobile portrait: keep 8 columns so 32 colors = 4 full rows, no orphaned cells */
+@media (max-width: 767px) and (orientation: portrait) {
+  .spectrum-grid-container {
+    padding: 2px; /* push cells away from border-radius so column 1 isn't clipped */
+  }
+
+  .spectrum-grid {
+    grid-template-columns: repeat(8, 1fr);
+    gap: 2px;
+  }
+
+  .spectrum-color {
+    height: auto;
+    min-width: 0;  /* override global button min-width so grid columns stay equal */
+    min-height: 0; /* override global button min-height so aspect-ratio controls size */
+    border-radius: 0;
+  }
+}
+
 /* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
   .spectrum-color {

@@ -35,6 +35,8 @@
   flex-shrink: 0;
   width: 48px;
   height: 28px;
+  min-width: unset;  /* override global mobile button min-width */
+  min-height: unset; /* override global mobile button min-height */
   border-radius: 14px;
   background: var(--hover-bg, rgba(0, 0, 0, 0.08));
   border: 1px solid var(--border-color, rgba(0, 0, 0, 0.12));
