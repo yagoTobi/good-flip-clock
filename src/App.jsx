@@ -160,17 +160,19 @@ function AppContent() {
   const handleMusicToggle = () => {
     const next = !isMusicOpen;
     setIsMusicOpen(next);
-    if (next) setIsTasksOpen(false);
+    if (next) { setIsTasksOpen(false); setIsNotesOpen(false); }
   };
 
   const handleTasksToggle = () => {
     const next = !isTasksOpen;
     setIsTasksOpen(next);
-    if (next) setIsMusicOpen(false);
+    if (next) { setIsMusicOpen(false); setIsNotesOpen(false); }
   };
 
   const handleNotesToggle = () => {
-    setIsNotesOpen((prev) => !prev);
+    const next = !isNotesOpen;
+    setIsNotesOpen(next);
+    if (next) { setIsMusicOpen(false); setIsTasksOpen(false); }
   };
 
   const handleNotesChange = (value) => {

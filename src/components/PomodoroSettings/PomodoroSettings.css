@@ -288,16 +288,16 @@
 /* Mobile */
 @media (max-width: 767px) {
   .pomodoro-settings-overlay {
-    padding: 0.5rem;
+    padding: 0;
     align-items: flex-end;
   }
 
   .pomodoro-settings-modal {
     width: 100%;
     max-width: none;
-    padding: 1.5rem;
-    border-radius: 20px 20px 0 0;
-    max-height: 85vh;
+    padding: 1.25rem 1.25rem calc(1.25rem + env(safe-area-inset-bottom, 16px));
+    border-radius: 24px 24px 0 0;
+    max-height: 90vh;
     animation: modalSlideUp 0.3s ease-out;
   }
 
@@ -306,8 +306,17 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
+  .pomodoro-settings-header {
+    margin-bottom: 1.25rem;
+  }
+
+  .pomodoro-settings-content {
+    gap: 1.25rem;
+  }
+
   .pomodoro-settings-actions {
     flex-direction: column;
+    margin-top: 0.25rem;
   }
 
   .pomodoro-settings-actions .settings-button {

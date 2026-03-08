@@ -18,6 +18,13 @@
   }
 }
 
+/* Hidden on mobile portrait — replaced by MobileBottomBar */
+@media (max-width: 767px) and (orientation: portrait) {
+  .mode-selector-container {
+    display: none;
+  }
+}
+
 .mode-selector {
   display: flex;
   justify-content: center;
@@ -34,7 +41,7 @@
   -webkit-backdrop-filter: blur(16px) saturate(160%);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.25), 0 2px 12px rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  transform: translateZ(0);
 }
 
 /* Light background adaptation */
@@ -157,6 +164,7 @@
   backdrop-filter: blur(16px) saturate(160%);
   -webkit-backdrop-filter: blur(16px) saturate(160%);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.25), 0 2px 12px rgba(0, 0, 0, 0.2);
+  transform: translateZ(0);
   outline: none;
   -webkit-tap-highlight-color: transparent;
   min-width: 44px;
@@ -164,7 +172,7 @@
 
 .customization-button:hover {
   background: rgba(40, 40, 40, 0.7);
-  transform: translateY(-1px);
+  transform: translateY(-1px) translateZ(0);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.25), 0 6px 16px rgba(0, 0, 0, 0.3);
 }
 
@@ -216,7 +224,7 @@
 }
 
 .customization-button:active {
-  transform: translateY(0);
+  transform: translateY(0) translateZ(0);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 

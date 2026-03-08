@@ -121,9 +121,10 @@ export const isLightColor = (color) => {
     }
     return false; // Default to dark for gradients
   }
-  // Handle image backgrounds
+  // Handle image backgrounds — default dark, except known light images
   else if (color.includes("url(")) {
-    return false; // Default to dark for images
+    const LIGHT_IMAGES = ["image12"];
+    return LIGHT_IMAGES.some((name) => color.includes(name));
   }
   // Handle named colors or other formats
   else {

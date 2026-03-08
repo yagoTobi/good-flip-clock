@@ -1,0 +1,229 @@
+.notes-root {
+  position: fixed;
+  bottom: 30px;
+  left: 138px; /* 30px music + 44px + 10px + 44px task + 10px gap */
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+/* ── Toggle button ──────────────────────────────────────── */
+.notes-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+
+  background: rgba(20, 20, 20, 0.55);
+  color: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+
+  font-family: inherit;
+  cursor: pointer;
+
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.25), 0 2px 12px rgba(0, 0, 0, 0.2);
+  transform: translateZ(0);
+
+  transition: background-color 0.25s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.notes-toggle:hover {
+  background: rgba(40, 40, 40, 0.7);
+  transform: translateY(-1px) translateZ(0);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.25), 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.notes-toggle:active {
+  transform: translateY(0) translateZ(0);
+  transition: transform 0.1s ease;
+}
+
+/* ── Panel ──────────────────────────────────────────────── */
+.notes-panel {
+  background: rgba(20, 20, 20, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 14px;
+  width: 280px;
+  height: 300px;
+
+  display: flex;
+  flex-direction: column;
+
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.25), 0 8px 32px rgba(0, 0, 0, 0.35);
+  transform: translateZ(0);
+
+  animation: notes-panel-in 0.18s ease forwards;
+}
+
+@keyframes notes-panel-in {
+  from { opacity: 0; transform: translateY(6px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)  scale(1); }
+}
+
+/* ── Header ─────────────────────────────────────────────── */
+.notes-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+.notes-panel-label {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.notes-panel-close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-family: inherit;
+  transition: color 0.15s ease, background 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.notes-panel-close:hover {
+  color: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ── Textarea ───────────────────────────────────────────── */
+.notes-textarea {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 13px;
+  font-family: inherit;
+  line-height: 1.6;
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+
+  -webkit-tap-highlight-color: transparent;
+  user-select: text;
+}
+
+.notes-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.notes-textarea::-webkit-scrollbar {
+  width: 3px;
+}
+
+.notes-textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.notes-textarea::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 2px;
+}
+
+/* ── Light background adaptation ───────────────────────── */
+:root.light-bg .notes-toggle {
+  background: rgba(255, 255, 255, 0.55);
+  color: #333;
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.06), 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+:root.light-bg .notes-toggle:hover {
+  background: rgba(255, 255, 255, 0.75);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+:root.light-bg .notes-panel {
+  background: rgba(255, 255, 255, 0.6);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.04), 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+:root.light-bg .notes-panel-label {
+  color: rgba(0, 0, 0, 0.75);
+}
+
+:root.light-bg .notes-panel-close {
+  color: rgba(0, 0, 0, 0.3);
+}
+
+:root.light-bg .notes-panel-close:hover {
+  color: rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.06);
+}
+
+:root.light-bg .notes-textarea {
+  color: rgba(0, 0, 0, 0.75);
+}
+
+:root.light-bg .notes-textarea::placeholder {
+  color: rgba(0, 0, 0, 0.25);
+}
+
+:root.light-bg .notes-textarea::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+/* ── Mobile ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .notes-root {
+    bottom: 20px;
+    left: 128px; /* 20px music + 44px + 10px + 44px task + 10px gap */
+  }
+
+  .notes-toggle {
+    border-radius: 50%;
+  }
+
+  .notes-panel {
+    width: 240px;
+  }
+}
+
+/* ── Mobile portrait: hidden (bottom bar takes over) */
+@media (max-width: 767px) and (orientation: portrait) {
+  .notes-root {
+    display: none;
+  }
+}
+
+/* ── Focus rings ────────────────────────────────────────── */
+.notes-toggle:focus-visible,
+.notes-panel-close:focus-visible,
+.notes-textarea:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 2px;
+}
+
+/* ── Reduced motion ─────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .notes-panel {
+    animation: none;
+  }
+}

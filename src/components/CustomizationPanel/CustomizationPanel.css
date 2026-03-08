@@ -257,6 +257,12 @@
 
   .preview-section {
     order: -1; /* Show preview at top on mobile */
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--panel-bg);
+    padding-bottom: 0.75rem;
+    margin-bottom: 0;
   }
 
   .panel-signature {

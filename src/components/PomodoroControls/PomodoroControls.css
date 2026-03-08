@@ -17,6 +17,7 @@
     top: 50%;
     transform: translateY(-50%);
     width: auto;
+    contain: layout;
   }
 }
 
@@ -201,4 +202,11 @@
 
 .settings-button:hover svg {
   transform: rotate(45deg);
+}
+
+/* Hidden on mobile portrait — replaced by MobileBottomBar */
+@media (max-width: 767px) and (orientation: portrait) {
+  .pomodoro-controls {
+    display: none;
+  }
 }

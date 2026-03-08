@@ -120,6 +120,14 @@ body {
   gap: 0.75rem;
 }
 
+/* Mobile portrait: clear the bottom bar */
+@media (max-width: 767px) and (orientation: portrait) {
+  .app-main {
+    padding: 0 0.5rem 210px;
+    gap: 0.5rem;
+  }
+}
+
 .clock-container {
   width: 100%;
   max-width: 100%;

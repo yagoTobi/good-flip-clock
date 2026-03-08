@@ -76,6 +76,21 @@
   }
 }
 
+/* Mobile portrait: keep 8 columns so 32 colors = 4 full rows, no orphaned cells */
+@media (max-width: 767px) and (orientation: portrait) {
+  .spectrum-grid {
+    grid-template-columns: repeat(8, 1fr);
+    gap: 2px;
+  }
+
+  .spectrum-color {
+    height: auto;
+    min-width: 0;  /* override global button min-width so grid columns stay equal */
+    min-height: 0; /* override global button min-height so aspect-ratio controls size */
+    border-radius: 0;
+  }
+}
+
 /* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
   .spectrum-color {

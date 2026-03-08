@@ -242,7 +242,6 @@ textarea {
    ============================================================================= */
 
 /* Backdrop filter with vendor prefixes */
-.clock-container,
 .customization-overlay {
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);

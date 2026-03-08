@@ -124,6 +124,18 @@
   }
 }
 
+/* Mobile portrait: 3 columns with taller cells */
+@media (max-width: 767px) and (orientation: portrait) {
+  .image-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .image-square {
+    height: 80px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .image-square,
   .image-overlay,

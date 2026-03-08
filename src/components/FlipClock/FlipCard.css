@@ -303,12 +303,39 @@
   }
 }
 
-/* Mobile portrait: Optimize text size for vertical layout */
+/* Mobile portrait: larger cards so the clock dominates the screen */
 @media (max-width: 767px) and (orientation: portrait) {
+  .flip-card:not(.mini) .flip-card-inner {
+    width: 75vw;
+    max-width: 310px;
+    min-width: 200px;
+    /* Cap height so two cards + bottom bar fit on any screen ≥ 680px tall */
+    height: min(63vw, 230px);
+    min-height: 160px;
+  }
+
   .flip-card-top .digit,
   .flip-card-bottom .digit,
   .flip-animation-front .digit,
   .flip-animation-back .digit {
-    font-size: clamp(3.5rem, 18vw, 9rem); /* Larger text for vertical layout */
+    font-size: clamp(5rem, 40vw, 12rem);
+  }
+
+  /* Mini seconds card: bigger corner badge to match the large portrait cards */
+  .flip-card.mini .flip-card-inner {
+    width: 68px;
+    max-width: 68px;
+    min-width: 68px;
+    height: 42px;
+    max-height: 42px;
+    min-height: 42px;
+    border-radius: 8px;
+  }
+
+  .flip-card.mini .flip-card-top .digit,
+  .flip-card.mini .flip-card-bottom .digit,
+  .flip-card.mini .flip-animation-front .digit,
+  .flip-card.mini .flip-animation-back .digit {
+    font-size: 1.4rem;
   }
 }

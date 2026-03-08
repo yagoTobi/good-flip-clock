@@ -118,6 +118,20 @@
   }
 }
 
+/* Mobile portrait: 3-column grid with taller cells, seamless (no gap) */
+@media (max-width: 767px) and (orientation: portrait) {
+  .gradient-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+
+  .gradient-square {
+    height: 70px;
+    min-height: 0; /* override global button min-height */
+    min-width: 0;  /* override global button min-width */
+  }
+}
+
 /* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
   .gradient-square {

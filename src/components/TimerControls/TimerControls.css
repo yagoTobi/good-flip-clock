@@ -273,3 +273,10 @@
     transition: position 0s, right 0.3s ease, top 0.3s ease;
   }
 }
+
+/* Hidden on mobile portrait — replaced by MobileBottomBar */
+@media (max-width: 767px) and (orientation: portrait) {
+  .timer-controls {
+    display: none;
+  }
+}
