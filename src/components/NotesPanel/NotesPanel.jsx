@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { FaPencilAlt, FaTimes } from "react-icons/fa";
 import "./NotesPanel.css";
 
@@ -10,8 +10,27 @@ function loadNotes() {
   }
 }
 
-function NotesPanel({ isOpen, onToggle, notes, onNotesChange }) {
+function saveNotes(value) {
+  try {
+    localStorage.setItem("flip-clock-notes", value);
+  } catch {
+    // storage unavailable
+  }
+}
+
+function NotesPanel({ isOpen, onToggle }) {
   const textareaRef = useRef(null);
+  // Keep notes state local to prevent parent re-renders on every keystroke
+  const [notes, setNotes] = useState(loadNotes);
+
+  const handleNotesChange = (value) => {
+    setNotes(value);
+    // Debounce localStorage writes for better performance
+    if (handleNotesChange.timeoutId) {
+      clearTimeout(handleNotesChange.timeoutId);
+    }
+    handleNotesChange.timeoutId = setTimeout(() => saveNotes(value), 500);
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -39,7 +58,7 @@ function NotesPanel({ isOpen, onToggle, notes, onNotesChange }) {
             ref={textareaRef}
             className="notes-textarea"
             value={notes}
-            onChange={(e) => onNotesChange(e.target.value)}
+            onChange={(e) => handleNotesChange(e.target.value)}
             placeholder="Write your thoughts…"
             maxLength={10000}
           spellCheck={false}

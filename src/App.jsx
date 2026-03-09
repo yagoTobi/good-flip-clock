@@ -9,7 +9,7 @@ import PomodoroSettings from "./components/PomodoroSettings";
 import CoffeeButton from "./components/CoffeeButton";
 import MusicPlayer from "./components/MusicPlayer";
 import TaskList from "./components/TaskList";
-import NotesPanel, { loadNotes } from "./components/NotesPanel";
+import NotesPanel from "./components/NotesPanel";
 import MobileBottomBar from "./components/MobileBottomBar/MobileBottomBar";
 import InspirationalQuote from "./components/InspirationalQuote/InspirationalQuote";
 import LandscapeBar from "./components/LandscapeBar/LandscapeBar";
@@ -149,7 +149,6 @@ function AppContent() {
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [isTasksOpen, setIsTasksOpen] = useState(false);
   const [isNotesOpen, setIsNotesOpen] = useState(false);
-  const [notes, setNotes] = useState(loadNotes);
   const [isIdle, setIsIdle] = useState(false);
   const idleTimerRef = useRef(null);
   const [mobileChromeVisible, setMobileChromeVisible] = useState(true);
@@ -173,14 +172,6 @@ function AppContent() {
     if (next) { setIsMusicOpen(false); setIsTasksOpen(false); }
   };
 
-  const handleNotesChange = (value) => {
-    setNotes(value);
-    try {
-      localStorage.setItem("flip-clock-notes", value);
-    } catch {
-      // storage unavailable
-    }
-  };
   const timer = useTimer();
   const pomodoroTimer = usePomodoroTimer();
   const { background } = useTheme();
@@ -446,8 +437,6 @@ function AppContent() {
       <NotesPanel
         isOpen={isNotesOpen}
         onToggle={handleNotesToggle}
-        notes={notes}
-        onNotesChange={handleNotesChange}
       />
 
       <main
