@@ -513,6 +513,7 @@ function AppContent() {
 
         <LandscapeBar
           selectedMode={selectedMode}
+          onModeChange={handleModeChange}
           timer={timer}
           pomodoroTimer={pomodoroTimer}
           onCustomizationClick={() => setIsCustomizationOpen(true)}

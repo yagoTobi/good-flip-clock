@@ -7,6 +7,7 @@ const MODE_ORDER = [MODES.CLOCK, MODES.TIMER, MODES.POMODORO];
 
 function MobileBottomBar({
   selectedMode,
+  onModeChange,
   timer,
   pomodoroTimer,
   onSettingsClick,
@@ -74,14 +75,20 @@ function MobileBottomBar({
 
   return (
     <div className={`mobile-bottom-bar${hasControls ? " has-controls" : ""}`}>
-      {/* Mode indicator — three dots; swipe left/right on the clock to change mode */}
-      <div className="mb-mode-dots" aria-hidden="true">
-        {MODE_ORDER.map((mode) => (
-          <span
-            key={mode}
-            className={`mb-mode-dot${selectedMode === mode ? " active" : ""}${selectedMode === mode && isAnyRunning ? " running" : ""}`}
-          />
-        ))}
+      {/* Mode dots — tappable to switch mode */}
+      <div className="mb-mode-dots">
+        {MODE_ORDER.map((mode) => {
+          const label = { [MODES.CLOCK]: "Clock", [MODES.TIMER]: "Timer", [MODES.POMODORO]: "Pomodoro" }[mode];
+          return (
+            <button
+              key={mode}
+              className={`mb-mode-dot${selectedMode === mode ? " active" : ""}${selectedMode === mode && isAnyRunning ? " running" : ""}`}
+              onClick={() => onModeChange(mode)}
+              aria-label={`Switch to ${label} mode`}
+              aria-current={selectedMode === mode ? "true" : undefined}
+            />
+          );
+        })}
       </div>
 
       {/* Controls row — always in DOM; height animated by .has-controls CSS */}

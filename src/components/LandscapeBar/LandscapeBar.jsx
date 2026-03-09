@@ -6,6 +6,7 @@ const MODE_ORDER = [MODES.CLOCK, MODES.TIMER, MODES.POMODORO];
 
 function LandscapeBar({
   selectedMode,
+  onModeChange,
   timer,
   pomodoroTimer,
   onCustomizationClick,
@@ -16,13 +17,19 @@ function LandscapeBar({
 
   return (
     <>
-      <div className="lb-dots" aria-hidden="true">
-        {MODE_ORDER.map((mode) => (
-          <span
-            key={mode}
-            className={`lb-dot${selectedMode === mode ? " active" : ""}${selectedMode === mode && isAnyRunning ? " running" : ""}`}
-          />
-        ))}
+      <div className="lb-dots">
+        {MODE_ORDER.map((mode) => {
+          const label = { [MODES.CLOCK]: "Clock", [MODES.TIMER]: "Timer", [MODES.POMODORO]: "Pomodoro" }[mode];
+          return (
+            <button
+              key={mode}
+              className={`lb-dot${selectedMode === mode ? " active" : ""}${selectedMode === mode && isAnyRunning ? " running" : ""}`}
+              onClick={() => onModeChange(mode)}
+              aria-label={`Switch to ${label} mode`}
+              aria-current={selectedMode === mode ? "true" : undefined}
+            />
+          );
+        })}
       </div>
 
       <div className="lb-utils">
