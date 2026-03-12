@@ -111,14 +111,14 @@
   }
 
   .time-inputs {
-    gap: 1.5rem; /* Increased spacing between time inputs */
-    flex-wrap: wrap;
+    gap: 0.5rem;
+    flex-wrap: nowrap;
     justify-content: center;
   }
 
   .time-separator {
-    font-size: 1.5rem; /* Smaller separator on mobile */
-    margin: 0 0.25rem; /* Reduced margin */
+    font-size: 1.5rem;
+    margin: 0;
   }
 
   .timer-settings-actions {

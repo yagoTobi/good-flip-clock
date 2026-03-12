@@ -100,6 +100,23 @@ function TimeInput({ label, value, maxValue, onChange }) {
     setInputValue(value.toString().padStart(2, "0"));
   };
 
+  const handleChange = (e) => {
+    // Handles mobile input where onKeyDown may not fire
+    const raw = e.target.value.replace(/\D/g, "");
+    setIsTyping(true);
+    if (raw === "") {
+      setInputValue("00");
+      onChange(0);
+      return;
+    }
+    const last2 = raw.slice(-2);
+    const numValue = parseInt(last2, 10);
+    if (numValue <= maxValue) {
+      setInputValue(last2.padStart(2, "0"));
+      onChange(numValue);
+    }
+  };
+
   const handleClick = () => {
     // Reset to typing mode when clicked
     setIsTyping(true);
@@ -116,13 +133,15 @@ function TimeInput({ label, value, maxValue, onChange }) {
       <input
         id={inputId}
         type="text"
+        inputMode="numeric"
+        pattern="[0-9]*"
         className="time-input-field"
         value={inputValue}
+        onChange={handleChange}
         onKeyDown={handleKeyDown}
         onFocus={handleFocus}
         onBlur={handleBlur}
         onClick={handleClick}
-        readOnly
         placeholder="00"
         aria-label={`${label} (0 to ${maxValue})`}
         aria-describedby={`${inputId}-help`}

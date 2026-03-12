@@ -52,9 +52,9 @@
   }
 
   .time-input-field {
-    width: 76px;
-    height: 68px;
-    font-size: 2rem;
+    width: 64px;
+    height: 60px;
+    font-size: 1.75rem;
   }
 
   .time-input-field:focus {
