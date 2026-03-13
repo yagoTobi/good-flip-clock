@@ -7,6 +7,7 @@ import {
   POMODORO_SETTINGS_DEFAULTS,
   POMODORO_DEFAULTS,
 } from "../constants/index.js";
+import { playCompletionSound } from "../utils/sounds";
 
 const DEFAULT_POMODORO_TIME = {
   hours: 0,
@@ -107,14 +108,32 @@ export function usePomodoroTimer() {
   const [isAutoAdvancing, setIsAutoAdvancing] = useState(true);
   const [pomodoroState, setPomodoroState] = useState(POMODORO_STATES.IDLE);
 
-  // Settings state
-  const [pomodoroSettings, setPomodoroSettings] = useState(
-    POMODORO_SETTINGS_DEFAULTS
-  );
+  // Settings state - restored from localStorage if available
+  const [pomodoroSettings, setPomodoroSettings] = useState(() => {
+    try {
+      const saved = localStorage.getItem("pomodoroSettings");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // Validate shape
+        if (typeof parsed.focusDuration === "number") {
+          return { ...POMODORO_SETTINGS_DEFAULTS, ...parsed };
+        }
+      }
+    } catch {}
+    return POMODORO_SETTINGS_DEFAULTS;
+  });
+
+  // Persist settings changes to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem("pomodoroSettings", JSON.stringify(pomodoroSettings));
+    } catch {}
+  }, [pomodoroSettings]);
 
   // Refs for cleanup
   const timerRef = useRef(null);
   const transitionTimeoutRef = useRef(null);
+  const handleSessionCompletionRef = useRef(null);
 
   // Helper function to get session duration based on type
   const getSessionDuration = useCallback(
@@ -184,11 +203,12 @@ export function usePomodoroTimer() {
           // Pomodoro session completed (00:00:00 reached)
           setTimerState(TIMER_STATES.STOPPED);
           setPomodoroState(POMODORO_STATES.COMPLETED);
+          playCompletionSound();
 
           // Trigger automatic session transition if auto-advance is enabled
           // This handles moving from focus->break or break->focus
-          if (isAutoAdvancing) {
-            handleSessionCompletion();
+          if (handleSessionCompletionRef.current) {
+            handleSessionCompletionRef.current();
           }
 
           newTime = currentTime; // Keep at 00:00:00
@@ -205,7 +225,7 @@ export function usePomodoroTimer() {
         timerRef.current = null;
       }
     };
-  }, [timerState, isAutoAdvancing]);
+  }, [timerState]);
 
   // Session completion handler - manages Pomodoro session transitions
   // Automatically determines next session type based on current session and cycle count
@@ -253,6 +273,8 @@ export function usePomodoroTimer() {
     isAutoAdvancing,
   ]);
 
+  handleSessionCompletionRef.current = handleSessionCompletion;
+
   // Cleanup timeouts on unmount
   useEffect(() => {
     return () => {
@@ -299,6 +321,14 @@ export function usePomodoroTimer() {
     setTimerState(TIMER_STATES.STOPPED);
     setPomodoroState(POMODORO_STATES.IDLE);
   }, []);
+
+  const togglePlayPause = useCallback(() => {
+    if (timerState === TIMER_STATES.STOPPED || timerState === TIMER_STATES.PAUSED) {
+      startTimer();
+    } else {
+      pauseTimer();
+    }
+  }, [timerState, startTimer, pauseTimer]);
 
   // Pomodoro-specific session management
   const skipToNextSession = useCallback(() => {
@@ -420,6 +450,7 @@ export function usePomodoroTimer() {
     pauseTimer,
     stopTimer,
     resetTimer,
+    togglePlayPause,
     revertToOriginalTime,
 
     // Pomodoro-specific controls

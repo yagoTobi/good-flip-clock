@@ -6,11 +6,25 @@ import {
   DEFAULT_TIMER_MINUTES,
   DEFAULT_TIMER_SECONDS,
 } from "../constants";
+import { playCompletionSound } from "../utils/sounds";
 
 const DEFAULT_TIME = {
   hours: DEFAULT_TIMER_HOURS,
   minutes: DEFAULT_TIMER_MINUTES,
   seconds: DEFAULT_TIMER_SECONDS,
+};
+
+const loadSavedTime = () => {
+  try {
+    const saved = localStorage.getItem("timerOriginalTime");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (typeof parsed.hours === "number" && typeof parsed.minutes === "number" && typeof parsed.seconds === "number") {
+        return parsed;
+      }
+    }
+  } catch {}
+  return DEFAULT_TIME;
 };
 
 /**
@@ -58,26 +72,27 @@ const DEFAULT_TIME = {
  */
 export function useTimer() {
   const [timerState, setTimerState] = useState(TIMER_STATES.STOPPED);
-  const [timerTime, setTimerTime] = useState(DEFAULT_TIME);
-  const [prevTimerTime, setPrevTimerTime] = useState(DEFAULT_TIME);
-  const [originalTimerTime, setOriginalTimerTime] = useState(DEFAULT_TIME); // Remember original time
+  const [timerTime, setTimerTime] = useState(loadSavedTime);
+  const [prevTimerTime, setPrevTimerTime] = useState(loadSavedTime);
+  const [originalTimerTime, setOriginalTimerTime] = useState(loadSavedTime); // Remember original time
   const [isReverting, setIsReverting] = useState(false); // Track revert animation
+
+  // Persist original timer time to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem("timerOriginalTime", JSON.stringify(originalTimerTime));
+    } catch {}
+  }, [originalTimerTime]);
 
   // Timer countdown logic - runs continuously when active
   // Uses setInterval to decrement time every second when RUNNING
   useEffect(() => {
     if (timerState !== TIMER_STATES.RUNNING) return;
 
-    console.log("⏰ COUNTDOWN EFFECT STARTED");
-
     const timer = setInterval(() => {
-      console.log("⏰ COUNTDOWN TICK");
-
       // Use functional state update to ensure we have the latest time value
       // This prevents stale closure issues with the interval callback
       setTimerTime((currentTime) => {
-        console.log("⏰ Current time:", currentTime);
-
         // Capture current time as previous for flip animation support
         // This must happen before calculating the new time to ensure proper animation sequence
         setPrevTimerTime(currentTime);
@@ -102,30 +117,21 @@ export function useTimer() {
           // Timer completed (00:00:00 reached) - stop the countdown
           // This is the terminal condition that ends the timer
           setTimerState(TIMER_STATES.STOPPED);
+          playCompletionSound();
           newTime = currentTime; // Keep at 00:00:00 to show completion
         }
 
-        console.log("⏰ New time:", newTime);
         return newTime;
       });
     }, 1000); // 1000ms = 1 second interval for real-time countdown
 
     return () => {
-      console.log("⏰ COUNTDOWN EFFECT CLEANUP");
       clearInterval(timer);
     };
   }, [timerState]); // Only depend on timerState to avoid recreating interval unnecessarily
 
   // Control functions - memoized for performance
   const startTimer = useCallback(() => {
-    console.log("▶️ START TIMER called with:", {
-      timerState,
-      timerTime,
-      originalTimerTime,
-      prevTimerTime,
-      isReverting,
-    });
-
     // If timer is at 00:00, reset to default time
     if (
       timerState === TIMER_STATES.STOPPED &&
@@ -133,16 +139,11 @@ export function useTimer() {
       timerTime.minutes === 0 &&
       timerTime.seconds === 0
     ) {
-      console.log(
-        "▶️ Timer at 00:00, resetting to DEFAULT_TIME:",
-        DEFAULT_TIME
-      );
       setTimerTime(DEFAULT_TIME);
     }
 
-    console.log("▶️ Setting timer state to RUNNING");
     setTimerState(TIMER_STATES.RUNNING);
-  }, [timerState, timerTime, originalTimerTime, prevTimerTime, isReverting]);
+  }, [timerState, timerTime]);
 
   const pauseTimer = useCallback(() => {
     setTimerState(TIMER_STATES.PAUSED);
@@ -159,6 +160,14 @@ export function useTimer() {
     // Keep current time values, just stop the countdown
   }, []);
 
+  const togglePlayPause = useCallback(() => {
+    if (timerState === TIMER_STATES.STOPPED || timerState === TIMER_STATES.PAUSED) {
+      startTimer();
+    } else {
+      pauseTimer();
+    }
+  }, [timerState, startTimer, pauseTimer]);
+
   const setTimerTimeValues = useCallback((newHours, newMinutes, newSeconds) => {
     const newTime = {
       hours: newHours,
@@ -171,12 +180,6 @@ export function useTimer() {
   }, []);
 
   const revertToOriginalTime = useCallback(() => {
-    console.log("🔄 REVERT START:", {
-      current: timerTime,
-      original: originalTimerTime,
-      prev: prevTimerTime,
-    });
-
     // Use flushSync to ensure all state updates happen synchronously
     // This prevents React from batching updates and ensures proper animation sequence
     // Without flushSync, the animation might not trigger correctly due to batched updates
@@ -187,16 +190,13 @@ export function useTimer() {
       setTimerTime(originalTimerTime); // Jump to original time (triggers flip animation)
     });
 
-    console.log("🔄 REVERT COMPLETE");
-
     // Clear revert flag and reset prevTimerTime after animation completes
     // This cleanup prevents visual glitches and ensures proper state for next operation
     setTimeout(() => {
       setIsReverting(false);
       setPrevTimerTime(originalTimerTime); // Sync prev with current to prevent flash
-      console.log("🔄 REVERT FLAG CLEARED");
     }, 600); // Duration matches FLIP_ANIMATION_DURATION constant (600ms)
-  }, [originalTimerTime, timerTime, prevTimerTime]);
+  }, [originalTimerTime, timerTime]);
 
   return {
     // State
@@ -220,6 +220,7 @@ export function useTimer() {
     pauseTimer,
     stopTimer,
     resetTimer,
+    togglePlayPause,
     revertToOriginalTime,
     setTimerTime: setTimerTimeValues,
   };

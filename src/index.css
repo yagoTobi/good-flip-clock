@@ -16,32 +16,6 @@
 
   /* Font customization variable */
   --clock-font-family: 'DM Sans', system-ui, sans-serif;
-
-  /* Enhanced mobile theme variables */
-  --mobile-bg-primary: #1a1a1a;
-  --mobile-bg-secondary: #2a2a2a;
-  --mobile-bg-tertiary: #3a3a3a;
-  --mobile-text-primary: rgba(255, 255, 255, 0.95);
-  --mobile-text-secondary: rgba(255, 255, 255, 0.8);
-  --mobile-text-tertiary: rgba(255, 255, 255, 0.6);
-  --mobile-border-primary: rgba(255, 255, 255, 0.2);
-  --mobile-border-secondary: rgba(255, 255, 255, 0.1);
-  --mobile-accent-primary: #007bff;
-  --mobile-accent-secondary: #0056b3;
-}
-
-/* Light theme mobile adaptations */
-@media (prefers-color-scheme: light) {
-  :root {
-    --mobile-bg-primary: #ffffff;
-    --mobile-bg-secondary: #f8f9fa;
-    --mobile-bg-tertiary: #e9ecef;
-    --mobile-text-primary: rgba(0, 0, 0, 0.9);
-    --mobile-text-secondary: rgba(0, 0, 0, 0.7);
-    --mobile-text-tertiary: rgba(0, 0, 0, 0.5);
-    --mobile-border-primary: rgba(0, 0, 0, 0.2);
-    --mobile-border-secondary: rgba(0, 0, 0, 0.1);
-  }
 }
 
 a {
@@ -94,18 +68,6 @@ button:hover {
 :focus-visible {
   outline: 2px solid rgba(255, 255, 255, 0.6);
   outline-offset: 2px;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: transparent;
-  }
 }
 
 /* ===== Responsive Typography Scales ===== */

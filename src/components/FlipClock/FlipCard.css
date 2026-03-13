@@ -60,12 +60,8 @@
   border-bottom-right-radius: 12px;
 }
 
-/* Digit positioning - shows top half of number */
-.flip-card-top .digit {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translate(-50%, -45%) translateZ(0);
+/* Shared digit styling */
+.flip-card-inner .digit {
   font-family: var(
     --clock-font-family,
     "Impact",
@@ -81,29 +77,22 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  position: absolute;
+  left: 50%;
 }
 
-/* Digit positioning - shows bottom half of number */
-.flip-card-bottom .digit {
-  position: absolute;
-  top: 0%;
-  left: 50%;
+/* Top half digits */
+.flip-card-top .digit,
+.flip-animation-front .digit {
+  top: 100%;
   transform: translate(-50%, -45%) translateZ(0);
-  font-family: var(
-    --clock-font-family,
-    "Impact",
-    "Arial Black",
-    Arial,
-    sans-serif
-  );
-  font-size: 13vw;
-  font-weight: 900;
-  line-height: 0.8;
-  letter-spacing: 0.05em;
-  font-stretch: condensed;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
+}
+
+/* Bottom half digits */
+.flip-card-bottom .digit,
+.flip-animation-back .digit {
+  top: 0%;
+  transform: translate(-50%, -45%) translateZ(0);
 }
 
 /* Flip animation container */
@@ -140,28 +129,6 @@
   border-top-right-radius: 12px;
 }
 
-.flip-animation-front .digit {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translate(-50%, -45%) translateZ(0);
-  font-family: var(
-    --clock-font-family,
-    "Impact",
-    "Arial Black",
-    Arial,
-    sans-serif
-  );
-  font-size: 13vw;
-  font-weight: 900;
-  line-height: 0.8;
-  letter-spacing: 0.05em;
-  font-stretch: condensed;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-}
-
 /* Back face - shows NEW number bottom half */
 .flip-animation-back {
   position: absolute;
@@ -177,29 +144,6 @@
   -moz-osx-font-smoothing: grayscale;
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
-}
-
-.flip-animation-back .digit {
-  position: absolute;
-  /* Position digit to show bottom half */
-  top: 0%;
-  left: 50%;
-  transform: translate(-50%, -45%) translateZ(0);
-  font-family: var(
-    --clock-font-family,
-    "Impact",
-    "Arial Black",
-    Arial,
-    sans-serif
-  );
-  font-size: 13vw;
-  font-weight: 900;
-  line-height: 0.8;
-  letter-spacing: 0.05em;
-  font-stretch: condensed;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
 }
 
 @keyframes flipDown {

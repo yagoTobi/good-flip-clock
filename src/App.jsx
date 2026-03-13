@@ -16,6 +16,11 @@ import LandscapeBar from "./components/LandscapeBar/LandscapeBar";
 import LiveRegion from "./components/LiveRegion";
 import { useTimer } from "./hooks/useTimer";
 import { usePomodoroTimer } from "./hooks/usePomodoroTimer";
+import { usePanelManager } from "./hooks/usePanelManager";
+import { useIdleMode } from "./hooks/useIdleMode";
+import { useMobileChrome } from "./hooks/useMobileChrome";
+import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
+import { useFullscreen } from "./hooks/useFullscreen";
 import { MODES } from "./constants";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 import { isLightColor } from "./utils/colorUtils";
@@ -141,36 +146,13 @@ function BackgroundLayer() {
  */
 function AppContent() {
   const [selectedMode, setSelectedMode] = useState(MODES.CLOCK);
-  const [isCustomizationOpen, setIsCustomizationOpen] = useState(false);
-  const [isTimerSettingsOpen, setIsTimerSettingsOpen] = useState(false);
-  const [isPomodoroSettingsOpen, setIsPomodoroSettingsOpen] = useState(false);
   const [liveMessage, setLiveMessage] = useState("");
-  const [isMusicOpen, setIsMusicOpen] = useState(false);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
-  const [isTasksOpen, setIsTasksOpen] = useState(false);
-  const [isNotesOpen, setIsNotesOpen] = useState(false);
-  const [isIdle, setIsIdle] = useState(false);
-  const idleTimerRef = useRef(null);
-  const [mobileChromeVisible, setMobileChromeVisible] = useState(true);
   const touchStartRef = useRef(null);
 
-  const handleMusicToggle = () => {
-    const next = !isMusicOpen;
-    setIsMusicOpen(next);
-    if (next) { setIsTasksOpen(false); setIsNotesOpen(false); }
-  };
-
-  const handleTasksToggle = () => {
-    const next = !isTasksOpen;
-    setIsTasksOpen(next);
-    if (next) { setIsMusicOpen(false); setIsNotesOpen(false); }
-  };
-
-  const handleNotesToggle = () => {
-    const next = !isNotesOpen;
-    setIsNotesOpen(next);
-    if (next) { setIsMusicOpen(false); setIsTasksOpen(false); }
-  };
+  const { panels, openPanel, closePanel, togglePanel, closeAll, isAnyModalOpen, isAnyFloatingOpen } = usePanelManager();
+  const isIdle = useIdleMode(closeAll);
+  const { mobileChromeVisible, setMobileChromeVisible } = useMobileChrome({ isAnyModalOpen, isAnyFloatingOpen });
 
   const timer = useTimer();
   const pomodoroTimer = usePomodoroTimer();
@@ -196,12 +178,25 @@ function AppContent() {
     setLiveMessage(`Switched to ${modeNames[newMode]} mode`);
   };
 
+  const { isFullscreen, toggleFullscreen } = useFullscreen();
+
+  useKeyboardShortcuts({
+    selectedMode,
+    onModeChange: handleModeChange,
+    timer,
+    pomodoroTimer,
+    togglePanel,
+    closeAll,
+    toggleFullscreen,
+    modes: MODES,
+  });
+
   // Mobile gesture handlers — tap toggles chrome; swipe changes mode.
   // These are attached via JSX onTouchStart/onTouchEnd on <main> so they
   // only fire when touching the clock / background area, not desktop.
   const handleMobileTouchStart = (e) => {
     // Large modal panels are open — let them handle touches exclusively
-    if (isCustomizationOpen || isTimerSettingsOpen || isPomodoroSettingsOpen) {
+    if (isAnyModalOpen) {
       touchStartRef.current = null;
       return;
     }
@@ -242,70 +237,10 @@ function AppContent() {
 
     // Tap: small movement + short duration → toggle chrome
     if (Math.abs(deltaX) < 15 && Math.abs(deltaY) < 15 && duration < 400) {
-      if (mobileChromeVisible) setIsMusicOpen(false);
+      if (mobileChromeVisible) closePanel("music");
       setMobileChromeVisible(v => !v);
     }
   };
-
-  // Idle / focus-mode detection — desktop only
-  useEffect(() => {
-    const isLandscapeMobile = window.matchMedia("(max-height: 500px) and (orientation: landscape)").matches;
-    if (!window.matchMedia("(min-width: 768px)").matches || isLandscapeMobile) return;
-
-    const enterFocusMode = () => {
-      setIsIdle(true);
-      setIsCustomizationOpen(false);
-      setIsTimerSettingsOpen(false);
-      setIsPomodoroSettingsOpen(false);
-      setIsMusicOpen(false);
-      setIsTasksOpen(false);
-      setIsNotesOpen(false);
-    };
-
-    const resetIdle = () => {
-      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-      setIsIdle(false);
-      idleTimerRef.current = setTimeout(enterFocusMode, 10000);
-    };
-
-    resetIdle();
-    window.addEventListener("mousemove", resetIdle);
-    window.addEventListener("mousedown", resetIdle);
-    window.addEventListener("keydown", resetIdle);
-
-    return () => {
-      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-      window.removeEventListener("mousemove", resetIdle);
-      window.removeEventListener("mousedown", resetIdle);
-      window.removeEventListener("keydown", resetIdle);
-    };
-  }, []);
-
-  // Mobile auto-hide: fade out chrome after 4s of inactivity
-  useEffect(() => {
-    if (!mobileChromeVisible) return;
-    if (isCustomizationOpen || isTimerSettingsOpen || isPomodoroSettingsOpen) return;
-    if (isMusicOpen || isTasksOpen || isNotesOpen) return;
-
-    const mq = window.matchMedia(
-      "(max-width: 767px), (max-height: 500px) and (orientation: landscape)"
-    );
-    if (!mq.matches) return;
-
-    let hideTimer = setTimeout(() => setMobileChromeVisible(false), 4000);
-
-    const resetTimer = () => {
-      clearTimeout(hideTimer);
-      hideTimer = setTimeout(() => setMobileChromeVisible(false), 4000);
-    };
-
-    document.addEventListener("touchstart", resetTimer, { passive: true });
-
-    return () => {
-      clearTimeout(hideTimer);
-      document.removeEventListener("touchstart", resetTimer);
-    };
-  }, [mobileChromeVisible, isCustomizationOpen, isTimerSettingsOpen, isPomodoroSettingsOpen, isMusicOpen, isTasksOpen, isNotesOpen]);
 
   useEffect(() => {
     applyBrowserFixes();
@@ -428,15 +363,15 @@ function AppContent() {
       <InspirationalQuote />
       <CoffeeButton />
       <MusicPlayer
-        isOpen={isMusicOpen}
-        onToggle={handleMusicToggle}
+        isOpen={panels.music}
+        onToggle={() => togglePanel("music")}
         onPlayingChange={setIsMusicPlaying}
         hasControls={selectedMode === MODES.TIMER || selectedMode === MODES.POMODORO}
       />
-      <TaskList isOpen={isTasksOpen} onToggle={handleTasksToggle} />
+      <TaskList isOpen={panels.tasks} onToggle={() => togglePanel("tasks")} />
       <NotesPanel
-        isOpen={isNotesOpen}
-        onToggle={handleNotesToggle}
+        isOpen={panels.notes}
+        onToggle={() => togglePanel("notes")}
       />
 
       <main
@@ -467,9 +402,9 @@ function AppContent() {
             pomodoroTimer={pomodoroTimer}
             onSettingsClick={() => {
               if (selectedMode === MODES.POMODORO) {
-                setIsPomodoroSettingsOpen(true);
+                openPanel("pomodoroSettings");
               } else {
-                setIsTimerSettingsOpen(true);
+                openPanel("timerSettings");
               }
             }}
           />
@@ -481,31 +416,31 @@ function AppContent() {
             onModeChange={handleModeChange}
             timer={timer}
             pomodoroTimer={pomodoroTimer}
-            onCustomizationClick={() => setIsCustomizationOpen(true)}
+            onCustomizationClick={() => openPanel("customization")}
           />
         </div>
 
         <CustomizationPanel
-          isOpen={isCustomizationOpen}
-          onClose={() => setIsCustomizationOpen(false)}
+          isOpen={panels.customization}
+          onClose={() => closePanel("customization")}
         />
 
         <TimerSettings
-          isOpen={isTimerSettingsOpen}
-          onClose={() => setIsTimerSettingsOpen(false)}
+          isOpen={panels.timerSettings}
+          onClose={() => closePanel("timerSettings")}
           onSave={(hours, minutes, seconds) => {
             timer.setTimerTime(hours, minutes, seconds);
-            setIsTimerSettingsOpen(false);
+            closePanel("timerSettings");
           }}
           currentTimer={timer}
         />
 
         <PomodoroSettings
-          isOpen={isPomodoroSettingsOpen}
-          onClose={() => setIsPomodoroSettingsOpen(false)}
+          isOpen={panels.pomodoroSettings}
+          onClose={() => closePanel("pomodoroSettings")}
           onSave={(settings) => {
             pomodoroTimer.updatePomodoroSettings(settings);
-            setIsPomodoroSettingsOpen(false);
+            closePanel("pomodoroSettings");
             setLiveMessage("Pomodoro settings saved");
           }}
           currentSettings={pomodoroTimer.pomodoroSettings}
@@ -516,7 +451,7 @@ function AppContent() {
           onModeChange={handleModeChange}
           timer={timer}
           pomodoroTimer={pomodoroTimer}
-          onCustomizationClick={() => setIsCustomizationOpen(true)}
+          onCustomizationClick={() => openPanel("customization")}
         />
 
         <MobileBottomBar
@@ -526,14 +461,14 @@ function AppContent() {
           pomodoroTimer={pomodoroTimer}
           onSettingsClick={() => {
             if (selectedMode === MODES.POMODORO) {
-              setIsPomodoroSettingsOpen(true);
+              openPanel("pomodoroSettings");
             } else {
-              setIsTimerSettingsOpen(true);
+              openPanel("timerSettings");
             }
           }}
-          onCustomizationClick={() => setIsCustomizationOpen(true)}
-          isMusicOpen={isMusicOpen}
-          onMusicToggle={handleMusicToggle}
+          onCustomizationClick={() => openPanel("customization")}
+          isMusicOpen={panels.music}
+          onMusicToggle={() => togglePanel("music")}
           isMusicPlaying={isMusicPlaying}
         />
 

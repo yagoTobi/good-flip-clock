@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { FaPlay, FaPause, FaStop, FaCog, FaForward } from "react-icons/fa";
-import { TIMER_STATES, MODES } from "../../constants";
+import { MODES } from "../../constants";
 import "./PomodoroControls.css";
 
 function PomodoroControls({ mode, pomodoroTimer, onSettingsClick }) {
@@ -9,29 +9,6 @@ function PomodoroControls({ mode, pomodoroTimer, onSettingsClick }) {
   useEffect(() => {
     setShowStopButton(pomodoroTimer.isRunning || pomodoroTimer.isPaused);
   }, [pomodoroTimer.isRunning, pomodoroTimer.isPaused]);
-
-  const handlePlayPause = () => {
-    if (
-      pomodoroTimer.timerState === TIMER_STATES.STOPPED ||
-      pomodoroTimer.timerState === TIMER_STATES.PAUSED
-    ) {
-      pomodoroTimer.startTimer();
-    } else {
-      pomodoroTimer.pauseTimer();
-    }
-  };
-
-  const handleStop = () => {
-    pomodoroTimer.resetTimer();
-  };
-
-  const handleSkip = () => {
-    pomodoroTimer.skipToNextSession();
-  };
-
-  const handleSettings = () => {
-    onSettingsClick();
-  };
 
   if (mode !== MODES.POMODORO) return null;
 
@@ -43,7 +20,7 @@ function PomodoroControls({ mode, pomodoroTimer, onSettingsClick }) {
     >
       <button
         className={`control-button play-button ${pomodoroTimer.timerState}`}
-        onClick={handlePlayPause}
+        onClick={pomodoroTimer.togglePlayPause}
         aria-label={
           pomodoroTimer.isRunning
             ? "Pause pomodoro timer"
@@ -65,7 +42,7 @@ function PomodoroControls({ mode, pomodoroTimer, onSettingsClick }) {
 
       <button
         className={`control-button stop-button${showStopButton ? " visible" : ""}`}
-        onClick={handleStop}
+        onClick={() => pomodoroTimer.resetTimer()}
         aria-label="Stop pomodoro timer and reset current session"
         aria-hidden={!showStopButton}
         tabIndex={showStopButton ? 0 : -1}
@@ -76,7 +53,7 @@ function PomodoroControls({ mode, pomodoroTimer, onSettingsClick }) {
 
       <button
         className="control-button skip-button"
-        onClick={handleSkip}
+        onClick={() => pomodoroTimer.skipToNextSession()}
         disabled={!pomodoroTimer.isRunning && !pomodoroTimer.isPaused}
         aria-label="Skip to next pomodoro session"
       >
@@ -86,7 +63,7 @@ function PomodoroControls({ mode, pomodoroTimer, onSettingsClick }) {
 
       <button
         className="control-button settings-button"
-        onClick={handleSettings}
+        onClick={onSettingsClick}
         aria-label="Open pomodoro settings"
         aria-haspopup="dialog"
       >

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { FaPlay, FaPause, FaStop, FaCog } from "react-icons/fa";
-import { TIMER_STATES, MODES } from "../../constants";
+import { MODES } from "../../constants";
 import PomodoroControls from "../PomodoroControls/PomodoroControls";
 import "./TimerControls.css";
 
@@ -10,25 +10,6 @@ function TimerControls({ mode, timer, pomodoroTimer, onSettingsClick }) {
   useEffect(() => {
     setShowStopButton(timer.isRunning || timer.isPaused);
   }, [timer.isRunning, timer.isPaused]);
-
-  const handlePlayPause = () => {
-    if (
-      timer.timerState === TIMER_STATES.STOPPED ||
-      timer.timerState === TIMER_STATES.PAUSED
-    ) {
-      timer.startTimer();
-    } else {
-      timer.pauseTimer();
-    }
-  };
-
-  const handleStop = () => {
-    timer.revertToOriginalTime();
-  };
-
-  const handleSettings = () => {
-    onSettingsClick();
-  };
 
   if (mode === MODES.POMODORO) {
     return (
@@ -47,7 +28,7 @@ function TimerControls({ mode, timer, pomodoroTimer, onSettingsClick }) {
       <div className="timer-controls" role="group" aria-label="Timer controls">
         <button
           className={`control-button play-button ${timer.timerState}`}
-          onClick={handlePlayPause}
+          onClick={timer.togglePlayPause}
           aria-label={timer.isRunning ? "Pause timer" : "Start timer"}
           aria-pressed={timer.isRunning}
         >
@@ -63,7 +44,7 @@ function TimerControls({ mode, timer, pomodoroTimer, onSettingsClick }) {
 
         <button
           className={`control-button stop-button${showStopButton ? " visible" : ""}`}
-          onClick={handleStop}
+          onClick={() => timer.revertToOriginalTime()}
           aria-label="Stop timer and reset to original time"
           aria-hidden={!showStopButton}
           tabIndex={showStopButton ? 0 : -1}
@@ -74,7 +55,7 @@ function TimerControls({ mode, timer, pomodoroTimer, onSettingsClick }) {
 
         <button
           className="control-button settings-button"
-          onClick={handleSettings}
+          onClick={onSettingsClick}
           aria-label="Open timer settings"
           aria-haspopup="dialog"
         >

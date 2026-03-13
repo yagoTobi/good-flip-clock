@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { FaPlay, FaPause, FaStop, FaCog, FaForward, FaMusic, FaMugHot } from "react-icons/fa";
-import { MODES, TIMER_STATES } from "../../constants";
+import { MODES } from "../../constants";
 import "./MobileBottomBar.css";
 
 const MODE_ORDER = [MODES.CLOCK, MODES.TIMER, MODES.POMODORO];
@@ -47,28 +47,6 @@ function MobileBottomBar({
   const showTimerStop = timer?.isRunning || timer?.isPaused;
   const showPomodoroStop = pomodoroTimer?.isRunning || pomodoroTimer?.isPaused;
 
-  const handleTimerPlayPause = () => {
-    if (
-      timer.timerState === TIMER_STATES.STOPPED ||
-      timer.timerState === TIMER_STATES.PAUSED
-    ) {
-      timer.startTimer();
-    } else {
-      timer.pauseTimer();
-    }
-  };
-
-  const handlePomodoroPlayPause = () => {
-    if (
-      pomodoroTimer.timerState === TIMER_STATES.STOPPED ||
-      pomodoroTimer.timerState === TIMER_STATES.PAUSED
-    ) {
-      pomodoroTimer.startTimer();
-    } else {
-      pomodoroTimer.pauseTimer();
-    }
-  };
-
   const isAnyRunning =
     (selectedMode === MODES.TIMER && timer?.isRunning) ||
     (selectedMode === MODES.POMODORO && pomodoroTimer?.isRunning);
@@ -105,7 +83,7 @@ function MobileBottomBar({
               </button>
               <button
                 className="mb-btn"
-                onClick={handleTimerPlayPause}
+                onClick={timer.togglePlayPause}
                 aria-label={timer?.isRunning ? "Pause timer" : "Start timer"}
               >
                 {timer?.isRunning ? (
@@ -135,7 +113,7 @@ function MobileBottomBar({
               </button>
               <button
                 className="mb-btn"
-                onClick={handlePomodoroPlayPause}
+                onClick={pomodoroTimer.togglePlayPause}
                 aria-label={pomodoroTimer?.isRunning ? "Pause pomodoro" : "Start pomodoro"}
               >
                 {pomodoroTimer?.isRunning ? (
