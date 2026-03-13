@@ -8,9 +8,8 @@ function getAudioContext() {
 }
 
 /**
- * Play a pleasant completion chime using Web Audio API.
- * Three-note ascending tone (C5-E5-G5) — clean and unobtrusive.
- * No audio files needed; falls back silently if Web Audio API is unavailable.
+ * Play a single bell-like ding using Web Audio API.
+ * No audio files needed; falls back silently if unavailable.
  */
 export function playCompletionSound() {
   try {
@@ -19,28 +18,37 @@ export function playCompletionSound() {
       ctx.resume();
     }
 
-    const playTone = (frequency, startTime, duration) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-
-      osc.type = "sine";
-      osc.frequency.value = frequency;
-
-      gain.gain.setValueAtTime(0, startTime);
-      gain.gain.linearRampToValueAtTime(0.3, startTime + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
-
-      osc.start(startTime);
-      osc.stop(startTime + duration);
-    };
-
     const now = ctx.currentTime;
-    // Three-note ascending chime
-    playTone(523.25, now, 0.3); // C5
-    playTone(659.25, now + 0.15, 0.3); // E5
-    playTone(783.99, now + 0.3, 0.5); // G5
+
+    // Fundamental tone
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = "sine";
+    osc.frequency.value = 830; // ~G#5, bright bell tone
+
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.4, now + 0.005);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 1.2);
+
+    osc.start(now);
+    osc.stop(now + 1.2);
+
+    // Soft harmonic overtone for bell character
+    const osc2 = ctx.createOscillator();
+    const gain2 = ctx.createGain();
+    osc2.connect(gain2);
+    gain2.connect(ctx.destination);
+    osc2.type = "sine";
+    osc2.frequency.value = 830 * 2.5; // 2nd partial
+
+    gain2.gain.setValueAtTime(0, now);
+    gain2.gain.linearRampToValueAtTime(0.12, now + 0.005);
+    gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+
+    osc2.start(now);
+    osc2.stop(now + 0.6);
   } catch {
     // Web Audio API not available — silent fallback
   }

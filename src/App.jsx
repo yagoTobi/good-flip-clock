@@ -24,13 +24,6 @@ import { useFullscreen } from "./hooks/useFullscreen";
 import { MODES } from "./constants";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 import { isLightColor } from "./utils/colorUtils";
-import { applyPerformanceOptimizations } from "./utils/performanceUtils";
-import {
-  applyBrowserFixes,
-  logCompatibilityInfo,
-  checkCompatibilityIssues,
-} from "./utils/browserDetection";
-
 
 /**
  * BackgroundLayer - Smooth background transitions via GPU-accelerated opacity crossfade.
@@ -243,65 +236,6 @@ function AppContent() {
   };
 
   useEffect(() => {
-    applyBrowserFixes();
-    applyPerformanceOptimizations();
-
-    const handleFirstTab = (e) => {
-      if (e.key === "Tab") {
-        document.body.classList.add("keyboard-user");
-        document.body.classList.remove("touch-user");
-      }
-    };
-
-    const handleFirstTouch = () => {
-      document.body.classList.add("touch-user");
-      document.body.classList.remove("keyboard-user");
-    };
-
-    const handleFirstMouse = () => {
-      document.body.classList.remove("keyboard-user");
-      document.body.classList.remove("touch-user");
-    };
-
-    document.addEventListener("keydown", handleFirstTab);
-    document.addEventListener("touchstart", handleFirstTouch);
-    document.addEventListener("mousedown", handleFirstMouse);
-
-    if (process.env.NODE_ENV === "development") {
-      logCompatibilityInfo();
-
-      const issues = checkCompatibilityIssues();
-      if (issues.length > 0) {
-        console.group("Compatibility Issues Detected");
-        issues.forEach((issue) => {
-          console.log(`${issue.type.toUpperCase()}: ${issue.issue}`, issue);
-        });
-        console.groupEnd();
-      }
-
-      window.runMobileCompatibilityTests = async () => {
-        const { runMobileCompatibilityTests, exportTestResults } = await import("./utils/mobileCompatibilityTest");
-        const results = await runMobileCompatibilityTests();
-        exportTestResults(results);
-        return results;
-      };
-
-      window.runAccessibilityTests = async () => {
-        const { runAccessibilityTests, exportAccessibilityResults } = await import("./utils/accessibilityTest");
-        const results = runAccessibilityTests();
-        exportAccessibilityResults(results);
-        return results;
-      };
-    }
-
-    return () => {
-      document.removeEventListener("keydown", handleFirstTab);
-      document.removeEventListener("touchstart", handleFirstTouch);
-      document.removeEventListener("mousedown", handleFirstMouse);
-    };
-  }, []);
-
-  useEffect(() => {
     if (selectedMode === MODES.TIMER) {
       if (timer.isRunning) {
         setLiveMessage("Timer started");
@@ -316,8 +250,9 @@ function AppContent() {
   useEffect(() => {
     if (selectedMode === MODES.POMODORO) {
       if (pomodoroTimer.isRunning) {
-        const sessionType = pomodoroTimer.currentSession?.type || "focus";
-        setLiveMessage(`${sessionType} session started`);
+        const type = pomodoroTimer.sessionType === "FOCUS" ? "Focus" :
+                     pomodoroTimer.sessionType === "SHORT_BREAK" ? "Short break" : "Long break";
+        setLiveMessage(`${type} session started`);
       } else if (pomodoroTimer.isPaused) {
         setLiveMessage("Pomodoro timer paused");
       } else if (pomodoroTimer.timerState === "STOPPED") {
@@ -328,7 +263,7 @@ function AppContent() {
     pomodoroTimer.isRunning,
     pomodoroTimer.isPaused,
     pomodoroTimer.timerState,
-    pomodoroTimer.currentSession,
+    pomodoroTimer.sessionType,
     selectedMode,
   ]);
 
@@ -432,7 +367,6 @@ function AppContent() {
             timer.setTimerTime(hours, minutes, seconds);
             closePanel("timerSettings");
           }}
-          currentTimer={timer}
         />
 
         <PomodoroSettings

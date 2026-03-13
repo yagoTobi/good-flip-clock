@@ -181,6 +181,7 @@ function PomodoroSettings({ isOpen, onClose, onSave, currentSettings }) {
       <div
         className="pomodoro-settings-modal"
         role="dialog"
+        aria-modal="true"
         aria-labelledby="pomodoro-settings-title"
       >
         <div className="pomodoro-settings-header">

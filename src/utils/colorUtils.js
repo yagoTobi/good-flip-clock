@@ -7,7 +7,7 @@
  * @param {string} hex - Hex color string (e.g., "#ff0000")
  * @returns {Object} RGB values {r, g, b}
  */
-export const hexToRgb = (hex) => {
+const hexToRgb = (hex) => {
   if (!hex || !hex.startsWith("#")) return { r: 0, g: 0, b: 0 };
 
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -25,7 +25,7 @@ export const hexToRgb = (hex) => {
  * @param {string} hsl - HSL color string (e.g., "hsl(120, 100%, 50%)")
  * @returns {Object} RGB values {r, g, b}
  */
-export const hslToRgb = (hsl) => {
+const hslToRgb = (hsl) => {
   const match = hsl.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
   if (!match) return { r: 0, g: 0, b: 0 };
 
@@ -70,7 +70,7 @@ export const hslToRgb = (hsl) => {
  * @param {Object} rgb - RGB color object {r, g, b}
  * @returns {number} Relative luminance (0-1)
  */
-export const getLuminance = (rgb) => {
+const getLuminance = (rgb) => {
   const { r, g, b } = rgb;
 
   // Convert to sRGB
@@ -135,11 +135,3 @@ export const isLightColor = (color) => {
   return luminance > 0.5; // Threshold for light vs dark
 };
 
-/**
- * Get appropriate text color (black or white) for a given background
- * @param {string} backgroundColor - Background color string
- * @returns {string} Either "#000000" or "#ffffff"
- */
-export const getContrastTextColor = (backgroundColor) => {
-  return isLightColor(backgroundColor) ? "#000000" : "#ffffff";
-};

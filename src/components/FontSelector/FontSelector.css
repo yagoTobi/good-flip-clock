@@ -96,7 +96,7 @@
 @media (max-width: 767px) {
   .font-option:active {
     transform: scale(0.95);
-    transition: all 0.1s ease;
+    transition: transform 0.1s ease;
   }
 }
 

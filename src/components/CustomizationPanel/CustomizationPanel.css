@@ -186,16 +186,6 @@
   min-width: 80px;
 }
 
-.action-button.primary {
-  background: var(--text-color, #333);
-  color: var(--panel-bg, #fff);
-  border-color: transparent;
-}
-
-.action-button.primary:hover {
-  opacity: 0.85;
-}
-
 .action-button.secondary {
   background: var(--hover-bg, rgba(0, 0, 0, 0.06));
   color: var(--text-color, #333);

@@ -29,7 +29,7 @@ import "./FlipCard.css";
  * @returns {JSX.Element} Animated flip card displaying the time value
  */
 function FlipCard({ value, prevValue, isFlipping, size = "normal" }) {
-  const { clockColor, panelColor, background } = useTheme();
+  const { clockColor, panelColor } = useTheme();
 
   /**
    * Track the displayed bottom value separately to control animation timing
@@ -53,30 +53,6 @@ function FlipCard({ value, prevValue, isFlipping, size = "normal" }) {
    * through the 4px gap between the two halves.
    */
   const panelStyle = { backgroundColor: panelColor };
-
-  /**
-   * Get appropriate background style for the central divider line
-   * Handles different background types from theme system
-   *
-   * @returns {string} CSS background value for the divider
-   */
-  const getBackgroundStyle = () => {
-    if (background === "default") {
-      return "#1a1a1a";
-    }
-
-    // If it's already a CSS value (color, gradient, or image), use it directly
-    if (
-      background.startsWith("#") ||
-      background.startsWith("linear-gradient") ||
-      background.startsWith("url(")
-    ) {
-      return background;
-    }
-
-    // Fallback for any unrecognized values
-    return "#1a1a1a";
-  };
 
   /**
    * Manage the bottom value display timing for smooth flip animation
