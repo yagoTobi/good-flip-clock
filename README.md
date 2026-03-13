@@ -35,7 +35,7 @@ A full-screen, immersive flip clock app for focus sessions — built with React 
 ### Mobile UX
 
 - **Portrait** — Two vertically-stacked flip cards sized to fill as much screen height as possible; inspirational quote hidden; tap-to-focus collapses all chrome after 4 s of inactivity
-- **Landscape** — Horizontal card layout; controls and quote hidden; customization button fixed at bottom-right
+- **Landscape** — Horizontal card layout; quote hidden; LandscapeBar provides floating mode dots (left) and customize/coffee buttons (right)
 - **Mobile bottom bar** — Persistent bottom navigation with mode indicator dots, timer/pomodoro controls, and utility buttons (customize, music, coffee)
 - **Swipe to change mode** — Left/right swipe on the clock area cycles through Clock → Timer → Pomodoro
 - **Mode label** — 3 s fade toast at the top of the screen on every mode change
@@ -48,7 +48,7 @@ A full-screen, immersive flip clock app for focus sessions — built with React 
 
 ## Tech Stack
 
-- **React 18** + **Vite**
+- **React 19** + **Vite 6**
 - Plain CSS (no Tailwind, no CSS-in-JS)
 - `react-icons` for the icon set
 - YouTube IFrame API for the music player
@@ -76,30 +76,53 @@ src/
 ├── constants/                   # MODES, TIMER_STATES, POMODORO_SESSION_TYPES, …
 ├── contexts/
 │   └── ThemeContext.jsx          # Global theme (background, font, clockColor, panelColor)
+├── data/
+│   └── quotes.js                # Inspirational quote collection
 ├── hooks/
-│   ├── useTimer.js               # Countdown timer logic + flip animation state
-│   └── usePomodoroTimer.js       # Pomodoro session management
+│   ├── useTimer.js              # Countdown timer logic + flip animation state
+│   ├── usePomodoroTimer.js      # Pomodoro session management
+│   ├── useFont.js               # Font selection and application
+│   ├── useFullscreen.js         # Fullscreen API wrapper
+│   ├── useIdleMode.js           # Idle detection and auto-hide chrome
+│   ├── useKeyboardShortcuts.js  # Global keyboard shortcuts
+│   ├── useMobileChrome.js       # Mobile browser chrome detection
+│   └── usePanelManager.js       # Panel state and visibility
 ├── utils/
-│   ├── colorUtils.js             # isLightColor() — drives dark/light text mode
-│   └── fontUtils.js              # FONT_OPTIONS registry
+│   ├── colorUtils.js            # isLightColor() — drives dark/light text mode
+│   ├── fontUtils.js             # FONT_OPTIONS registry
+│   ├── sounds.js                # Sound effects management
+│   └── accessibilityTest.js     # Dev-only accessibility testing (lazy-imported)
 ├── styles/
 │   └── cross-browser-fixes.css  # Vendor prefixes and browser-specific patches
 └── components/
-    ├── BackgroundLayer/          # position:fixed z:0 layer; GPU-crossfades backgrounds
     ├── FlipClock/                # Central display + FlipCard animation engine
     │   └── displays/             # ClockDisplay, TimerDisplay, PomodoroDisplay, FlipCardGrid
+    ├── ClockPreview/             # Live clock preview for customization panel
     ├── ModeSelector/             # Glassmorphic bottom pill (desktop only)
     ├── MobileBottomBar/          # Bottom navigation bar (mobile only)
+    ├── LandscapeBar/             # Floating bar for mobile landscape mode
     ├── TimerControls/            # Desktop play/pause/stop for timer mode
+    ├── TimerSettings/            # Timer duration input (TimeInput sub-component)
     ├── PomodoroControls/         # Desktop controls + skip for pomodoro mode
+    ├── PomodoroSettings/         # Pomodoro duration customization
+    ├── PomodoroSessionHeader/    # Session type/progress header
+    ├── PomodoroSessionIndicator/ # Session progress dots (desktop + tablet only)
+    ├── SessionProgress/          # Session time remaining display
     ├── CustomizationPanel/       # Tabbed modal: Background / Fonts / Colors
     ├── BackgroundSelector/       # Image/gradient/color picker grid
+    ├── ImagePicker/              # 4×4 WebP background image grid (uses thumbnails)
+    ├── GradientPicker/           # Curated CSS gradient selector
+    ├── ColorSelector/            # Theme color picker (digit + panel colors)
+    ├── ColorPicker/              # Generic color picker modal
+    ├── SpectrumColorPicker/      # HSL spectrum-based color picker
+    ├── FontSelector/             # Font family/weight selection
+    ├── DisplaySettings/          # Display configuration options
     ├── MusicPlayer/              # YouTube IFrame streaming panel
     ├── TaskList/                 # Persistent to-do panel
-    ├── Notes/                    # Scratchpad panel
+    ├── NotesPanel/               # Scratchpad panel
     ├── InspirationalQuote/       # Fixed top quote (desktop + tablet only)
-    ├── PomodoroSessionIndicator/ # Session progress dots (desktop + tablet only)
-    └── TimerSettings / PomodoroSettings / …
+    ├── CoffeeButton/             # Buy Me a Coffee support button
+    └── LiveRegion/               # ARIA live region for screen reader announcements
 
 public/
 └── images/backgrounds/           # 16 WebP background images (compressed)
