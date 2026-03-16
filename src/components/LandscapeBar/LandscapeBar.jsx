@@ -1,4 +1,5 @@
 import { FaMugHot } from "react-icons/fa";
+import { ShareButtonInline } from "../ShareButton/ShareButton";
 import { MODES } from "../../constants";
 import "./LandscapeBar.css";
 
@@ -49,6 +50,7 @@ function LandscapeBar({
         >
           <FaMugHot size={14} aria-hidden="true" />
         </button>
+        <ShareButtonInline className="lb-btn" iconSize={14} />
       </div>
     </>
   );

@@ -7,6 +7,7 @@ import CustomizationPanel from "./components/CustomizationPanel";
 import TimerSettings from "./components/TimerSettings";
 import PomodoroSettings from "./components/PomodoroSettings";
 import CoffeeButton from "./components/CoffeeButton";
+import ShareButton from "./components/ShareButton/ShareButton";
 import MusicPlayer from "./components/MusicPlayer";
 import TaskList from "./components/TaskList";
 import NotesPanel from "./components/NotesPanel";
@@ -297,6 +298,7 @@ function AppContent() {
     <div className={`app ${isLightBg ? "light-bg" : "dark-bg"}${isIdle ? " focus-mode" : ""}${!mobileChromeVisible ? " mobile-chrome-hidden" : ""}`}>
       <InspirationalQuote />
       <CoffeeButton />
+      <ShareButton />
       <MusicPlayer
         isOpen={panels.music}
         onToggle={() => togglePanel("music")}

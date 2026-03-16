@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { FaPlay, FaPause, FaStop, FaCog, FaForward, FaMusic, FaMugHot } from "react-icons/fa";
+import { ShareButtonInline } from "../ShareButton/ShareButton";
 import { MODES } from "../../constants";
 import "./MobileBottomBar.css";
 
@@ -168,6 +169,7 @@ function MobileBottomBar({
         >
           <FaMugHot size={18} aria-hidden="true" />
         </button>
+        <ShareButtonInline className="mb-util-btn" iconSize={18} />
       </div>
     </div>
   );

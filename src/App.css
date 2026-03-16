@@ -267,6 +267,7 @@ body {
   }
 
   .app.focus-mode .coffee-button,
+  .app.focus-mode .share-button-container,
   .app.focus-mode .music-player-root,
   .app.focus-mode .task-list-root,
   .app.focus-mode .notes-root,
