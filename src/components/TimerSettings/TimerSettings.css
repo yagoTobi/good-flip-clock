@@ -46,6 +46,127 @@
   margin: 0;
 }
 
+.timer-mode-toggle {
+  display: flex;
+  position: relative;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  padding: 3px;
+  margin-top: 1rem;
+  overflow: hidden;
+}
+
+/* Sliding highlight */
+.timer-mode-toggle::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  width: calc(50% - 3px);
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.timer-mode-toggle.end-at::before {
+  transform: translateX(100%);
+}
+
+.timer-mode-option {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.25s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.timer-mode-option.active {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.end-at-inputs {
+  flex-wrap: nowrap;
+}
+
+.ampm-toggle {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 3px;
+  margin-left: 1rem;
+  align-self: flex-end;
+  height: 64px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Sliding highlight */
+.ampm-toggle::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  right: 3px;
+  height: calc(50% - 3px);
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ampm-toggle.pm::before {
+  transform: translateY(100%);
+}
+
+.ampm-option {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.875rem;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.25s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ampm-option.active {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.end-at-hint {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.8125rem;
+  margin-top: 0.75rem;
+  transition: opacity 0.2s ease;
+}
+
+.end-at-hint.hidden {
+  opacity: 0;
+}
+
 .timer-settings-content {
   display: flex;
   flex-direction: column;

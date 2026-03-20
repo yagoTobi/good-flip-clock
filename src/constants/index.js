@@ -80,6 +80,17 @@ export const TIMER_STATES = {
 };
 
 /**
+ * Timer input modes
+ * Defines how the timer duration is specified
+ */
+export const TIMER_MODES = {
+  /** User sets a countdown duration (HH:MM:SS) */
+  DURATION: "duration",
+  /** User sets a target wall-clock time to count down to */
+  END_AT: "endAt",
+};
+
+/**
  * Pomodoro session types
  * Defines the different types of sessions in the Pomodoro technique
  */

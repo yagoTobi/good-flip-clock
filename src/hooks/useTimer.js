@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { flushSync } from "react-dom";
 import {
   TIMER_STATES,
+  TIMER_MODES,
   DEFAULT_TIMER_HOURS,
   DEFAULT_TIMER_MINUTES,
   DEFAULT_TIMER_SECONDS,
@@ -76,6 +77,9 @@ export function useTimer() {
   const [prevTimerTime, setPrevTimerTime] = useState(loadSavedTime);
   const [originalTimerTime, setOriginalTimerTime] = useState(loadSavedTime); // Remember original time
   const [isReverting, setIsReverting] = useState(false); // Track revert animation
+  const [timerMode, setTimerMode] = useState(TIMER_MODES.DURATION);
+  const [endAtTarget, setEndAtTarget] = useState(null); // Timestamp for endAt mode
+  const [endAtHasHours, setEndAtHasHours] = useState(false); // Lock format when endAt starts
 
   // Persist original timer time to localStorage
   useEffect(() => {
@@ -85,50 +89,66 @@ export function useTimer() {
   }, [originalTimerTime]);
 
   // Timer countdown logic - runs continuously when active
-  // Uses setInterval to decrement time every second when RUNNING
   useEffect(() => {
     if (timerState !== TIMER_STATES.RUNNING) return;
 
+    // End At mode: wall-clock based countdown (immune to drift)
+    if (timerMode === TIMER_MODES.END_AT && endAtTarget) {
+      const interval = setInterval(() => {
+        const remainingMs = endAtTarget - Date.now();
+
+        if (remainingMs <= 0) {
+          setTimerState(TIMER_STATES.STOPPED);
+          setTimerMode(TIMER_MODES.DURATION);
+          setEndAtTarget(null);
+          playCompletionSound();
+          setTimerTime((prev) => {
+            setPrevTimerTime(prev);
+            return { hours: 0, minutes: 0, seconds: 0 };
+          });
+          return;
+        }
+
+        const totalSeconds = Math.ceil(remainingMs / 1000);
+        const h = Math.floor(totalSeconds / 3600);
+        const m = Math.floor((totalSeconds % 3600) / 60);
+        const s = totalSeconds % 60;
+
+        setTimerTime((prev) => {
+          setPrevTimerTime(prev);
+          return { hours: h, minutes: m, seconds: s };
+        });
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+
+    // Duration mode: decrement-based countdown
     const timer = setInterval(() => {
-      // Use functional state update to ensure we have the latest time value
-      // This prevents stale closure issues with the interval callback
       setTimerTime((currentTime) => {
-        // Capture current time as previous for flip animation support
-        // This must happen before calculating the new time to ensure proper animation sequence
         setPrevTimerTime(currentTime);
 
-        // Calculate new time by decrementing seconds, handling time unit rollovers
-        // This logic handles the cascade effect: seconds -> minutes -> hours
         const { hours, minutes, seconds } = currentTime;
         let newTime;
 
         if (seconds > 0) {
-          // Simple case: just decrement seconds (most common path)
           newTime = { ...currentTime, seconds: seconds - 1 };
         } else if (minutes > 0) {
-          // Seconds rollover: decrement minutes, reset seconds to 59
-          // This happens every minute when seconds reach 0
           newTime = { hours, minutes: minutes - 1, seconds: 59 };
         } else if (hours > 0) {
-          // Minutes rollover: decrement hours, reset minutes and seconds
-          // This happens every hour when both minutes and seconds are 0
           newTime = { hours: hours - 1, minutes: 59, seconds: 59 };
         } else {
-          // Timer completed (00:00:00 reached) - stop the countdown
-          // This is the terminal condition that ends the timer
           setTimerState(TIMER_STATES.STOPPED);
           playCompletionSound();
-          newTime = currentTime; // Keep at 00:00:00 to show completion
+          newTime = currentTime;
         }
 
         return newTime;
       });
-    }, 1000); // 1000ms = 1 second interval for real-time countdown
+    }, 1000);
 
-    return () => {
-      clearInterval(timer);
-    };
-  }, [timerState]); // Only depend on timerState to avoid recreating interval unnecessarily
+    return () => clearInterval(timer);
+  }, [timerState, timerMode, endAtTarget]);
 
   // Control functions - memoized for performance
   const startTimer = useCallback(() => {
@@ -174,29 +194,65 @@ export function useTimer() {
       minutes: newMinutes,
       seconds: newSeconds,
     };
+    // Cancel endAt mode if active
+    if (timerMode === TIMER_MODES.END_AT) {
+      setTimerMode(TIMER_MODES.DURATION);
+      setEndAtTarget(null);
+      setTimerState(TIMER_STATES.STOPPED);
+    }
     setTimerTime(newTime);
     setPrevTimerTime(newTime);
-    setOriginalTimerTime(newTime); // Remember this as the original time
-  }, []);
+    setOriginalTimerTime(newTime);
+  }, [timerMode]);
 
   const revertToOriginalTime = useCallback(() => {
-    // Use flushSync to ensure all state updates happen synchronously
-    // This prevents React from batching updates and ensures proper animation sequence
-    // Without flushSync, the animation might not trigger correctly due to batched updates
+    if (timerMode === TIMER_MODES.END_AT) {
+      // Cancel endAt mode and revert to saved duration
+      flushSync(() => {
+        setTimerMode(TIMER_MODES.DURATION);
+        setEndAtTarget(null);
+        setPrevTimerTime(timerTime);
+        setIsReverting(true);
+        setTimerState(TIMER_STATES.STOPPED);
+        setTimerTime(originalTimerTime);
+      });
+      setTimeout(() => {
+        setIsReverting(false);
+        setPrevTimerTime(originalTimerTime);
+      }, 600);
+      return;
+    }
+
     flushSync(() => {
-      setPrevTimerTime(timerTime); // Set current time as "previous" for flip animation
-      setIsReverting(true); // Flag to indicate revert animation is active
-      setTimerState(TIMER_STATES.STOPPED); // Stop any running timer
-      setTimerTime(originalTimerTime); // Jump to original time (triggers flip animation)
+      setPrevTimerTime(timerTime);
+      setIsReverting(true);
+      setTimerState(TIMER_STATES.STOPPED);
+      setTimerTime(originalTimerTime);
     });
 
-    // Clear revert flag and reset prevTimerTime after animation completes
-    // This cleanup prevents visual glitches and ensures proper state for next operation
     setTimeout(() => {
       setIsReverting(false);
-      setPrevTimerTime(originalTimerTime); // Sync prev with current to prevent flash
-    }, 600); // Duration matches FLIP_ANIMATION_DURATION constant (600ms)
-  }, [originalTimerTime, timerTime]);
+      setPrevTimerTime(originalTimerTime);
+    }, 600);
+  }, [originalTimerTime, timerTime, timerMode]);
+
+  const startEndAtTimer = useCallback((targetTimestamp) => {
+    const remainingMs = targetTimestamp - Date.now();
+    if (remainingMs <= 0) return;
+
+    const totalSeconds = Math.ceil(remainingMs / 1000);
+    const h = Math.floor(totalSeconds / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = totalSeconds % 60;
+    const initialTime = { hours: h, minutes: m, seconds: s };
+
+    setEndAtTarget(targetTimestamp);
+    setEndAtHasHours(h > 0);
+    setTimerMode(TIMER_MODES.END_AT);
+    setTimerTime(initialTime);
+    setPrevTimerTime(initialTime);
+    setTimerState(TIMER_STATES.RUNNING);
+  }, []);
 
   return {
     // State
@@ -212,8 +268,10 @@ export function useTimer() {
     isRunning: timerState === TIMER_STATES.RUNNING,
     isPaused: timerState === TIMER_STATES.PAUSED,
     isStopped: timerState === TIMER_STATES.STOPPED,
-    hasHours: originalTimerTime.hours > 0, // Base format on original time, not current
-    isReverting, // Flag for revert animation
+    hasHours: timerMode === TIMER_MODES.END_AT ? endAtHasHours : originalTimerTime.hours > 0,
+    isReverting,
+    isEndAtMode: timerMode === TIMER_MODES.END_AT,
+    endAtTarget,
 
     // Controls
     startTimer,
@@ -222,6 +280,7 @@ export function useTimer() {
     resetTimer,
     togglePlayPause,
     revertToOriginalTime,
+    startEndAtTimer,
     setTimerTime: setTimerTimeValues,
   };
 }

@@ -18,6 +18,21 @@
   }
 }
 
+/* End At mode: single column (no play button) */
+.timer-controls.end-at-active {
+  grid-template-columns: 60px;
+}
+
+.timer-controls.end-at-active .stop-button {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.timer-controls.end-at-active .settings-button {
+  grid-column: 1;
+  grid-row: 2;
+}
+
 /* More specific selector for settings button */
 .timer-controls .settings-button {
   grid-column: 1;
@@ -183,6 +198,13 @@
   .timer-controls .play-button { grid-column: 1; grid-row: 1; }
   .timer-controls .stop-button { grid-column: 2; grid-row: 1; }
   .timer-controls .settings-button { grid-column: 3; grid-row: 1; }
+
+  .timer-controls.end-at-active {
+    grid-template-columns: repeat(2, 48px);
+  }
+
+  .timer-controls.end-at-active .stop-button { grid-column: 1; grid-row: 1; }
+  .timer-controls.end-at-active .settings-button { grid-column: 2; grid-row: 1; }
 
   .control-button {
     width: 48px;

@@ -114,6 +114,16 @@ function FlipClock({ mode, timer, pomodoroTimer }) {
     }
   };
 
+  const endAtLabel = (() => {
+    if (displayMode !== MODES.TIMER || !timer.isEndAtMode || !timer.isRunning || !timer.endAtTarget) return null;
+    const d = new Date(timer.endAtTarget);
+    let h = d.getHours();
+    const m = d.getMinutes();
+    const period = h >= 12 ? "PM" : "AM";
+    h = h % 12 || 12;
+    return `until ${h}:${m.toString().padStart(2, "0")} ${period}`;
+  })();
+
   return (
     <div
       className={`flip-clock ${
@@ -122,6 +132,7 @@ function FlipClock({ mode, timer, pomodoroTimer }) {
     >
       <PomodoroSessionHeader mode={displayMode} pomodoroTimer={pomodoroTimer} />
       {renderDisplay()}
+      {endAtLabel && <div className="end-at-label">{endAtLabel}</div>}
       <PomodoroSessionIndicator mode={displayMode} pomodoroTimer={pomodoroTimer} />
     </div>
   );

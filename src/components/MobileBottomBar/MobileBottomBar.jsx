@@ -82,22 +82,24 @@ function MobileBottomBar({
               >
                 <FaCog aria-hidden="true" />
               </button>
+              {!timer?.isEndAtMode && (
+                <button
+                  className="mb-btn"
+                  onClick={timer.togglePlayPause}
+                  aria-label={timer?.isRunning ? "Pause timer" : "Start timer"}
+                >
+                  {timer?.isRunning ? (
+                    <FaPause aria-hidden="true" />
+                  ) : (
+                    <FaPlay aria-hidden="true" />
+                  )}
+                </button>
+              )}
               <button
-                className="mb-btn"
-                onClick={timer.togglePlayPause}
-                aria-label={timer?.isRunning ? "Pause timer" : "Start timer"}
-              >
-                {timer?.isRunning ? (
-                  <FaPause aria-hidden="true" />
-                ) : (
-                  <FaPlay aria-hidden="true" />
-                )}
-              </button>
-              <button
-                className={`mb-btn mb-stop-btn${!showTimerStop ? " mb-btn-dim" : ""}`}
+                className={`mb-btn mb-stop-btn${!(timer?.isEndAtMode ? timer?.isRunning : showTimerStop) ? " mb-btn-dim" : ""}`}
                 onClick={() => timer.revertToOriginalTime()}
-                aria-label="Stop timer"
-                disabled={!showTimerStop}
+                aria-label={timer?.isEndAtMode ? "Cancel countdown" : "Stop timer"}
+                disabled={!(timer?.isEndAtMode ? timer?.isRunning : showTimerStop)}
               >
                 <FaStop aria-hidden="true" />
               </button>

@@ -153,7 +153,7 @@ function AppContent() {
   const { background } = useTheme();
 
   const handleModeChange = (newMode) => {
-    if (newMode !== MODES.TIMER && timer.isRunning) {
+    if (newMode !== MODES.TIMER && timer.isRunning && !timer.isEndAtMode) {
       timer.pauseTimer();
       setLiveMessage("Timer paused");
     }
@@ -367,6 +367,10 @@ function AppContent() {
           onClose={() => closePanel("timerSettings")}
           onSave={(hours, minutes, seconds) => {
             timer.setTimerTime(hours, minutes, seconds);
+            closePanel("timerSettings");
+          }}
+          onSaveEndAt={(targetTimestamp) => {
+            timer.startEndAtTimer(targetTimestamp);
             closePanel("timerSettings");
           }}
         />
