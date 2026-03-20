@@ -62,7 +62,7 @@ function TimerSettings({ isOpen, onClose, onSave, onSaveEndAt }) {
 
       if (e.key === "Tab") {
         const focusableElements = document.querySelectorAll(
-          '.timer-settings-modal button, .timer-settings-modal input, .timer-settings-modal select, .timer-settings-modal [tabindex]:not([tabindex="-1"])'
+          '.timer-settings-modal button, .timer-settings-modal input, .timer-settings-modal select, .timer-settings-modal [tabindex]:not([tabindex="-1"])',
         );
         const firstElement = focusableElements[0];
         const lastElement = focusableElements[focusableElements.length - 1];
@@ -149,8 +149,12 @@ function TimerSettings({ isOpen, onClose, onSave, onSaveEndAt }) {
     >
       <div className="timer-settings-modal">
         <div className="timer-settings-header">
-          <h2 id="timer-settings-title">Set Timer</h2>
-          <div className={`timer-mode-toggle${settingsMode === "endAt" ? " end-at" : ""}`} role="tablist" aria-label="Timer mode">
+          <h2 id="timer-settings-title">Start Timer</h2>
+          <div
+            className={`timer-mode-toggle${settingsMode === "endAt" ? " end-at" : ""}`}
+            role="tablist"
+            aria-label="Timer mode"
+          >
             <button
               role="tab"
               className={`timer-mode-option${settingsMode === "duration" ? " active" : ""}`}
@@ -245,7 +249,10 @@ function TimerSettings({ isOpen, onClose, onSave, onSaveEndAt }) {
               </div>
             </div>
           )}
-          <div className={`end-at-hint${settingsMode === "duration" ? " hidden" : ""}`} aria-live="polite">
+          <div
+            className={`end-at-hint${settingsMode === "duration" ? " hidden" : ""}`}
+            aria-live="polite"
+          >
             {settingsMode === "endAt" ? getDurationHint() : "\u00A0"}
           </div>
         </div>
@@ -261,9 +268,13 @@ function TimerSettings({ isOpen, onClose, onSave, onSaveEndAt }) {
           <button
             className="timer-settings-button save-button"
             onClick={handleSave}
-            aria-label={settingsMode === "endAt" ? "Start countdown to target time" : "Save timer settings and close dialog"}
+            aria-label={
+              settingsMode === "endAt"
+                ? "Start countdown to target time"
+                : "Save timer settings and close dialog"
+            }
           >
-            {settingsMode === "endAt" ? "Start Timer" : "Set Timer"}
+            {settingsMode === "endAt" ? "Start Timer" : "Start Timer"}
           </button>
         </div>
       </div>
