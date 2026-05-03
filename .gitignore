@@ -6,7 +6,10 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-
+.planning/
+graphify-out
+.claude/
+.netlify/
 # Dependencies
 node_modules
 .pnpm-store

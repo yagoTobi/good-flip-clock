@@ -32,67 +32,54 @@ import "./FlipClock.css";
  * @returns {JSX.Element} Flip clock display with mode-specific content
  */
 function FlipClock({ mode, timer, pomodoroTimer }) {
-  const [isFlippingMode, setIsFlippingMode] = useState(false);
-  const [flipDirection, setFlipDirection] = useState("");
   const [displayMode, setDisplayMode] = useState(mode);
-  const timersRef = useRef({ reset: null, flip: null });
+  const clockRef = useRef(null);
+  const timersRef = useRef({ midpoint: null });
+  const animRef = useRef(null);
 
-  /**
-   * Handle mode changes with smooth flip animation
-   *
-   * This effect manages the complex animation sequence when switching between modes:
-   * 1. Determines flip direction based on mode order (left for backward, right for forward)
-   * 2. Clears any existing animation timers to prevent conflicts
-   * 3. Triggers flip animation with proper timing sequence
-   * 4. Updates display mode at the midpoint of the animation (150ms)
-   * 5. Completes animation and resets state after 300ms total duration
-   *
-   * The animation uses CSS classes applied conditionally to create the flip effect.
-   */
   useEffect(() => {
     if (mode === displayMode) return;
 
-    // Clear any existing timers
-    if (timersRef.current.reset) clearTimeout(timersRef.current.reset);
-    if (timersRef.current.flip) clearTimeout(timersRef.current.flip);
+    const t0 = performance.now();
+    console.log(`[FlipClock] mode change: ${displayMode} → ${mode} @ ${t0.toFixed(1)}ms`);
 
-    /**
-     * Determine flip direction based on mode transition order
-     * @param {string} fromMode - Current mode
-     * @param {string} toMode - Target mode
-     * @returns {string} "right" for forward transition, "left" for backward
-     */
-    const getFlipDirection = (fromMode, toMode) => {
-      const modeOrder = [MODES.CLOCK, MODES.TIMER, MODES.POMODORO];
-      const fromIndex = modeOrder.indexOf(fromMode);
-      const toIndex = modeOrder.indexOf(toMode);
-      return toIndex > fromIndex ? "right" : "left";
-    };
+    if (timersRef.current.midpoint) clearTimeout(timersRef.current.midpoint);
+    if (animRef.current) animRef.current.cancel();
 
-    const newDirection = getFlipDirection(displayMode, mode);
+    const modeOrder = [MODES.CLOCK, MODES.TIMER, MODES.POMODORO];
+    const fromIndex = modeOrder.indexOf(displayMode);
+    const toIndex = modeOrder.indexOf(mode);
+    const direction = toIndex > fromIndex ? 1 : -1;
 
-    // Force animation retrigger by clearing state first
-    setIsFlippingMode(false);
-    setFlipDirection("");
+    const keyframes = [
+      { transform: "scaleX(1)", opacity: 1 },
+      { transform: "scaleX(0)", opacity: 0.6 },
+      { transform: "scaleX(1)", opacity: 1 },
+    ];
 
-    // Use a small timeout to ensure the state change is applied before starting animation
-    timersRef.current.reset = setTimeout(() => {
-      setFlipDirection(newDirection);
-      setIsFlippingMode(true);
+    // Web Animations API: each call creates a fresh animation instance,
+    // no CSS class toggling needed — eliminates restart race condition
+    const el = clockRef.current;
+    if (el) {
+      animRef.current = el.animate(keyframes, { duration: 300, easing: "ease-in-out" });
+      console.log(`[FlipClock] WAAPI animation started @ +${(performance.now() - t0).toFixed(1)}ms`);
 
-      // Switch display mode at animation midpoint for smooth transition
-      setTimeout(() => setDisplayMode(mode), 150);
+      animRef.current.onfinish = () => {
+        console.log(`[FlipClock] animation finished @ +${(performance.now() - t0).toFixed(1)}ms`);
+        animRef.current = null;
+      };
+    }
 
-      // Complete animation and reset state
-      timersRef.current.flip = setTimeout(() => {
-        setIsFlippingMode(false);
-        setFlipDirection("");
-      }, 300);
-    }, 10);
+    timersRef.current.midpoint = setTimeout(() => {
+      console.log(`[FlipClock] midpoint @ +${(performance.now() - t0).toFixed(1)}ms — setDisplayMode(${mode})`);
+      setDisplayMode(mode);
+    }, 150);
 
     return () => {
-      if (timersRef.current.reset) clearTimeout(timersRef.current.reset);
-      if (timersRef.current.flip) clearTimeout(timersRef.current.flip);
+      if (timersRef.current.midpoint) clearTimeout(timersRef.current.midpoint);
+      // Don't cancel animRef here — the animation must survive the
+      // re-render caused by setDisplayMode at midpoint. It's only
+      // cancelled above when a *new* mode transition starts.
     };
   }, [mode, displayMode]);
 
@@ -126,9 +113,8 @@ function FlipClock({ mode, timer, pomodoroTimer }) {
 
   return (
     <div
-      className={`flip-clock ${
-        isFlippingMode ? `flipping-${flipDirection}` : ""
-      } ${mode === MODES.POMODORO ? "pomodoro-mode" : ""}`}
+      ref={clockRef}
+      className={`flip-clock ${mode === MODES.POMODORO ? "pomodoro-mode" : ""}`}
     >
       <PomodoroSessionHeader mode={displayMode} pomodoroTimer={pomodoroTimer} />
       {renderDisplay()}

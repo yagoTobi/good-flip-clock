@@ -31,7 +31,8 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.12);
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  contain: paint;
+  isolation: isolate;
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
 }
 
 /* Top half of the card - shows NEW value (gets revealed) */

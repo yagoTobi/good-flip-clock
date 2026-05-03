@@ -67,20 +67,22 @@ function FlipCard({ value, prevValue, isFlipping, size = "normal" }) {
    */
   useEffect(() => {
     if (isFlipping) {
-      // When flip starts, ensure bottom shows the OLD value (prevValue)
+      console.log(`[FlipCard] flip START: ${prevValue} → ${value}`);
       setDisplayedBottomValue(prevValue);
 
-      // Then update to NEW value at the 90° point of the animation
       const timer = setTimeout(() => {
+        console.log(`[FlipCard] flip MIDPOINT: bottom → ${value}`);
         setDisplayedBottomValue(value);
       }, FLIP_ANIMATION_MIDPOINT);
 
       return () => clearTimeout(timer);
     } else {
-      // When not flipping, immediately show current value
+      if (displayedBottomValue !== value) {
+        console.log(`[FlipCard] snap (no flip): bottom ${displayedBottomValue} → ${value}`);
+      }
       setDisplayedBottomValue(value);
     }
-  }, [isFlipping, prevValue, value]); // Only depend on isFlipping to prevent race conditions
+  }, [isFlipping, prevValue, value]);
 
   return (
     <div className={`flip-card ${size} ${isFlipping ? "flipping" : ""}`}>
