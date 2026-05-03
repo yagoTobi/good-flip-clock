@@ -1,96 +1,71 @@
-import { useState, useEffect } from "react";
+import { useReducer, useEffect, useRef, memo } from "react";
 import FlipCardGrid from "./FlipCardGrid";
+import { FLIP_STATE_CLEAR_DELAY } from "../../../constants";
 
-/**
- * ClockDisplay - Real-time clock display with flip card animations
- *
- * This component displays the current time in HH:MM format with small seconds display.
- * It automatically updates every second and triggers flip animations when time values
- * change. The component manages its own time state and animation timing.
- *
- * Features:
- * - Real-time clock updates every second
- * - Flip animations for hours, minutes, and seconds changes
- * - 24-hour format display with zero-padding
- * - Automatic animation cleanup after flip completion
- *
- * Animation Logic:
- * - Compares previous and current time values to determine which units need flipping
- * - Sets flipping state for 650ms to allow animation completion
- * - Uses FlipCardGrid for consistent layout with other display modes
- *
- * @returns {JSX.Element} Real-time clock display with flip animations
- */
-function ClockDisplay() {
-  const [time, setTime] = useState(new Date());
-  const [prevTime, setPrevTime] = useState(new Date());
-  const [flippingUnits, setFlippingUnits] = useState({});
+const fmt = (d, fn) => d[fn]().toString().padStart(2, "0");
 
-  /**
-   * Set up real-time clock updates with flip animation detection
-   *
-   * This effect:
-   * 1. Updates time state every second
-   * 2. Compares old vs new time values to detect changes
-   * 3. Triggers appropriate flip animations for changed units
-   * 4. Clears animation state after 650ms to reset for next change
-   *
-   * The flipping object maps to FlipCardGrid props:
-   * - left: hours changed (affects left card)
-   * - right: minutes changed (affects right card)
-   * - mini: seconds changed (affects mini seconds display)
-   */
+function clockReducer(state, action) {
+  switch (action.type) {
+    case "TICK": {
+      const now = action.now;
+      return {
+        time: now,
+        prevTime: state.time,
+        flippingUnits: {
+          left: fmt(state.time, "getHours") !== fmt(now, "getHours"),
+          right: fmt(state.time, "getMinutes") !== fmt(now, "getMinutes"),
+          mini: fmt(state.time, "getSeconds") !== fmt(now, "getSeconds"),
+        },
+      };
+    }
+    case "CLEAR_FLIP":
+      return { ...state, flippingUnits: {} };
+    default:
+      return state;
+  }
+}
+
+function ClockDisplayInner() {
+  const now = new Date();
+  const [state, dispatch] = useReducer(clockReducer, {
+    time: now,
+    prevTime: now,
+    flippingUnits: {},
+  });
+  const clearTimerRef = useRef(null);
+
   useEffect(() => {
     const timer = setInterval(() => {
-      const newTime = new Date();
-      setPrevTime(time);
-      setTime(newTime);
+      if (clearTimerRef.current) clearTimeout(clearTimerRef.current);
 
-      const oldHours = time.getHours().toString().padStart(2, "0");
-      const oldMinutes = time.getMinutes().toString().padStart(2, "0");
-      const oldSeconds = time.getSeconds().toString().padStart(2, "0");
+      dispatch({ type: "TICK", now: new Date() });
 
-      const newHours = newTime.getHours().toString().padStart(2, "0");
-      const newMinutes = newTime.getMinutes().toString().padStart(2, "0");
-      const newSeconds = newTime.getSeconds().toString().padStart(2, "0");
-
-      const flipping = {
-        left: oldHours !== newHours,
-        right: oldMinutes !== newMinutes,
-        mini: oldSeconds !== newSeconds,
-      };
-
-      setFlippingUnits(flipping);
-
-      // Clear animation state after flip completes
-      setTimeout(() => {
-        setFlippingUnits({});
-      }, 650);
+      clearTimerRef.current = setTimeout(() => {
+        dispatch({ type: "CLEAR_FLIP" });
+      }, FLIP_STATE_CLEAR_DELAY);
     }, 1000);
 
-    return () => clearInterval(timer);
-  }, [time]);
+    return () => {
+      clearInterval(timer);
+      if (clearTimerRef.current) clearTimeout(clearTimerRef.current);
+    };
+  }, []);
 
-  const hours = time.getHours().toString().padStart(2, "0");
-  const minutes = time.getMinutes().toString().padStart(2, "0");
-  const seconds = time.getSeconds().toString().padStart(2, "0");
-
-  const prevHours = prevTime.getHours().toString().padStart(2, "0");
-  const prevMinutes = prevTime.getMinutes().toString().padStart(2, "0");
-  const prevSeconds = prevTime.getSeconds().toString().padStart(2, "0");
+  const { time, prevTime, flippingUnits } = state;
 
   return (
     <FlipCardGrid
-      leftValue={hours}
-      rightValue={minutes}
-      prevLeftValue={prevHours}
-      prevRightValue={prevMinutes}
+      leftValue={fmt(time, "getHours")}
+      rightValue={fmt(time, "getMinutes")}
+      prevLeftValue={fmt(prevTime, "getHours")}
+      prevRightValue={fmt(prevTime, "getMinutes")}
       flippingUnits={flippingUnits}
       showMiniSeconds={true}
-      miniSecondsValue={seconds}
-      prevMiniSecondsValue={prevSeconds}
+      miniSecondsValue={fmt(time, "getSeconds")}
+      prevMiniSecondsValue={fmt(prevTime, "getSeconds")}
     />
   );
 }
 
+const ClockDisplay = memo(ClockDisplayInner);
 export default ClockDisplay;

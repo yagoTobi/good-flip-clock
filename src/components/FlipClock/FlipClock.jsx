@@ -40,16 +40,12 @@ function FlipClock({ mode, timer, pomodoroTimer }) {
   useEffect(() => {
     if (mode === displayMode) return;
 
-    const t0 = performance.now();
-    console.log(`[FlipClock] mode change: ${displayMode} → ${mode} @ ${t0.toFixed(1)}ms`);
-
     if (timersRef.current.midpoint) clearTimeout(timersRef.current.midpoint);
     if (animRef.current) animRef.current.cancel();
 
     const modeOrder = [MODES.CLOCK, MODES.TIMER, MODES.POMODORO];
     const fromIndex = modeOrder.indexOf(displayMode);
     const toIndex = modeOrder.indexOf(mode);
-    const direction = toIndex > fromIndex ? 1 : -1;
 
     const keyframes = [
       { transform: "scaleX(1)", opacity: 1 },
@@ -57,21 +53,15 @@ function FlipClock({ mode, timer, pomodoroTimer }) {
       { transform: "scaleX(1)", opacity: 1 },
     ];
 
-    // Web Animations API: each call creates a fresh animation instance,
-    // no CSS class toggling needed — eliminates restart race condition
     const el = clockRef.current;
     if (el) {
       animRef.current = el.animate(keyframes, { duration: 300, easing: "ease-in-out" });
-      console.log(`[FlipClock] WAAPI animation started @ +${(performance.now() - t0).toFixed(1)}ms`);
-
       animRef.current.onfinish = () => {
-        console.log(`[FlipClock] animation finished @ +${(performance.now() - t0).toFixed(1)}ms`);
         animRef.current = null;
       };
     }
 
     timersRef.current.midpoint = setTimeout(() => {
-      console.log(`[FlipClock] midpoint @ +${(performance.now() - t0).toFixed(1)}ms — setDisplayMode(${mode})`);
       setDisplayMode(mode);
     }, 150);
 
