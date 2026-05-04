@@ -77,9 +77,9 @@
   }
 
   .lb-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
+    width: clamp(30px, 5vh, 36px);
+    height: clamp(30px, 5vh, 36px);
+    border-radius: clamp(8px, 1.4vh, 10px);
     background: transparent;
     border: none;
     color: rgba(255, 255, 255, 0.85);

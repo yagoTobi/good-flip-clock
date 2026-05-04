@@ -83,14 +83,14 @@
   position: relative;
   background: transparent;
   border: none;
-  padding: 12px 24px;
-  font-size: 16px;
+  padding: clamp(8px, 0.7vw, 12px) clamp(14px, 1.4vw, 24px);
+  font-size: clamp(13px, 0.95vw, 16px);
   font-weight: 600;
   cursor: pointer;
   transition: color 0.3s ease;
   z-index: 1;
-  min-width: 80px;
-  min-height: 44px; /* Ensure minimum touch target size */
+  min-width: clamp(60px, 4.7vw, 80px);
+  min-height: 44px;
   outline: none;
   -webkit-tap-highlight-color: transparent;
   display: flex;
@@ -249,7 +249,7 @@
   }
 }
 .mode-icon {
-  font-size: 20px;
+  font-size: clamp(16px, 1.2vw, 20px);
   transition: transform 0.2s ease;
 }
 
@@ -264,12 +264,12 @@
 /* Responsive adjustments for smaller screens */
 @media (max-width: 480px) {
   .selector-option {
-    min-width: 70px;
-    padding: 10px 16px;
+    min-width: 60px;
+    padding: 8px 12px;
   }
 
   .mode-icon {
-    font-size: 18px;
+    font-size: 16px;
   }
 }
 /* Landscape orientation — hidden; swipe gesture handles mode switching */

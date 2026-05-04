@@ -115,7 +115,7 @@ function TimerDisplay({ timer }) {
     const prevDisplaySeconds = formatTime(prevSeconds);
 
     return (
-      <div className="time-display">
+      <div className="time-display three-up">
         <FlipCard
           value={displayHours}
           prevValue={prevDisplayHours}

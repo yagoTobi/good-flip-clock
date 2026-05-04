@@ -16,13 +16,12 @@
   position: relative;
   /* Unified aspect ratio — same shape on every screen size.
      Width-driven on desktop (height auto); height-driven on mobile portrait (width auto). */
+  container-type: inline-size;
   aspect-ratio: 22 / 24;
   width: 22vw;
-  /* height intentionally omitted — auto-computed from aspect-ratio on desktop */
   max-width: 395px;
-  max-height: 430px; /* = 395 × 24/22, prevents runaway at very wide viewports */
-  min-width: 180px;
-  min-height: 152px;
+  max-height: 430px;
+  min-width: 120px;
   border-radius: 14px;
   box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.45),
@@ -70,7 +69,7 @@
     Arial,
     sans-serif
   );
-  font-size: 13vw;
+  font-size: 59cqi;
   font-weight: 900;
   line-height: 0.8;
   letter-spacing: 0.05em;
@@ -148,6 +147,13 @@
 
 /* Animation is handled by Web Animations API in FlipCard.jsx */
 
+/* 3-card layout (HH:MM:SS): scale down so all 3 fit */
+.three-up > .flip-card .flip-card-inner {
+  width: 15vw;
+  max-width: 270px;
+  min-width: 100px;
+}
+
 /* Light background: softer shadows and visible border */
 :root.light-bg .flip-card-inner {
   box-shadow:
@@ -214,17 +220,8 @@
   box-shadow: none;
 }
 
-/* Mobile font scaling fixes */
+/* Mobile: mini seconds floor */
 @media (max-width: 767px) {
-  /* Ensure text scales properly with panels on mobile */
-  .flip-card-top .digit,
-  .flip-card-bottom .digit,
-  .flip-animation-front .digit,
-  .flip-animation-back .digit {
-    font-size: clamp(3rem, 15vw, 8rem); /* Better scaling for mobile */
-  }
-
-  /* Mini seconds scaling for mobile */
   .flip-card.mini .flip-card-top .digit,
   .flip-card.mini .flip-card-bottom .digit,
   .flip-card.mini .flip-animation-front .digit,
@@ -246,14 +243,9 @@
     min-width: 0;
   }
 
-  .flip-card-top .digit,
-  .flip-card-bottom .digit,
-  .flip-animation-front .digit,
-  .flip-animation-back .digit {
-    /* font = card_height × 13/24 (same ratio as desktop 13vw / 24vw).
-       Derived: height = clamp(170, (dvh-170)/2, 340) → font = height × 0.5417
-       formula term: (dvh-170)/2 × 13/24 = (dvh-170) × 0.2708 */
-    font-size: clamp(92px, calc((100dvh - 170px) * 0.27), 184px);
+  /* 3-card timer (HH:MM:SS): divide available height by 3 */
+  .three-up > .flip-card:not(.mini) .flip-card-inner {
+    height: clamp(120px, calc((100dvh - 190px) / 3), 240px);
   }
 
   /* Mini seconds card: scaled up to sit well beside the larger portrait cards */
