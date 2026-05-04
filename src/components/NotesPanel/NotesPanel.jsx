@@ -41,31 +41,31 @@ function NotesPanel({ isOpen, onToggle }) {
 
   return (
     <div className="notes-root">
-      {isOpen && (
-        <div className="notes-panel" role="region" aria-label="Quick notes">
-          <div className="notes-panel-header">
-            <span className="notes-panel-label">Notes</span>
-            <button
-              className="notes-panel-close"
-              onClick={onToggle}
-              aria-label="Close notes"
-            >
-              <FaTimes size={12} aria-hidden="true" />
-            </button>
-          </div>
-
-          <textarea
-            ref={textareaRef}
-            className="notes-textarea"
-            value={notes}
-            onChange={(e) => handleNotesChange(e.target.value)}
-            placeholder="Write your thoughts…"
-            maxLength={10000}
-          spellCheck={false}
-            aria-label="Notes"
-          />
+      <div className={`notes-panel${isOpen ? " panel-open" : ""}`} role="region" aria-label="Quick notes" aria-hidden={!isOpen}>
+        <div className="notes-panel-header">
+          <span className="notes-panel-label">Notes</span>
+          <button
+            className="notes-panel-close"
+            onClick={onToggle}
+            aria-label="Close notes"
+            tabIndex={isOpen ? 0 : -1}
+          >
+            <FaTimes size={12} aria-hidden="true" />
+          </button>
         </div>
-      )}
+
+        <textarea
+          ref={textareaRef}
+          className="notes-textarea"
+          value={notes}
+          onChange={(e) => handleNotesChange(e.target.value)}
+          placeholder="Write your thoughts…"
+          maxLength={10000}
+          spellCheck={false}
+          aria-label="Notes"
+          tabIndex={isOpen ? 0 : -1}
+        />
+      </div>
 
       <button
         className="notes-toggle"

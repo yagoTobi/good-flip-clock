@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback, memo } from "react";
 import "./App.css";
 import FlipClock from "./components/FlipClock";
 import ModeSelector from "./components/ModeSelector";
@@ -17,13 +17,13 @@ import LandscapeBar from "./components/LandscapeBar/LandscapeBar";
 import LiveRegion from "./components/LiveRegion";
 import { useTimer } from "./hooks/useTimer";
 import { usePomodoroTimer } from "./hooks/usePomodoroTimer";
-import { usePanelManager } from "./hooks/usePanelManager";
 import { useIdleMode } from "./hooks/useIdleMode";
 import { useMobileChrome } from "./hooks/useMobileChrome";
 import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
 import { useFullscreen } from "./hooks/useFullscreen";
 import { MODES } from "./constants";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
+import { PanelProvider, usePanelState, usePanelActions } from "./contexts/PanelContext";
 import { isLightColor } from "./utils/colorUtils";
 
 /**
@@ -135,16 +135,56 @@ function BackgroundLayer() {
   );
 }
 
-/**
- * AppContent - Main application content component
- */
+function shallowEqual(a, b) {
+  if (a === b) return true;
+  const keysA = Object.keys(a);
+  if (keysA.length !== Object.keys(b).length) return false;
+  for (let i = 0; i < keysA.length; i++) {
+    if (a[keysA[i]] !== b[keysA[i]]) return false;
+  }
+  return true;
+}
+
+function clockSectionEqual(prev, next) {
+  return prev.mode === next.mode
+    && prev.onSettingsClick === next.onSettingsClick
+    && shallowEqual(prev.timer, next.timer)
+    && shallowEqual(prev.pomodoroTimer, next.pomodoroTimer);
+}
+
+const ClockSection = memo(function ClockSection({ mode, timer, pomodoroTimer, onSettingsClick }) {
+  return (
+    <div
+      className="clock-container"
+      role="region"
+      aria-label="Clock display and controls"
+    >
+      <div key={`ml-${mode}`} className="mobile-mode-label" aria-hidden="true">
+        {{ [MODES.CLOCK]: "Clock", [MODES.TIMER]: "Timer", [MODES.POMODORO]: "Pomodoro" }[mode]}
+      </div>
+      <FlipClock
+        mode={mode}
+        timer={timer}
+        pomodoroTimer={pomodoroTimer}
+      />
+      <TimerControls
+        mode={mode}
+        timer={timer}
+        pomodoroTimer={pomodoroTimer}
+        onSettingsClick={onSettingsClick}
+      />
+    </div>
+  );
+}, clockSectionEqual);
+
 function AppContent() {
   const [selectedMode, setSelectedMode] = useState(MODES.CLOCK);
   const [liveMessage, setLiveMessage] = useState("");
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const touchStartRef = useRef(null);
 
-  const { panels, openPanel, closePanel, togglePanel, closeAll, isAnyModalOpen, isAnyFloatingOpen } = usePanelManager();
+  const { panels, isAnyModalOpen, isAnyFloatingOpen } = usePanelState();
+  const { openPanel, closePanel, togglePanel, closeAll } = usePanelActions();
   const isIdle = useIdleMode(closeAll);
   const { mobileChromeVisible, setMobileChromeVisible } = useMobileChrome({ isAnyModalOpen, isAnyFloatingOpen });
 
@@ -171,6 +211,14 @@ function AppContent() {
     };
     setLiveMessage(`Switched to ${modeNames[newMode]} mode`);
   };
+
+  const handleSettingsClick = useCallback(() => {
+    if (selectedMode === MODES.POMODORO) {
+      openPanel("pomodoroSettings");
+    } else {
+      openPanel("timerSettings");
+    }
+  }, [selectedMode, openPanel]);
 
   const { isFullscreen, toggleFullscreen } = useFullscreen();
 
@@ -319,33 +367,12 @@ function AppContent() {
         onTouchStart={handleMobileTouchStart}
         onTouchEnd={handleMobileTouchEnd}
       >
-        <div
-          className="clock-container"
-          role="region"
-          aria-label="Clock display and controls"
-        >
-          {/* Mobile-only mode badge — fades out after 3s; key resets animation on every change */}
-          <div key={`ml-${selectedMode}`} className="mobile-mode-label" aria-hidden="true">
-            {{ [MODES.CLOCK]: "Clock", [MODES.TIMER]: "Timer", [MODES.POMODORO]: "Pomodoro" }[selectedMode]}
-          </div>
-          <FlipClock
-            mode={selectedMode}
-            timer={timer}
-            pomodoroTimer={pomodoroTimer}
-          />
-          <TimerControls
-            mode={selectedMode}
-            timer={timer}
-            pomodoroTimer={pomodoroTimer}
-            onSettingsClick={() => {
-              if (selectedMode === MODES.POMODORO) {
-                openPanel("pomodoroSettings");
-              } else {
-                openPanel("timerSettings");
-              }
-            }}
-          />
-        </div>
+        <ClockSection
+          mode={selectedMode}
+          timer={timer}
+          pomodoroTimer={pomodoroTimer}
+          onSettingsClick={handleSettingsClick}
+        />
 
         <div id="mode-selector">
           <ModeSelector
@@ -424,8 +451,10 @@ function AppContent() {
 function App() {
   return (
     <ThemeProvider>
-      <BackgroundLayer />
-      <AppContent />
+      <PanelProvider>
+        <BackgroundLayer />
+        <AppContent />
+      </PanelProvider>
     </ThemeProvider>
   );
 }

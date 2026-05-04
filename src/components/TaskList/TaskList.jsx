@@ -57,72 +57,75 @@ function TaskList({ isOpen, onToggle }) {
 
   return (
     <div className="task-list-root">
-      {isOpen && (
-        <div className="task-panel" role="region" aria-label="Task list">
-          <div className="task-panel-header">
-            <span className="task-panel-label">My Tasks</span>
-            <button
-              className="task-panel-close"
-              onClick={onToggle}
-              aria-label="Close task list"
-            >
-              <FaTimes size={12} aria-hidden="true" />
-            </button>
-          </div>
-
-          <div className="task-items">
-            {tasks.length === 0 && (
-              <p className="task-empty">No tasks yet. Add one below!</p>
-            )}
-            {tasks.map((task) => (
-              <div
-                key={task.id}
-                className={`task-item${task.done ? " done" : ""}`}
-              >
-                <button
-                  className="task-check"
-                  onClick={() => toggleTask(task.id)}
-                  aria-label={
-                    task.done ? "Mark as incomplete" : "Mark as complete"
-                  }
-                >
-                  {task.done && <FaCheck size={7} aria-hidden="true" />}
-                </button>
-                <span className="task-text">{task.text}</span>
-                <button
-                  className="task-delete"
-                  onClick={() => deleteTask(task.id)}
-                  aria-label="Delete task"
-                >
-                  <FaTimes size={10} aria-hidden="true" />
-                </button>
-              </div>
-            ))}
-          </div>
-
-          <div className="task-add-row">
-            <input
-              ref={inputRef}
-              className="task-input"
-              type="text"
-              placeholder="Add a task…"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-              maxLength={60}
-              aria-label="New task"
-            />
-            <button
-              className="task-add-btn"
-              onClick={addTask}
-              disabled={!inputValue.trim()}
-              aria-label="Add task"
-            >
-              <FaPlus size={11} aria-hidden="true" />
-            </button>
-          </div>
+      <div className={`task-panel${isOpen ? " panel-open" : ""}`} role="region" aria-label="Task list" aria-hidden={!isOpen}>
+        <div className="task-panel-header">
+          <span className="task-panel-label">My Tasks</span>
+          <button
+            className="task-panel-close"
+            onClick={onToggle}
+            aria-label="Close task list"
+            tabIndex={isOpen ? 0 : -1}
+          >
+            <FaTimes size={12} aria-hidden="true" />
+          </button>
         </div>
-      )}
+
+        <div className="task-items">
+          {tasks.length === 0 && (
+            <p className="task-empty">No tasks yet. Add one below!</p>
+          )}
+          {tasks.map((task) => (
+            <div
+              key={task.id}
+              className={`task-item${task.done ? " done" : ""}`}
+            >
+              <button
+                className="task-check"
+                onClick={() => toggleTask(task.id)}
+                aria-label={
+                  task.done ? "Mark as incomplete" : "Mark as complete"
+                }
+                tabIndex={isOpen ? 0 : -1}
+              >
+                {task.done && <FaCheck size={7} aria-hidden="true" />}
+              </button>
+              <span className="task-text">{task.text}</span>
+              <button
+                className="task-delete"
+                onClick={() => deleteTask(task.id)}
+                aria-label="Delete task"
+                tabIndex={isOpen ? 0 : -1}
+              >
+                <FaTimes size={10} aria-hidden="true" />
+              </button>
+            </div>
+          ))}
+        </div>
+
+        <div className="task-add-row">
+          <input
+            ref={inputRef}
+            className="task-input"
+            type="text"
+            placeholder="Add a task…"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={handleKeyDown}
+            maxLength={60}
+            aria-label="New task"
+            tabIndex={isOpen ? 0 : -1}
+          />
+          <button
+            className="task-add-btn"
+            onClick={addTask}
+            disabled={!inputValue.trim()}
+            aria-label="Add task"
+            tabIndex={isOpen ? 0 : -1}
+          >
+            <FaPlus size={11} aria-hidden="true" />
+          </button>
+        </div>
+      </div>
 
       <button
         className="task-toggle"

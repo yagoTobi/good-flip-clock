@@ -110,53 +110,55 @@ function MusicPlayer({ isOpen, onToggle, onPlayingChange, hasControls }) {
         <div ref={containerRef} />
       </div>
 
-      {/* Expanded panel — floats above the toggle button */}
-      {isOpen && (
-        <div className="music-panel" role="region" aria-label="Music player">
-          <div className="music-panel-header">
-            <span className="music-panel-label">Study Beats</span>
-            <button
-              className="music-panel-close"
-              onClick={onToggle}
-              aria-label="Close music player"
-            >
-              <FaTimes size={12} aria-hidden="true" />
-            </button>
-          </div>
-
-          <div className="music-stations" role="group" aria-label="Stations">
-            {STATIONS.map((s, i) => (
-              <button
-                key={s.id}
-                className={`station-btn${i === stationIdx ? " active" : ""}`}
-                onClick={() => setStationIdx(i)}
-                aria-pressed={i === stationIdx}
-              >
-                {s.name}
-              </button>
-            ))}
-          </div>
-
-          <div className="music-controls">
-            <button
-              className="ctrl-btn play-btn"
-              onClick={togglePlay}
-              disabled={!ready}
-              aria-label={isPlaying ? "Pause" : "Play"}
-            >
-              {isPlaying ? <FaPause size={13} aria-hidden="true" /> : <FaPlay size={13} aria-hidden="true" />}
-            </button>
-            <button
-              className="ctrl-btn"
-              onClick={toggleMute}
-              disabled={!ready}
-              aria-label={isMuted ? "Unmute" : "Mute"}
-            >
-              {isMuted ? <FaVolumeMute size={14} aria-hidden="true" /> : <FaVolumeUp size={14} aria-hidden="true" />}
-            </button>
-          </div>
+      {/* Expanded panel — always mounted, toggled via CSS */}
+      <div className={`music-panel${isOpen ? " panel-open" : ""}`} role="region" aria-label="Music player" aria-hidden={!isOpen}>
+        <div className="music-panel-header">
+          <span className="music-panel-label">Study Beats</span>
+          <button
+            className="music-panel-close"
+            onClick={onToggle}
+            aria-label="Close music player"
+            tabIndex={isOpen ? 0 : -1}
+          >
+            <FaTimes size={12} aria-hidden="true" />
+          </button>
         </div>
-      )}
+
+        <div className="music-stations" role="group" aria-label="Stations">
+          {STATIONS.map((s, i) => (
+            <button
+              key={s.id}
+              className={`station-btn${i === stationIdx ? " active" : ""}`}
+              onClick={() => setStationIdx(i)}
+              aria-pressed={i === stationIdx}
+              tabIndex={isOpen ? 0 : -1}
+            >
+              {s.name}
+            </button>
+          ))}
+        </div>
+
+        <div className="music-controls">
+          <button
+            className="ctrl-btn play-btn"
+            onClick={togglePlay}
+            disabled={!ready}
+            aria-label={isPlaying ? "Pause" : "Play"}
+            tabIndex={isOpen ? 0 : -1}
+          >
+            {isPlaying ? <FaPause size={13} aria-hidden="true" /> : <FaPlay size={13} aria-hidden="true" />}
+          </button>
+          <button
+            className="ctrl-btn"
+            onClick={toggleMute}
+            disabled={!ready}
+            aria-label={isMuted ? "Unmute" : "Mute"}
+            tabIndex={isOpen ? 0 : -1}
+          >
+            {isMuted ? <FaVolumeMute size={14} aria-hidden="true" /> : <FaVolumeUp size={14} aria-hidden="true" />}
+          </button>
+        </div>
+      </div>
 
       {/* Toggle button — always visible */}
       <button

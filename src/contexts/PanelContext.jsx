@@ -1,4 +1,7 @@
-import { useReducer, useCallback } from "react";
+import { createContext, useReducer, useCallback, useContext, useMemo } from "react";
+
+const PanelStateContext = createContext();
+const PanelActionsContext = createContext();
 
 const initialState = {
   customization: false,
@@ -9,14 +12,12 @@ const initialState = {
   notes: false,
 };
 
-// Floating panels are mutually exclusive with each other
 const FLOATING_PANELS = ["music", "tasks", "notes"];
 
 function panelReducer(state, action) {
   switch (action.type) {
     case "OPEN": {
       const next = { ...state, [action.panel]: true };
-      // If opening a floating panel, close the other floating panels
       if (FLOATING_PANELS.includes(action.panel)) {
         FLOATING_PANELS.forEach((p) => {
           if (p !== action.panel) next[p] = false;
@@ -46,7 +47,7 @@ function panelReducer(state, action) {
   }
 }
 
-export function usePanelManager() {
+export function PanelProvider({ children }) {
   const [panels, dispatch] = useReducer(panelReducer, initialState);
 
   const openPanel = useCallback((panel) => dispatch({ type: "OPEN", panel }), []);
@@ -54,20 +55,39 @@ export function usePanelManager() {
   const togglePanel = useCallback((panel) => dispatch({ type: "TOGGLE", panel }), []);
   const closeAll = useCallback(() => dispatch({ type: "CLOSE_ALL" }), []);
 
-  // Check if any modal-type panel is open (blocks gestures/auto-hide)
   const isAnyModalOpen = panels.customization || panels.timerSettings || panels.pomodoroSettings;
-  // Check if any floating panel is open (suppresses auto-hide timer)
   const isAnyFloatingOpen = panels.music || panels.tasks || panels.notes;
-  const isAnyOpen = isAnyModalOpen || isAnyFloatingOpen;
 
-  return {
+  const state = useMemo(() => ({
     panels,
+    isAnyModalOpen,
+    isAnyFloatingOpen,
+  }), [panels, isAnyModalOpen, isAnyFloatingOpen]);
+
+  const actions = useMemo(() => ({
     openPanel,
     closePanel,
     togglePanel,
     closeAll,
-    isAnyModalOpen,
-    isAnyFloatingOpen,
-    isAnyOpen,
-  };
+  }), [openPanel, closePanel, togglePanel, closeAll]);
+
+  return (
+    <PanelActionsContext.Provider value={actions}>
+      <PanelStateContext.Provider value={state}>
+        {children}
+      </PanelStateContext.Provider>
+    </PanelActionsContext.Provider>
+  );
+}
+
+export function usePanelState() {
+  const ctx = useContext(PanelStateContext);
+  if (!ctx) throw new Error("usePanelState must be used within PanelProvider");
+  return ctx;
+}
+
+export function usePanelActions() {
+  const ctx = useContext(PanelActionsContext);
+  if (!ctx) throw new Error("usePanelActions must be used within PanelProvider");
+  return ctx;
 }
