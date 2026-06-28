@@ -6,10 +6,10 @@ import { isLightColor } from "../utils/colorUtils";
 export const ThemeContext = createContext();
 
 const DEFAULT_THEME = {
-  background: "default",
+  background: 'url("/images/backgrounds/image8.webp") center/cover',
   font: "default",
-  clockColor: "#000000",
-  panelColor: "#ffffff",
+  clockColor: "#ffffff",
+  panelColor: "#1a3d2e",
   showQuote: false,
 };
 
@@ -22,7 +22,7 @@ const isValidBackground = (bg) => {
   if (bg.startsWith("#")) return true;
   if (bg.startsWith("hsl(")) return true;
   if (bg.startsWith("linear-gradient(")) return true;
-  if (/^url\(\"\/images\/[^"]+\"\)$/.test(bg)) return true;
+  if (/^url\(\"\/images\/[^"]+\"\)( center\/cover)?$/.test(bg)) return true;
   return false;
 };
 
