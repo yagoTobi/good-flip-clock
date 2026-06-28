@@ -2,7 +2,7 @@
 
 A full-screen, immersive flip clock app for focus sessions — built with React + Vite.
 
-goodflipclock.com
+[goodflipclock.com](goodflipclock.com)
 
 ## Preview
 
